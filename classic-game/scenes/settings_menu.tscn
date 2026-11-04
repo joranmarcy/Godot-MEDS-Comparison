@@ -1,0 +1,92 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/settings_menu.gd" id="1_menu"]
+[ext_resource type="AudioStream" path="res://sounds/coin.wav" id="2_coin"]
+
+[node name="SettingsMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 4
+script = ExtResource("1_menu")
+
+[node name="SfxPreview" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_coin")
+bus = &"SFX"
+
+[node name="Root" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Center" type="CenterContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Root/Center"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Root/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Root/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="Root/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="MusicLabel" type="Label" parent="Root/Center/Panel/Margin/VBox/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="SfxLabel" type="Label" parent="Root/Center/Panel/Margin/VBox/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Sound effects"
+
+[node name="SfxSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="Hint" type="Label" parent="Root/Center/Panel/Margin/VBox"]
+modulate = Color(1, 1, 1, 0.6)
+layout_mode = 2
+text = "Esc: resume"
+horizontal_alignment = 1

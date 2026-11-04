@@ -35,6 +35,8 @@ func _process(_delta: float) -> void:
 		"combo: %d" % GameState.combo,
 		"level: %d" % GameState.level,
 		"high_score: %d" % GameState.high_score,
+		"music_volume: %.2f" % Settings.music_volume,
+		"sfx_volume: %.2f" % Settings.sfx_volume,
 		"",
 		"SIGNALS",
 	])
