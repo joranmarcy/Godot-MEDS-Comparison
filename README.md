@@ -95,7 +95,7 @@ flowchart LR
 | Game-over screen | Custom script listening to `GameState.game_over` | `bool_to_visibility` + MEDS labels + restart button |
 | Session reset on restart | `GameState.start_game()` called from `main.gd` | `ResetSessionVariables` node listing the variables to reset |
 | Debug overlay | Hand-written field by field | Generic: takes `Array[BaseVariable]` / `Array[Event]` |
-| Sounds | [sound_effects.gd](./classic-game/scripts/sound_effects.gd) connects to 4 `GameState` signals and reads `GameState.combo` | Reusable players: [play_sound_on_event.gd](./meds-game/game/scripts/play_sound_on_event.gd), [play_sound_on_increase.gd](./meds-game/game/scripts/play_sound_on_increase.gd), [play_while_true.gd](./meds-game/game/scripts/play_while_true.gd), wired to events/variables in the scene |
+| Sounds | [sound_effects.gd](./classic-game/scripts/sound_effects.gd) connects to 4 `GameState` signals and reads `GameState.combo` | Reusable players: [play_sound_on_event.gd](./meds-game/game/scripts/play_sound_on_event.gd), [play_sound_on_increase.gd](./meds-game/game/scripts/play_sound_on_increase.gd), [play_while_true.gd](./meds-game/game/scripts/play_while_true.gd), wired to events/variables in [audio.tscn](./meds-game/game/scenes/audio.tscn) |
 | Volume settings | Second autoload, [settings.gd](./classic-game/scripts/settings.gd): one property + signal + save/load code per setting; [settings_menu.gd](./classic-game/scripts/settings_menu.gd) wires each slider both ways | `music-volume.tres` / `sfx-volume.tres` (`save_to_device`), MEDS `variable-driven-slider`, [bind_float_to_bus_volume.gd](./meds-game/game/scripts/bind_float_to_bus_volume.gd) |
 
 ## How MEDS improves *understanding*

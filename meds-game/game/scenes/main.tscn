@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3]
+[gd_scene load_steps=33 format=3]
 
 [ext_resource type="Script" path="res://game/scripts/reset_variables_on_ready.gd" id="1_reset"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
@@ -30,17 +30,7 @@
 [ext_resource type="Script" path="res://game/scripts/screen_flash.gd" id="28_flash"]
 [ext_resource type="PackedScene" path="res://game/scenes/game_over_screen.tscn" id="29_gameover"]
 [ext_resource type="PackedScene" path="res://game/scenes/debug_overlay.tscn" id="30_overlay"]
-[ext_resource type="Script" path="res://game/scripts/bind_float_to_bus_volume.gd" id="31_bus_volume"]
-[ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="32_music_volume"]
-[ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="33_sfx_volume"]
-[ext_resource type="Script" path="res://game/scripts/play_while_true.gd" id="34_play_while"]
-[ext_resource type="AudioStream" path="res://game/sounds/music.wav" id="35_music"]
-[ext_resource type="Script" path="res://game/scripts/play_sound_on_event.gd" id="36_play_on_event"]
-[ext_resource type="AudioStream" path="res://game/sounds/coin.wav" id="37_coin_sound"]
-[ext_resource type="AudioStream" path="res://game/sounds/hit.wav" id="38_hit_sound"]
-[ext_resource type="Script" path="res://game/scripts/play_sound_on_increase.gd" id="39_play_on_increase"]
-[ext_resource type="AudioStream" path="res://game/sounds/level_up.wav" id="40_level_up_sound"]
-[ext_resource type="AudioStream" path="res://game/sounds/game_over.wav" id="41_game_over_sound"]
+[ext_resource type="PackedScene" path="res://game/scenes/audio.tscn" id="31_audio"]
 [ext_resource type="PackedScene" path="res://game/scenes/settings_menu.tscn" id="42_settings"]
 
 [node name="Main" type="Node2D"]
@@ -142,49 +132,6 @@ event = ExtResource("17_hit")
 
 [node name="DebugOverlay" parent="." instance=ExtResource("30_overlay")]
 
-[node name="Audio" type="Node" parent="."]
-
-[node name="MusicVolume" type="Node" parent="Audio"]
-script = ExtResource("31_bus_volume")
-variable = ExtResource("32_music_volume")
-bus = &"Music"
-
-[node name="SfxVolume" type="Node" parent="Audio"]
-script = ExtResource("31_bus_volume")
-variable = ExtResource("33_sfx_volume")
-bus = &"SFX"
-
-[node name="MusicWhileRunning" type="AudioStreamPlayer" parent="Audio"]
-process_mode = 3
-stream = ExtResource("35_music")
-bus = &"Music"
-script = ExtResource("34_play_while")
-variable = ExtResource("3_running")
-
-[node name="CoinSound" type="AudioStreamPlayer" parent="Audio"]
-stream = ExtResource("37_coin_sound")
-bus = &"SFX"
-script = ExtResource("36_play_on_event")
-event = ExtResource("10_collected")
-pitch_variable = ExtResource("6_combo")
-pitch_step = 0.06
-
-[node name="HitSound" type="AudioStreamPlayer" parent="Audio"]
-stream = ExtResource("38_hit_sound")
-bus = &"SFX"
-script = ExtResource("36_play_on_event")
-event = ExtResource("17_hit")
-
-[node name="LevelUpSound" type="AudioStreamPlayer" parent="Audio"]
-stream = ExtResource("40_level_up_sound")
-bus = &"SFX"
-script = ExtResource("39_play_on_increase")
-variable = ExtResource("7_level")
-
-[node name="GameOverSound" type="AudioStreamPlayer" parent="Audio"]
-stream = ExtResource("41_game_over_sound")
-bus = &"SFX"
-script = ExtResource("36_play_on_event")
-event = ExtResource("20_over")
+[node name="Audio" parent="." instance=ExtResource("31_audio")]
 
 [node name="SettingsMenu" parent="." instance=ExtResource("42_settings")]

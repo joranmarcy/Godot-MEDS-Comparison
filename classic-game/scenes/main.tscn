@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/arena.gd" id="2_arena"]
@@ -11,12 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/game_over_screen.tscn" id="9_gameover"]
 [ext_resource type="Script" path="res://scripts/screen_flash.gd" id="10_flash"]
 [ext_resource type="PackedScene" path="res://scenes/debug_overlay.tscn" id="11_overlay"]
-[ext_resource type="Script" path="res://scripts/sound_effects.gd" id="12_sounds"]
-[ext_resource type="AudioStream" path="res://sounds/music.wav" id="13_music"]
-[ext_resource type="AudioStream" path="res://sounds/coin.wav" id="14_coin"]
-[ext_resource type="AudioStream" path="res://sounds/hit.wav" id="15_hit"]
-[ext_resource type="AudioStream" path="res://sounds/level_up.wav" id="16_level_up"]
-[ext_resource type="AudioStream" path="res://sounds/game_over.wav" id="17_game_over"]
+[ext_resource type="PackedScene" path="res://scenes/sound_effects.tscn" id="12_sound_effects"]
 [ext_resource type="PackedScene" path="res://scenes/settings_menu.tscn" id="18_settings"]
 
 [node name="Main" type="Node2D"]
@@ -76,28 +71,6 @@ script = ExtResource("10_flash")
 
 [node name="DebugOverlay" parent="." instance=ExtResource("11_overlay")]
 
-[node name="SoundEffects" type="Node" parent="."]
-script = ExtResource("12_sounds")
-
-[node name="Music" type="AudioStreamPlayer" parent="SoundEffects"]
-process_mode = 3
-stream = ExtResource("13_music")
-bus = &"Music"
-
-[node name="Coin" type="AudioStreamPlayer" parent="SoundEffects"]
-stream = ExtResource("14_coin")
-bus = &"SFX"
-
-[node name="Hit" type="AudioStreamPlayer" parent="SoundEffects"]
-stream = ExtResource("15_hit")
-bus = &"SFX"
-
-[node name="LevelUp" type="AudioStreamPlayer" parent="SoundEffects"]
-stream = ExtResource("16_level_up")
-bus = &"SFX"
-
-[node name="GameOver" type="AudioStreamPlayer" parent="SoundEffects"]
-stream = ExtResource("17_game_over")
-bus = &"SFX"
+[node name="SoundEffects" parent="." instance=ExtResource("12_sound_effects")]
 
 [node name="SettingsMenu" parent="." instance=ExtResource("18_settings")]

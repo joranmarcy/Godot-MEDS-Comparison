@@ -1,0 +1,64 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/bind_float_to_bus_volume.gd" id="1_bus_volume"]
+[ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="2_music_volume"]
+[ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="3_sfx_volume"]
+[ext_resource type="Script" path="res://game/scripts/play_while_true.gd" id="4_play_while"]
+[ext_resource type="AudioStream" path="res://game/sounds/music.wav" id="5_music"]
+[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="6_running"]
+[ext_resource type="Script" path="res://game/scripts/play_sound_on_event.gd" id="7_play_on_event"]
+[ext_resource type="AudioStream" path="res://game/sounds/coin.wav" id="8_coin_sound"]
+[ext_resource type="Resource" path="res://game/events/coin-collected.tres" id="9_collected"]
+[ext_resource type="Resource" path="res://game/variables/combo.tres" id="10_combo"]
+[ext_resource type="AudioStream" path="res://game/sounds/hit.wav" id="11_hit_sound"]
+[ext_resource type="Resource" path="res://game/events/player-hit.tres" id="12_hit"]
+[ext_resource type="Script" path="res://game/scripts/play_sound_on_increase.gd" id="13_play_on_increase"]
+[ext_resource type="AudioStream" path="res://game/sounds/level_up.wav" id="14_level_up_sound"]
+[ext_resource type="Resource" path="res://game/variables/level.tres" id="15_level"]
+[ext_resource type="AudioStream" path="res://game/sounds/game_over.wav" id="16_game_over_sound"]
+[ext_resource type="Resource" path="res://game/events/game-over.tres" id="17_over"]
+
+[node name="Audio" type="Node"]
+
+[node name="MusicVolume" type="Node" parent="."]
+script = ExtResource("1_bus_volume")
+variable = ExtResource("2_music_volume")
+bus = &"Music"
+
+[node name="SfxVolume" type="Node" parent="."]
+script = ExtResource("1_bus_volume")
+variable = ExtResource("3_sfx_volume")
+bus = &"SFX"
+
+[node name="MusicWhileRunning" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("5_music")
+bus = &"Music"
+script = ExtResource("4_play_while")
+variable = ExtResource("6_running")
+
+[node name="CoinSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_coin_sound")
+bus = &"SFX"
+script = ExtResource("7_play_on_event")
+event = ExtResource("9_collected")
+pitch_variable = ExtResource("10_combo")
+pitch_step = 0.06
+
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_hit_sound")
+bus = &"SFX"
+script = ExtResource("7_play_on_event")
+event = ExtResource("12_hit")
+
+[node name="LevelUpSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_level_up_sound")
+bus = &"SFX"
+script = ExtResource("13_play_on_increase")
+variable = ExtResource("15_level")
+
+[node name="GameOverSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_game_over_sound")
+bus = &"SFX"
+script = ExtResource("7_play_on_event")
+event = ExtResource("17_over")

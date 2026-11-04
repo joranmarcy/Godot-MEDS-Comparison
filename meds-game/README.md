@@ -6,7 +6,7 @@ The same game built with [Godot MEDS](https://github.com/joranmarcy/Godot-MEDS-S
 - **Communication** → Resource events in [game/events/](./game/events/): `coin-collected`, `player-hit`, `game-over`.
 - **Rules** → one small node each under `Main/GameRules` in [main.tscn](./game/scenes/main.tscn).
 - **UI** → MEDS addon bindings (`variable-driven-label`, `variable-driven-progress-bar`, `variable-driven-slider`), no HUD script.
-- **Audio** → `Main/Audio`: sound players driven by events/variables, and `music-volume` / `sfx-volume` variables (saved with `save_to_device`) bound to the `Music` and `SFX` buses. Esc opens the pause menu with the volume sliders.
+- **Audio** → [audio.tscn](./game/scenes/audio.tscn), instanced as `Main/Audio`: sound players driven by events/variables, and `music-volume` / `sfx-volume` variables (saved with `save_to_device`) bound to the `Music` and `SFX` buses. It only references resources, so it can be run on its own (F6) and its sounds triggered from the **Events** panel. Esc opens the pause menu with the volume sliders.
 - **Session start** → `Main/ResetSessionVariables` (must stay the first child of `Main`) resets the listed variables to their `initial_value`.
 
 See the [comparison guide](../README.md) for debugging walkthroughs.
