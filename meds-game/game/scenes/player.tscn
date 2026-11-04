@@ -1,0 +1,33 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/player.gd" id="1_player"]
+[ext_resource type="Resource" path="res://game/variables/player-speed.tres" id="2_speed"]
+[ext_resource type="Resource" path="res://game/variables/player-position.tres" id="3_position"]
+[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="4_running"]
+[ext_resource type="Resource" path="res://game/events/player-hit.tres" id="5_hit"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 18.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+radius = 16.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 0
+motion_mode = 1
+script = ExtResource("1_player")
+move_speed = ExtResource("2_speed")
+position_variable = ExtResource("3_position")
+game_running = ExtResource("4_running")
+player_hit = ExtResource("5_hit")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_hurt")

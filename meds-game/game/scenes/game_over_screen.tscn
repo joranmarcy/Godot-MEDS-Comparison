@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/bool_to_visibility.gd" id="1_visibility"]
+[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="2_running"]
+[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-label.gd" id="3_label"]
+[ext_resource type="Resource" path="res://game/variables/score.tres" id="4_score"]
+[ext_resource type="Resource" path="res://game/variables/high-score.tres" id="5_high"]
+[ext_resource type="Script" path="res://game/scripts/restart_button.gd" id="6_restart"]
+
+[node name="GameOverScreen" type="CanvasLayer"]
+layer = 2
+
+[node name="Root" type="ColorRect" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+script = ExtResource("1_visibility")
+variable = ExtResource("2_running")
+invert = true
+
+[node name="Center" type="CenterContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Root/Center"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Root/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Root/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "GAME OVER"
+horizontal_alignment = 1
+
+[node name="FinalScoreLabel" type="Label" parent="Root/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Score: 0"
+horizontal_alignment = 1
+script = ExtResource("3_label")
+variable = ExtResource("4_score")
+prefix = "Score: "
+
+[node name="BestScoreLabel" type="Label" parent="Root/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Best: 0"
+horizontal_alignment = 1
+script = ExtResource("3_label")
+variable = ExtResource("5_high")
+prefix = "Best: "
+
+[node name="RestartButton" type="Button" parent="Root/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Restart (Enter)"
+script = ExtResource("6_restart")

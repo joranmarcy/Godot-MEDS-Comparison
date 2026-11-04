@@ -1,0 +1,23 @@
+# Godot 4 (applies to classic-game/ and meds-game/)
+# Keep *.uid and *.import files: Godot needs them committed to preserve resource references.
+.godot/
+android/
+export_credentials.cfg
+
+# Export / build output
+builds/
+exports/
+*.apk
+*.aab
+*.pck
+*.zip
+
+# Editor / IDE
+.vscode/
+.idea/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

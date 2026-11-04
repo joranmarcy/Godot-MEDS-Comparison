@@ -1,0 +1,70 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/arena.gd" id="2_arena"]
+[ext_resource type="Script" path="res://scripts/screen_shake.gd" id="3_shake"]
+[ext_resource type="Script" path="res://scripts/spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="5_coin"]
+[ext_resource type="PackedScene" path="res://scenes/enemy.tscn" id="6_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="7_player"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="8_hud"]
+[ext_resource type="PackedScene" path="res://scenes/game_over_screen.tscn" id="9_gameover"]
+[ext_resource type="Script" path="res://scripts/screen_flash.gd" id="10_flash"]
+[ext_resource type="PackedScene" path="res://scenes/debug_overlay.tscn" id="11_overlay"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Arena" type="Node2D" parent="."]
+script = ExtResource("2_arena")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+script = ExtResource("3_shake")
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="CoinSpawner" type="Node" parent="." node_paths=PackedStringArray("container")]
+script = ExtResource("4_spawner")
+scene = ExtResource("5_coin")
+container = NodePath("../Coins")
+group_name = &"coins"
+max_alive = 6
+base_interval = 0.8
+min_interval = 0.8
+margin = 80.0
+
+[node name="EnemySpawner" type="Node" parent="." node_paths=PackedStringArray("container")]
+script = ExtResource("4_spawner")
+scene = ExtResource("6_enemy")
+container = NodePath("../Enemies")
+group_name = &"enemies"
+max_alive = 25
+base_interval = 1.6
+interval_decrease_per_level = 0.15
+min_interval = 0.35
+spawn_on_edges = true
+
+[node name="Player" parent="." instance=ExtResource("7_player")]
+position = Vector2(640, 360)
+
+[node name="HUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="FlashLayer" type="CanvasLayer" parent="."]
+layer = 1
+
+[node name="ScreenFlash" type="ColorRect" parent="FlashLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.2, 0.2, 0)
+script = ExtResource("10_flash")
+
+[node name="GameOverScreen" parent="." instance=ExtResource("9_gameover")]
+
+[node name="DebugOverlay" parent="." instance=ExtResource("11_overlay")]

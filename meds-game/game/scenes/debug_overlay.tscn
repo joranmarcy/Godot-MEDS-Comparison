@@ -1,0 +1,51 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/debug_overlay.gd" id="1_overlay"]
+[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
+[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/events/event.gd" id="3_event"]
+[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="4_running"]
+[ext_resource type="Resource" path="res://game/variables/player-health.tres" id="5_health"]
+[ext_resource type="Resource" path="res://game/variables/score.tres" id="6_score"]
+[ext_resource type="Resource" path="res://game/variables/combo.tres" id="7_combo"]
+[ext_resource type="Resource" path="res://game/variables/level.tres" id="8_level"]
+[ext_resource type="Resource" path="res://game/variables/high-score.tres" id="9_high"]
+[ext_resource type="Resource" path="res://game/variables/player-position.tres" id="10_position"]
+[ext_resource type="Resource" path="res://game/variables/player-speed.tres" id="11_pspeed"]
+[ext_resource type="Resource" path="res://game/variables/enemy-speed.tres" id="12_espeed"]
+[ext_resource type="Resource" path="res://game/variables/player-damage.tres" id="13_damage"]
+[ext_resource type="Resource" path="res://game/variables/coin-value.tres" id="14_coin"]
+[ext_resource type="Resource" path="res://game/variables/combo-window.tres" id="15_window"]
+[ext_resource type="Resource" path="res://game/events/coin-collected.tres" id="16_collected"]
+[ext_resource type="Resource" path="res://game/events/player-hit.tres" id="17_hit"]
+[ext_resource type="Resource" path="res://game/events/game-over.tres" id="18_over"]
+
+[node name="DebugOverlay" type="CanvasLayer"]
+layer = 3
+script = ExtResource("1_overlay")
+variables = Array[ExtResource("2_base")]([ExtResource("4_running"), ExtResource("5_health"), ExtResource("6_score"), ExtResource("7_combo"), ExtResource("8_level"), ExtResource("9_high"), ExtResource("10_position"), ExtResource("11_pspeed"), ExtResource("12_espeed"), ExtResource("13_damage"), ExtResource("14_coin"), ExtResource("15_window")])
+events = Array[ExtResource("3_event")]([ExtResource("16_collected"), ExtResource("17_hit"), ExtResource("18_over")])
+
+[node name="Panel" type="PanelContainer" parent="."]
+offset_left = 16.0
+offset_top = 60.0
+offset_right = 376.0
+offset_bottom = 100.0
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="OverlayLabel" type="RichTextLabel" parent="Panel/Margin"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 14
+bbcode_enabled = true
+text = "VARIABLES"
+fit_content = true
+autowrap_mode = 0

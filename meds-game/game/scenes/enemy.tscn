@@ -1,0 +1,23 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/enemy.gd" id="1_enemy"]
+[ext_resource type="Resource" path="res://game/variables/player-position.tres" id="2_target"]
+[ext_resource type="Resource" path="res://game/variables/enemy-speed.tres" id="3_speed"]
+[ext_resource type="Resource" path="res://game/variables/level.tres" id="4_level"]
+[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="5_running"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 11.0
+
+[node name="Enemy" type="Area2D"]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_enemy")
+target_position = ExtResource("2_target")
+base_speed = ExtResource("3_speed")
+level = ExtResource("4_level")
+game_running = ExtResource("5_running")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_enemy")

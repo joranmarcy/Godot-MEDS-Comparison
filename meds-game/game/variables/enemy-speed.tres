@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="FloatVariable" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/float-variable.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+max_value = 1000.0
+initial_value = 110.0

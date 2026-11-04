@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/coin.gd" id="1_coin"]
+[ext_resource type="Resource" path="res://game/events/coin-collected.tres" id="2_collected"]
+[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="3_running"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_coin"]
+radius = 12.0
+
+[node name="Coin" type="Area2D"]
+collision_layer = 4
+monitorable = false
+script = ExtResource("1_coin")
+coin_collected = ExtResource("2_collected")
+game_running = ExtResource("3_running")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_coin")

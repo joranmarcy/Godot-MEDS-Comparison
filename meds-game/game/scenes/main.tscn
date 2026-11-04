@@ -1,0 +1,131 @@
+[gd_scene load_steps=33 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/reset_variables_on_ready.gd" id="1_reset"]
+[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
+[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="3_running"]
+[ext_resource type="Resource" path="res://game/variables/player-health.tres" id="4_health"]
+[ext_resource type="Resource" path="res://game/variables/score.tres" id="5_score"]
+[ext_resource type="Resource" path="res://game/variables/combo.tres" id="6_combo"]
+[ext_resource type="Resource" path="res://game/variables/level.tres" id="7_level"]
+[ext_resource type="Resource" path="res://game/variables/player-position.tres" id="8_position"]
+[ext_resource type="Script" path="res://game/scripts/score_keeper.gd" id="9_score_keeper"]
+[ext_resource type="Resource" path="res://game/events/coin-collected.tres" id="10_collected"]
+[ext_resource type="Resource" path="res://game/variables/coin-value.tres" id="11_coin_value"]
+[ext_resource type="Resource" path="res://game/variables/combo-window.tres" id="12_window"]
+[ext_resource type="Script" path="res://game/scripts/level_from_score.gd" id="13_level_rule"]
+[ext_resource type="Script" path="res://game/scripts/high_score_tracker.gd" id="14_high_rule"]
+[ext_resource type="Resource" path="res://game/variables/high-score.tres" id="15_high"]
+[ext_resource type="Script" path="res://game/scripts/damage_on_event.gd" id="16_damage_rule"]
+[ext_resource type="Resource" path="res://game/events/player-hit.tres" id="17_hit"]
+[ext_resource type="Resource" path="res://game/variables/player-damage.tres" id="18_damage"]
+[ext_resource type="Script" path="res://game/scripts/game_over_on_zero_health.gd" id="19_over_rule"]
+[ext_resource type="Resource" path="res://game/events/game-over.tres" id="20_over"]
+[ext_resource type="Script" path="res://game/scripts/arena.gd" id="21_arena"]
+[ext_resource type="Script" path="res://game/scripts/screen_shake.gd" id="22_shake"]
+[ext_resource type="Script" path="res://game/scripts/spawner.gd" id="23_spawner"]
+[ext_resource type="PackedScene" path="res://game/scenes/coin.tscn" id="24_coin"]
+[ext_resource type="PackedScene" path="res://game/scenes/enemy.tscn" id="25_enemy"]
+[ext_resource type="PackedScene" path="res://game/scenes/player.tscn" id="26_player"]
+[ext_resource type="PackedScene" path="res://game/scenes/hud.tscn" id="27_hud"]
+[ext_resource type="Script" path="res://game/scripts/screen_flash.gd" id="28_flash"]
+[ext_resource type="PackedScene" path="res://game/scenes/game_over_screen.tscn" id="29_gameover"]
+[ext_resource type="PackedScene" path="res://game/scenes/debug_overlay.tscn" id="30_overlay"]
+
+[node name="Main" type="Node2D"]
+
+[node name="ResetSessionVariables" type="Node" parent="."]
+script = ExtResource("1_reset")
+variables = Array[ExtResource("2_base")]([ExtResource("3_running"), ExtResource("4_health"), ExtResource("5_score"), ExtResource("6_combo"), ExtResource("7_level"), ExtResource("8_position")])
+
+[node name="GameRules" type="Node" parent="."]
+
+[node name="ScoreKeeper" type="Node" parent="GameRules"]
+script = ExtResource("9_score_keeper")
+coin_collected = ExtResource("10_collected")
+game_running = ExtResource("3_running")
+score = ExtResource("5_score")
+combo = ExtResource("6_combo")
+coin_value = ExtResource("11_coin_value")
+combo_window = ExtResource("12_window")
+
+[node name="LevelFromScore" type="Node" parent="GameRules"]
+script = ExtResource("13_level_rule")
+score = ExtResource("5_score")
+level = ExtResource("7_level")
+
+[node name="HighScoreTracker" type="Node" parent="GameRules"]
+script = ExtResource("14_high_rule")
+score = ExtResource("5_score")
+high_score = ExtResource("15_high")
+
+[node name="DamageOnPlayerHit" type="Node" parent="GameRules"]
+script = ExtResource("16_damage_rule")
+event = ExtResource("17_hit")
+health = ExtResource("4_health")
+damage = ExtResource("18_damage")
+
+[node name="GameOverOnZeroHealth" type="Node" parent="GameRules"]
+script = ExtResource("19_over_rule")
+health = ExtResource("4_health")
+game_running = ExtResource("3_running")
+game_over = ExtResource("20_over")
+
+[node name="Arena" type="Node2D" parent="."]
+script = ExtResource("21_arena")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+script = ExtResource("22_shake")
+event = ExtResource("17_hit")
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="CoinSpawner" type="Node" parent="." node_paths=PackedStringArray("container")]
+script = ExtResource("23_spawner")
+scene = ExtResource("24_coin")
+container = NodePath("../Coins")
+group_name = &"coins"
+level = ExtResource("7_level")
+game_running = ExtResource("3_running")
+max_alive = 6
+base_interval = 0.8
+min_interval = 0.8
+margin = 80.0
+
+[node name="EnemySpawner" type="Node" parent="." node_paths=PackedStringArray("container")]
+script = ExtResource("23_spawner")
+scene = ExtResource("25_enemy")
+container = NodePath("../Enemies")
+group_name = &"enemies"
+level = ExtResource("7_level")
+game_running = ExtResource("3_running")
+max_alive = 25
+base_interval = 1.6
+interval_decrease_per_level = 0.15
+min_interval = 0.35
+spawn_on_edges = true
+
+[node name="Player" parent="." instance=ExtResource("26_player")]
+position = Vector2(640, 360)
+
+[node name="HUD" parent="." instance=ExtResource("27_hud")]
+
+[node name="FlashLayer" type="CanvasLayer" parent="."]
+layer = 1
+
+[node name="ScreenFlash" type="ColorRect" parent="FlashLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.2, 0.2, 0)
+script = ExtResource("28_flash")
+event = ExtResource("17_hit")
+
+[node name="GameOverScreen" parent="." instance=ExtResource("29_gameover")]
+
+[node name="DebugOverlay" parent="." instance=ExtResource("30_overlay")]

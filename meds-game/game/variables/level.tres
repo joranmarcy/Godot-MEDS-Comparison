@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="IntVariable" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/int-variable.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+initial_value = 1
