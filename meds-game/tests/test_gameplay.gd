@@ -155,7 +155,7 @@ func _run() -> void:
 	check(not game_over.value, "game not over at start")
 	check(main.get_node("DebugOverlay").variables.size() == 15, "overlay typed variables array loaded")
 	check(main.get_node("DebugOverlay").events.size() == 3, "overlay typed events array loaded")
-	check(main.get_node("ResetSessionVariables").variables.size() == 7, "reset typed array loaded")
+	check(not main.has_node("ResetSessionVariables"), "no manual reset node: MEDS resets On Scene Load variables")
 	check(not main.get_node("GameOverScreen/Root").visible, "game over hidden at start")
 	check(main.get_node("Audio/MusicUntilGameOver").playing, "music plays at start")
 
@@ -222,13 +222,13 @@ func _run() -> void:
 	# Restart while paused and with the overlay open, to check what is reset and what is kept.
 	game_paused.set_value(true)
 	overlay_visible.set_value(true)
-	# Simulate restart (same as reload_current_scene: resources stay alive).
-	main.free()
-	var main2: Node = load("res://game/scenes/main.tscn").instantiate()
-	root.add_child(main2)
-	current_scene = main2
-	await process_frame
-	check(health.value == 5 and score.value == 0 and combo.value == 1 and level.value == 1 and not game_over.value, "restart resets session variables")
+	# Real restart path: the Restart button calls reload_current_scene(). Variables stay alive
+	# across it, so MEDS' "On Scene Load" reset is what brings them back to their initial values.
+	main.get_node("GameOverScreen/Root/Center/Panel/Margin/VBox/RestartButton").pressed.emit()
+	for i in 4: await process_frame
+	var main2: Node = current_scene
+	check(main2 != null and main2 != main and not is_instance_valid(main), "restart button reloads the scene")
+	check(health.value == 5 and score.value == 0 and combo.value == 1 and level.value == 1 and not game_over.value, "restart resets session variables (On Scene Load)")
 	check(high.value >= 450, "high score survives restart")
 	check(is_equal_approx(sfx_volume.value, 0.5), "volume survives restart")
 	check(not main2.get_node("GameOverScreen/Root").visible, "game over hidden after restart")

@@ -1,13 +1,10 @@
-[gd_scene load_steps=35 format=3]
+[gd_scene load_steps=31 format=3]
 
-[ext_resource type="Script" path="res://game/scripts/reset_variables_on_ready.gd" id="1_reset"]
-[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
 [ext_resource type="Resource" path="res://game/variables/game-over.tres" id="3_game_over"]
 [ext_resource type="Resource" path="res://game/variables/player-health.tres" id="4_health"]
 [ext_resource type="Resource" path="res://game/variables/score.tres" id="5_score"]
 [ext_resource type="Resource" path="res://game/variables/combo.tres" id="6_combo"]
 [ext_resource type="Resource" path="res://game/variables/level.tres" id="7_level"]
-[ext_resource type="Resource" path="res://game/variables/player-position.tres" id="8_position"]
 [ext_resource type="Script" path="res://game/scripts/score_keeper.gd" id="9_score_keeper"]
 [ext_resource type="Resource" path="res://game/events/coin-collected.tres" id="10_collected"]
 [ext_resource type="Resource" path="res://game/variables/coin-value.tres" id="11_coin_value"]
@@ -33,13 +30,8 @@
 [ext_resource type="PackedScene" path="res://game/scenes/audio.tscn" id="31_audio"]
 [ext_resource type="PackedScene" path="res://game/scenes/settings_menu.tscn" id="42_settings"]
 [ext_resource type="PackedScene" path="res://game/scenes/touch_controls.tscn" id="90_touch_controls"]
-[ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="91_paused"]
 
 [node name="Main" type="Node2D"]
-
-[node name="ResetSessionVariables" type="Node" parent="."]
-script = ExtResource("1_reset")
-variables = Array[ExtResource("2_base")]([ExtResource("3_game_over"), ExtResource("4_health"), ExtResource("5_score"), ExtResource("6_combo"), ExtResource("7_level"), ExtResource("8_position"), ExtResource("91_paused")])
 
 [node name="GameRules" type="Node" parent="."]
 

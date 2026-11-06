@@ -88,7 +88,6 @@ func _run() -> void:
 		"PauseButton -writes-> game-paused",
 		"TogglePauseOnAction -writes-> game-paused",
 		"game-paused -listens-> PauseTreeWhileTrue",
-		"ResetSessionVariables -writes-> score",
 		"score -listens-> DebugOverlay",
 		"debug-overlay-visible -listens-> Panel",
 	]:
@@ -100,8 +99,8 @@ func _run() -> void:
 	var no_spawn := _scan(true, false)
 	check(not _has(no_spawn, "CoinSpawner -spawns-> Coin") and not _has(no_spawn, "Coin -raises-> coin-collected"), "spawned scenes can be turned off")
 
-	var filtered := Scanner.filter_graph(collapsed, PackedStringArray(["debugoverlay", " ResetSessionVariables "]))
-	check(not _has(filtered, "score -listens-> DebugOverlay") and not _has(filtered, "ResetSessionVariables -writes-> score"), "hide filter removes nodes (case-insensitive)")
+	var filtered := Scanner.filter_graph(collapsed, PackedStringArray(["debugoverlay", " Camera2D "]))
+	check(not _has(filtered, "score -listens-> DebugOverlay") and not _has(filtered, "player-hit -listens-> Camera2D"), "hide filter removes nodes (case-insensitive)")
 	check(_has(filtered, "ScoreKeeper -writes-> score"), "hide filter keeps the rest")
 	check(not filtered["nodes"].has("res:res://game/variables/debug-overlay-visible.tres") or _has(filtered, "SettingsMenu -writes-> debug-overlay-visible"), "variables only used by hidden nodes disappear")
 

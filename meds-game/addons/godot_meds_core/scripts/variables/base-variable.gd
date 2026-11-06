@@ -3,6 +3,8 @@ extends Resource
 class_name BaseVariable
 
 static var _runtime_value_cache: Dictionary = {}
+static var _scene_load_variables: Array[WeakRef] = []
+static var _scene_load_hooked := false
 const RESET_ON_SCENE_LOAD := "On Scene Load"
 const RESET_ON_APPLICATION_START := "On Application Start"
 
@@ -10,7 +12,10 @@ const RESET_ON_APPLICATION_START := "On Application Start"
 @export var debug_logs: bool = false
 ## If true, persists the variable value to `user://settings.cfg` and restores it on load.
 @export var save_to_device: bool = false
-## Controls whether the variable resets on each scene load or only on application start.
+## On Scene Load: the value goes back to `initial_value` each time a new current scene is
+## loaded (change_scene_to_file/_packed/_node, reload_current_scene), before that scene's
+## nodes run `_ready()`. Variables with `save_to_device` keep their saved value instead.
+## On Application Start: the value is kept for the whole run.
 @export_enum("On Scene Load", "On Application Start") var reset_on: String = RESET_ON_SCENE_LOAD
 
 var _value: Variant = null
@@ -34,6 +39,7 @@ func _has_property_named(prop_name: String) -> bool:
 
 func _report_next_frame() -> void:
 	_restore_runtime_value_if_available()
+	_register_for_scene_load_reset()
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree != null:
 		await tree.process_frame
@@ -108,6 +114,57 @@ func _get_runtime_cache_key() -> String:
 
 func _should_cache_runtime_value() -> bool:
 	return reset_on == RESET_ON_APPLICATION_START
+
+# --- Reset on scene load ------------------------------------------------------
+# A Resource stays alive (and keeps its value) while anything references it, including across
+# reload_current_scene(), where the new scene is loaded before the old one is freed. So the
+# reset can't rely on the resource being reloaded: every live variable registers here, and
+# all "On Scene Load" ones are reset when a new current scene enters the tree.
+
+## Registered from _report_next_frame() (deferred, so always on the main thread). Variables
+## loaded together with a new scene are fresh anyway; only ones alive from a previous scene
+## need resetting, and they have long been registered.
+func _register_for_scene_load_reset() -> void:
+	if Engine.is_editor_hint():
+		return
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return
+	_scene_load_variables.append(weakref(self))
+	if not _scene_load_hooked:
+		_scene_load_hooked = true
+		tree.node_added.connect(Callable(BaseVariable, "_on_tree_node_added"))
+
+## SceneTree adds the new current scene to the root after freeing the previous one and before
+## any of its nodes run _ready(), which is exactly when the values must be back to initial.
+## Scenes added to the root by hand while there is no current scene (tests, custom loaders)
+## count as a scene load too.
+static func _on_tree_node_added(node: Node) -> void:
+	var tree := node.get_tree()
+	if tree == null or node.get_parent() != tree.root:
+		return
+	if tree.current_scene != null and tree.current_scene != node:
+		return
+	reset_scene_load_variables()
+
+## Resets every live "On Scene Load" variable to its initial value. Called automatically on
+## scene changes; call it yourself if you swap scenes without changing the current scene.
+static func reset_scene_load_variables() -> void:
+	var alive: Array[WeakRef] = []
+	for ref in _scene_load_variables:
+		var variable := ref.get_ref() as BaseVariable
+		if variable == null:
+			continue
+		alive.append(ref)
+		variable._reset_for_scene_load()
+	_scene_load_variables = alive
+
+func _reset_for_scene_load() -> void:
+	if reset_on != RESET_ON_SCENE_LOAD or save_to_device:
+		return
+	if not _has_property_named("initial_value"):
+		return
+	_set_value_variant(get("initial_value"), null)
 
 func save_value(section: String, key: String, value: Variant):
 	var config = ConfigFile.new()

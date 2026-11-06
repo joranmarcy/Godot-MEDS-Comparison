@@ -8,7 +8,7 @@ The same game built with [Godot MEDS](https://github.com/joranmarcy/Godot-MEDS-S
 - **Rules** → one small node each under `Main/GameRules` in [main.tscn](./game/scenes/main.tscn).
 - **UI** → MEDS addon bindings (`variable-driven-label`, `variable-driven-progress-bar`, `variable-driven-slider`), no HUD script.
 - **Audio** → [audio.tscn](./game/scenes/audio.tscn), instanced as `Main/Audio`: sound players driven by events/variables, and `music-volume` / `sfx-volume` variables (saved with `save_to_device`) bound to the `Music` and `SFX` buses. It only references resources, so it can be run on its own (F6) and its sounds triggered from the **Events** panel. Esc (or the on-screen **II** button) sets `game-paused`, which pauses the tree and opens the pause menu with the volume sliders.
-- **Session start** → `Main/ResetSessionVariables` (must stay the first child of `Main`) resets the listed variables to their `initial_value`.
+- **Session start** → nothing to code: session variables (score, health, game-over, game-paused...) keep MEDS' default `reset_on = "On Scene Load"`, so restarting (`reload_current_scene()`) resets them before the new scene's `_ready()`. The high score, volumes and debug-overlay toggle use `"On Application Start"`.
 
 See the [comparison guide](../README.md) for debugging walkthroughs.
 
@@ -28,3 +28,4 @@ When writing a variable from code, pass the caller (`variable.set_value(x, self)
 Tests:
 - `godot --path . -s res://tests/test_gameplay.gd` (add `--headless` to skip the touch checks)
 - `godot --headless --path . -s res://tests/test_dependency_graph.gd`
+- MEDS core: `godot --headless --path . -s res://addons/godot_meds_core/scripts/tests/scene_load_reset_test_runner.gd` (also `int_variable_test_runner.gd`, `float_variable_test_runner.gd`; each has a `run_*.ps1` wrapper)
