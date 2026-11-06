@@ -21,6 +21,12 @@ var _editor_interface: Object = null
 var _last_selected_column := -1
 var _is_bulk_updating_debug_logs := false
 
+var _vector_popup: PopupPanel
+var _vector_spins: Array[EditorSpinSlider] = []
+var _vector_edit_item: TreeItem = null
+var _vector_edit_count := 0
+var _is_populating_vector_popup := false
+
 
 func _get_pretty_type_name(type_name: String) -> String:
 	# Runtime reports use script class names like "BoolVariable".
@@ -69,13 +75,19 @@ func _ready() -> void:
 		_tree.item_activated.connect(_on_tree_item_activated)
 	if _tree.has_signal("cell_selected"):
 		_tree.cell_selected.connect(_on_tree_cell_selected)
+	_tree.custom_popup_edited.connect(_on_tree_custom_popup_edited)
 	add_child(_tree)
+
+	_build_vector_popup()
 
 	_root = _tree.create_item()
 
 
 func clear_values() -> void:
 	_items_by_id.clear()
+	_vector_edit_item = null
+	if _vector_popup != null:
+		_vector_popup.hide()
 	if _tree != null:
 		_tree.clear()
 		_root = _tree.create_item()
@@ -113,6 +125,11 @@ func on_variable_value_updated(payload: Dictionary) -> void:
 		old_value_str = str(vd.get("value_str", ""))
 		old_blink_token = int(vd.get("blink_token", 0))
 	item.set_text(COL_TYPE, _get_pretty_type_name(raw_type))
+	# Vectors are edited through a popup with per-component fields instead of raw text.
+	# Note: set_cell_mode() clears the cell text, so only switch when needed and before set_text().
+	var value_cell_mode := TreeItem.CELL_MODE_CUSTOM if _get_vector_component_count(raw_type) > 0 else TreeItem.CELL_MODE_STRING
+	if item.get_cell_mode(COL_VALUE) != value_cell_mode:
+		item.set_cell_mode(COL_VALUE, value_cell_mode)
 	item.set_text(COL_VALUE, new_value_str)
 	item.set_editable(COL_VALUE, true)
 	item.set_cell_mode(COL_DEBUG_LOGS, TreeItem.CELL_MODE_CHECK)
@@ -232,6 +249,9 @@ func _on_tree_item_edited() -> void:
 	var column := _tree.get_edited_column()
 	match column:
 		COL_VALUE:
+			# Custom cells (vectors) are edited through the popup, not here.
+			if item.get_cell_mode(COL_VALUE) == TreeItem.CELL_MODE_CUSTOM:
+				return
 			var value_meta := _get_metadata_dict(item, COL_VALUE)
 			if value_meta.is_empty():
 				return
@@ -260,6 +280,108 @@ func _on_tree_item_edited() -> void:
 
 		_:
 			return
+
+
+func _get_vector_component_count(type_name: String) -> int:
+	match type_name:
+		"Vector2Variable":
+			return 2
+		"Vector3Variable":
+			return 3
+	return 0
+
+
+func _parse_vector_components(value_str: String, count: int) -> PackedFloat64Array:
+	# Accepts the displayed "(x, y)" form as well as "Vector2(x, y)", "x, y" and "x y".
+	var s := value_str.strip_edges()
+	var open_idx := s.find("(")
+	var close_idx := s.rfind(")")
+	if open_idx != -1 and close_idx > open_idx:
+		s = s.substr(open_idx + 1, close_idx - open_idx - 1)
+	var result := PackedFloat64Array()
+	for chunk in s.split(",", false):
+		for token in chunk.strip_edges().split(" ", false):
+			if token.is_valid_float():
+				result.append(token.to_float())
+	if result.size() != count:
+		result.resize(count)
+		result.fill(0.0)
+	return result
+
+
+func _build_vector_popup() -> void:
+	_vector_popup = PopupPanel.new()
+	_vector_popup.popup_hide.connect(func() -> void: _vector_edit_item = null)
+	add_child(_vector_popup)
+
+	var row := HBoxContainer.new()
+	_vector_popup.add_child(row)
+
+	var axis_labels: Array[String] = ["x", "y", "z"]
+	for i in axis_labels.size():
+		var spin := EditorSpinSlider.new()
+		spin.label = axis_labels[i]
+		spin.flat = true
+		spin.hide_slider = true
+		spin.step = 0.001
+		spin.min_value = -100000.0
+		spin.max_value = 100000.0
+		spin.allow_greater = true
+		spin.allow_lesser = true
+		spin.custom_minimum_size = Vector2(110, 0)
+		spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var color_name := "property_color_" + axis_labels[i]
+		if has_theme_color(color_name, "Editor"):
+			spin.add_theme_color_override("label_color", get_theme_color(color_name, "Editor"))
+		spin.value_changed.connect(_on_vector_spin_value_changed.unbind(1))
+		row.add_child(spin)
+		_vector_spins.append(spin)
+
+
+func _on_tree_custom_popup_edited(_arrow_clicked: bool) -> void:
+	var item := _tree.get_edited()
+	if item == null or _tree.get_edited_column() != COL_VALUE:
+		return
+	var value_meta := _get_metadata_dict(item, COL_VALUE)
+	var count := _get_vector_component_count(str(value_meta.get("type", "")))
+	if count == 0:
+		return
+	if str(value_meta.get("path", "")) == "":
+		push_warning("Variable Values: can't edit values for resources without a saved path.")
+		return
+
+	_vector_edit_item = item
+	_vector_edit_count = count
+	var components := _parse_vector_components(str(value_meta.get("value_str", "")), count)
+	_is_populating_vector_popup = true
+	for i in _vector_spins.size():
+		var spin := _vector_spins[i]
+		spin.visible = i < count
+		if i < count:
+			spin.value = components[i]
+	_is_populating_vector_popup = false
+
+	# get_custom_popup_rect() is in canvas (global) coordinates and already starts at the cell's bottom edge.
+	var cell_rect := _tree.get_custom_popup_rect()
+	var screen_pos := cell_rect.position - _tree.get_global_position() + _tree.get_screen_position()
+	_vector_popup.reset_size()
+	_vector_popup.popup(Rect2i(Vector2i(screen_pos), Vector2i(int(cell_rect.size.x), 0)))
+
+
+func _on_vector_spin_value_changed() -> void:
+	if _is_populating_vector_popup or not is_instance_valid(_vector_edit_item):
+		return
+	var value_meta := _get_metadata_dict(_vector_edit_item, COL_VALUE)
+	var path := str(value_meta.get("path", ""))
+	if path == "":
+		return
+	var new_value: Variant
+	if _vector_edit_count == 2:
+		new_value = Vector2(_vector_spins[0].value, _vector_spins[1].value)
+	else:
+		new_value = Vector3(_vector_spins[0].value, _vector_spins[1].value, _vector_spins[2].value)
+	# Apply live so dragging a field updates the running game immediately.
+	variable_value_set_requested.emit(int(value_meta.get("session_id", 0)), path, str(value_meta.get("type", "")), var_to_str(new_value))
 
 
 func _on_enable_all_debug_logs_pressed() -> void:
