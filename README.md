@@ -189,7 +189,7 @@ Press **F1** (or **II** → **Debug overlay** on a phone) in both games. In MEDS
 
 - **What it shows:** which nodes **write**, **raise**, **listen to** or **read** each variable/event, and which nodes **spawn** other scenes. The link kind is found by analysing the node's script (`set_value`, `raise_event`, `value_changed.connect`, `.value`...).
 - **Scope:** the edited scene, the main scene (following instanced and spawned sub-scenes) or the whole project. *Collapse sub-scenes* shows `HUD`, `Player`... as single boxes. *Hide* removes noisy nodes such as `DebugOverlay`.
-- **Navigation:** **Open** on a box selects the node in its scene, or the resource in the FileSystem.
+- **Navigation:** click a box to focus on it: the box, its direct neighbours and their links stay opaque while everything else fades (Ctrl-click to focus on several boxes, click the background to see everything again). **Open** on a box selects the node in its scene, or the resource in the FileSystem.
 - **Layout:** columns follow cause and effect (writer → variable → listeners), links run in lanes between boxes instead of across them, and feedback links (e.g. `game-over` read by the spawners) loop back around their columns. **Auto layout** re-applies it after you drag boxes around.
 - **While the game runs:** a variable flashes when it changes and an event when it is raised, together with the links to the nodes that react. Values and raise counts appear on the boxes.
 - **Export:** **Copy Mermaid** / **Save Mermaid...** produce a diagram like the one above, ready for a README or a design review.

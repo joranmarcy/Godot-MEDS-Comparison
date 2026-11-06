@@ -41,6 +41,8 @@ const NODE_COLORS := {
 }
 const FLASH_SECONDS := 0.9
 const FLASH_MODULATE := Color(1.7, 1.5, 0.7)
+const FADED_NODE_ALPHA := 0.15
+const FADED_LINK_ALPHA := 0.07
 
 var _editor_interface: Object = null
 var _edited_scene_path := ""
@@ -59,7 +61,8 @@ var _graph_nodes: Dictionary = {}     # graph id -> GraphNode
 var _ports: Dictionary = {}           # graph id -> {"in": [kinds], "out": [kinds]}
 var _base_subtitles: Dictionary = {}  # graph id -> subtitle text without runtime info
 var _subtitle_labels: Dictionary = {} # graph id -> Label
-var _connections: Array = []          # {from_id, to_id, from_name, from_port, to_name, to_port}
+var _connections: Array = []          # {from_id, to_id, kind, link (index in _graph_edit.links)}
+var _focus_update_queued := false
 var _layout_version := 0
 var _layout_done := false
 var _backward_links := 0
@@ -137,21 +140,13 @@ func set_graph(graph: Dictionary) -> void:
 		index += 1
 
 	for edge in graph["edges"]:
-		var from_node: GraphNode = _graph_nodes[edge["from"]]
-		var to_node: GraphNode = _graph_nodes[edge["to"]]
-		var connection := {
-			"from_id": edge["from"],
-			"to_id": edge["to"],
-			"from_name": from_node.name,
-			"from_port": (ports[edge["from"]]["out"] as Array).find(edge["kind"]),
-			"to_name": to_node.name,
-			"to_port": (ports[edge["to"]]["in"] as Array).find(edge["kind"]),
-		}
-		_graph_edit.connect_node(connection["from_name"], connection["from_port"], connection["to_name"], connection["to_port"])
-		_connections.append(connection)
+		var from_port: int = (ports[edge["from"]]["out"] as Array).find(edge["kind"])
+		var to_port: int = (ports[edge["to"]]["in"] as Array).find(edge["kind"])
+		var link := _graph_edit.add_link(_graph_nodes[edge["from"]], from_port, _graph_nodes[edge["to"]], to_port, EDGE_COLORS[edge["kind"]])
+		_connections.append({"from_id": edge["from"], "to_id": edge["to"], "kind": edge["kind"], "link": link})
 
 	_request_layout()
-	_status.text = "%s - %d nodes, %d variables/events, %d links. Reflects saved files." % [
+	_status.text = "%s - %d nodes, %d variables/events, %d links. Click a box to focus on its links." % [
 		graph["title"], _count_kind(Scanner.KIND_NODE), graph["nodes"].size() - _count_kind(Scanner.KIND_NODE), graph["edges"].size()]
 
 
@@ -160,7 +155,7 @@ func get_graph() -> Dictionary:
 
 
 func get_connection_count() -> int:
-	return _graph_edit.get_connection_list().size()
+	return _graph_edit.links.size()
 
 
 func get_mermaid() -> String:
@@ -239,7 +234,54 @@ func _apply_flash(id: String, amount: float) -> void:
 	graph_node.self_modulate = Color.WHITE.lerp(FLASH_MODULATE, amount)
 	for connection in _connections:
 		if connection["from_id"] == id:
-			_graph_edit.set_connection_activity(connection["from_name"], connection["from_port"], connection["to_name"], connection["to_port"], amount)
+			_graph_edit.links[connection["link"]]["activity"] = amount
+	_graph_edit.queue_redraw()
+
+
+# --- Focus ------------------------------------------------------------------------
+
+## Selection changes arrive one box at a time (and all at once when the background is
+## clicked), so the focus is recomputed once per frame.
+func _on_selection_changed(_node: Node) -> void:
+	if not _focus_update_queued:
+		_focus_update_queued = true
+		_update_focus.call_deferred()
+
+
+## With boxes selected, only they, their direct neighbours and the links between them stay
+## opaque; everything else fades. With nothing selected, the whole graph is shown.
+func _update_focus() -> void:
+	_focus_update_queued = false
+	var focus: Dictionary = {}
+	for id in _graph_nodes:
+		if is_instance_valid(_graph_nodes[id]) and (_graph_nodes[id] as GraphNode).selected:
+			focus[id] = true
+	var kept: Dictionary = focus.duplicate()
+	for connection in _connections:
+		if focus.has(connection["from_id"]) or focus.has(connection["to_id"]):
+			kept[connection["from_id"]] = true
+			kept[connection["to_id"]] = true
+			_graph_edit.links[connection["link"]]["alpha"] = 1.0
+		else:
+			_graph_edit.links[connection["link"]]["alpha"] = 1.0 if focus.is_empty() else FADED_LINK_ALPHA
+	for id in _graph_nodes:
+		(_graph_nodes[id] as GraphNode).modulate.a = 1.0 if focus.is_empty() or kept.has(id) else FADED_NODE_ALPHA
+	_graph_edit.queue_redraw()
+
+
+func get_node_alpha(id: String) -> float:
+	return (_graph_nodes[id] as GraphNode).modulate.a
+
+
+func get_link_alpha(from_id: String, to_id: String, kind: String) -> float:
+	for connection in _connections:
+		if connection["from_id"] == from_id and connection["to_id"] == to_id and connection["kind"] == kind:
+			return _graph_edit.links[connection["link"]]["alpha"]
+	return -1.0
+
+
+func select_node(id: String, selected: bool) -> void:
+	(_graph_nodes[id] as GraphNode).selected = selected
 
 
 func _set_runtime_subtitle(id: String, runtime_text: String) -> void:
@@ -312,6 +354,8 @@ func _build_ui() -> void:
 	# GraphEdit's own arranger ignores link kinds and routing; "Auto layout" replaces it.
 	_graph_edit.show_arrange_button = false
 	_graph_edit.zoom = 0.85
+	_graph_edit.node_selected.connect(_on_selection_changed)
+	_graph_edit.node_deselected.connect(_on_selection_changed)
 	add_child(_graph_edit)
 
 
@@ -393,9 +437,8 @@ func _clear_graph() -> void:
 	clear_runtime()
 	_layout_version += 1
 	_layout_done = false
-	_graph_edit.routes = {}
+	_graph_edit.clear_links()
 	_ports.clear()
-	_graph_edit.clear_connections()
 	for graph_node in _graph_nodes.values():
 		_graph_edit.remove_child(graph_node)
 		graph_node.queue_free()
@@ -533,31 +576,75 @@ func _frame_graph() -> void:
 	_graph_edit.scroll_offset = bounds.position * _graph_edit.zoom - Vector2(40, 70)
 
 
-## GraphEdit that draws each link along the route computed by the layout. Links whose ends
-## moved since (e.g. a box dragged by hand) fall back to a plain curve.
+## GraphEdit that draws the links itself, along the routes computed by the layout, so each link
+## can have its own colour, transparency (focus) and highlight (runtime flash). Links whose
+## ends moved since the layout (e.g. a box dragged by hand) use a plain curve.
 class RoutedGraphEdit extends GraphEdit:
+	const LINE_WIDTH := 3.0
+	const FLASH_COLOR := Color(1, 1, 1)
+
+	## {"from": GraphNode, "from_port": int, "to": GraphNode, "to_port": int, "color": Color, "alpha": float, "activity": float}
+	var links: Array = []
 	var routes: Dictionary = {}:
 		set(value):
 			routes = value
 			queue_redraw()
 
+	func _init() -> void:
+		scroll_offset_changed.connect(func(_offset: Vector2) -> void: queue_redraw())
+
 	static func route_key(from_point: Vector2, to_point: Vector2) -> String:
 		return "%d,%d>%d,%d" % [roundi(from_point.x), roundi(from_point.y), roundi(to_point.x), roundi(to_point.y)]
 
-	func _get_connection_line(from_position: Vector2, to_position: Vector2) -> PackedVector2Array:
-		var scale := zoom if zoom > 0.0 else 1.0
-		var route: PackedVector2Array = routes.get(route_key(from_position / scale, to_position / scale), PackedVector2Array())
+	func add_link(from_node: GraphNode, from_port: int, to_node: GraphNode, to_port: int, color: Color) -> int:
+		links.append({"from": from_node, "from_port": from_port, "to": to_node, "to_port": to_port, "color": color, "alpha": 1.0, "activity": 0.0})
+		for graph_node in [from_node, to_node]:
+			if not graph_node.position_offset_changed.is_connected(queue_redraw):
+				graph_node.position_offset_changed.connect(queue_redraw)
+		queue_redraw()
+		return links.size() - 1
+
+	func clear_links() -> void:
+		links.clear()
+		routes = {}
+
+	## Graph-space points of a link, or nothing while its boxes are not sized yet.
+	func link_points(link: Dictionary) -> PackedVector2Array:
+		var from_node: GraphNode = link["from"]
+		var to_node: GraphNode = link["to"]
+		if not is_instance_valid(from_node) or not is_instance_valid(to_node):
+			return PackedVector2Array()
+		if link["from_port"] >= from_node.get_output_port_count() or link["to_port"] >= to_node.get_input_port_count():
+			return PackedVector2Array()
+		var from_point := from_node.position_offset + from_node.get_output_port_position(link["from_port"])
+		var to_point := to_node.position_offset + to_node.get_input_port_position(link["to_port"])
+		var route: PackedVector2Array = routes.get(route_key(from_point, to_point), PackedVector2Array())
 		if route.size() >= 2:
-			var scaled := PackedVector2Array()
-			scaled.resize(route.size())
-			for i in route.size():
-				scaled[i] = route[i] * scale
-			return scaled
-		var handle := maxf(absf(to_position.x - from_position.x) * 0.5, 40.0 * scale)
+			return route
+		var handle := maxf(absf(to_point.x - from_point.x) * 0.5, 40.0)
 		var curve := Curve2D.new()
-		curve.add_point(from_position, Vector2.ZERO, Vector2(handle, 0))
-		curve.add_point(to_position, Vector2(-handle, 0), Vector2.ZERO)
+		curve.add_point(from_point, Vector2.ZERO, Vector2(handle, 0))
+		curve.add_point(to_point, Vector2(-handle, 0), Vector2.ZERO)
 		return curve.tessellate(5, 2.0)
+
+	func _draw() -> void:
+		var width := maxf(1.5, LINE_WIDTH * zoom)
+		# Faded links first, so the focused ones are drawn on top of them.
+		for draw_faded in [true, false]:
+			for link in links:
+				if (link["alpha"] < 1.0) != draw_faded:
+					continue
+				var points := link_points(link)
+				if points.size() < 2:
+					continue
+				var screen := PackedVector2Array()
+				screen.resize(points.size())
+				for i in points.size():
+					screen[i] = points[i] * zoom - scroll_offset
+				var activity: float = link["activity"]
+				var color: Color = (link["color"] as Color).lerp(FLASH_COLOR, activity * 0.7)
+				color.a *= link["alpha"]
+				draw_polyline(screen, color, width + activity * 2.0 * zoom, true)
 
 
 # --- Actions ----------------------------------------------------------------------

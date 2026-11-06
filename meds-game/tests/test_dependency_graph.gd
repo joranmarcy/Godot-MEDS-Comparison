@@ -162,6 +162,31 @@ func _check_layout(dock: Control, graph: Dictionary) -> void:
 		and dock.get_node_rect(score_id).position.x < dock.get_node_rect(level_rule_id).position.x, "layout: ScoreKeeper -> score -> LevelFromScore left to right")
 
 
+func _check_focus(dock: Control) -> void:
+	var keeper := "node:%s::GameRules/ScoreKeeper" % MAIN
+	var player := "node:%s::Player" % MAIN
+	var score := "res:res://game/variables/score.tres"
+	var hit := "res:res://game/events/player-hit.tres"
+	var hud := "node:%s::HUD" % MAIN
+	dock.select_node(keeper, true)
+	await process_frame
+	await process_frame
+	check(dock.get_node_alpha(keeper) == 1.0 and dock.get_node_alpha(score) == 1.0, "focus: selected box and its neighbours stay opaque")
+	check(dock.get_node_alpha(hud) < 0.5 and dock.get_node_alpha(player) < 0.5, "focus: unconnected boxes fade")
+	check(dock.get_link_alpha(keeper, score, "writes") == 1.0, "focus: links of the selected box stay opaque")
+	check(dock.get_link_alpha(player, hit, "raises") < 0.5, "focus: unrelated links fade")
+	check(dock.get_link_alpha(score, hud, "listens") < 0.5, "focus: links between two neighbours of the selection fade too")
+	dock.select_node(player, true)
+	await process_frame
+	await process_frame
+	check(dock.get_node_alpha(player) == 1.0 and dock.get_node_alpha(hit) == 1.0 and dock.get_node_alpha(score) == 1.0, "focus: multi-selection keeps both neighbourhoods")
+	dock.select_node(keeper, false)
+	dock.select_node(player, false)
+	await process_frame
+	await process_frame
+	check(dock.get_node_alpha(hud) == 1.0 and dock.get_link_alpha(player, hit, "raises") == 1.0, "focus: deselecting everything restores the graph")
+
+
 func _check_source_analysis() -> void:
 	var source := """
 extends Node
@@ -205,6 +230,7 @@ func _check_dock(graph: Dictionary) -> void:
 	check(dock.get_connection_count() == graph["edges"].size(), "dock: one GraphEdit connection per link (%d)" % dock.get_connection_count())
 	check(dock.get_mermaid().begins_with("```mermaid"), "dock: mermaid export")
 	await _check_layout(dock, graph)
+	await _check_focus(dock)
 
 	var score := "res://game/variables/score.tres"
 	dock.on_variable_value_updated({"path": score, "value_str": "0"})
