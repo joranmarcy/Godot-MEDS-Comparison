@@ -21,6 +21,22 @@ var _editor_interface: Object = null
 var _last_selected_column := -1
 var _is_bulk_updating_debug_logs := false
 
+var _vector_popup: PopupPanel
+var _vector_spins: Array[EditorSpinSlider] = []
+var _vector_edit_item: TreeItem = null
+var _vector_edit_count := 0
+var _is_populating_vector_popup := false
+
+const NUMERIC_DRAG_THRESHOLD_PX := 4.0
+
+var _num_drag_item: TreeItem = null
+var _num_drag_press_pos := Vector2.ZERO
+var _num_drag_active := false
+var _num_drag_is_int := false
+var _num_drag_value := 0.0
+var _num_drag_per_px := 0.0
+var _num_drag_last_sent := ""
+
 
 func _get_pretty_type_name(type_name: String) -> String:
 	# Runtime reports use script class names like "BoolVariable".
@@ -69,13 +85,21 @@ func _ready() -> void:
 		_tree.item_activated.connect(_on_tree_item_activated)
 	if _tree.has_signal("cell_selected"):
 		_tree.cell_selected.connect(_on_tree_cell_selected)
+	_tree.custom_popup_edited.connect(_on_tree_custom_popup_edited)
+	_tree.gui_input.connect(_on_tree_gui_input)
 	add_child(_tree)
+
+	_build_vector_popup()
 
 	_root = _tree.create_item()
 
 
 func clear_values() -> void:
 	_items_by_id.clear()
+	_end_numeric_drag()
+	_vector_edit_item = null
+	if _vector_popup != null:
+		_vector_popup.hide()
 	if _tree != null:
 		_tree.clear()
 		_root = _tree.create_item()
@@ -113,7 +137,22 @@ func on_variable_value_updated(payload: Dictionary) -> void:
 		old_value_str = str(vd.get("value_str", ""))
 		old_blink_token = int(vd.get("blink_token", 0))
 	item.set_text(COL_TYPE, _get_pretty_type_name(raw_type))
-	item.set_text(COL_VALUE, new_value_str)
+	# Vectors are edited through a popup with per-component fields, bools through a true/false dropdown.
+	# Note: set_cell_mode() clears the cell text and range, so only switch when needed and before setting them.
+	var value_cell_mode := TreeItem.CELL_MODE_STRING
+	if _get_vector_component_count(raw_type) > 0:
+		value_cell_mode = TreeItem.CELL_MODE_CUSTOM
+	elif raw_type == "BoolVariable":
+		value_cell_mode = TreeItem.CELL_MODE_RANGE
+	if item.get_cell_mode(COL_VALUE) != value_cell_mode:
+		item.set_cell_mode(COL_VALUE, value_cell_mode)
+	if value_cell_mode == TreeItem.CELL_MODE_RANGE:
+		# A range cell with comma-separated text is shown by the Tree as a dropdown; the range is the option index.
+		item.set_text(COL_VALUE, "false,true")
+		item.set_range_config(COL_VALUE, 0, 1, 1)
+		item.set_range(COL_VALUE, 1 if new_value_str.strip_edges().to_lower() == "true" else 0)
+	else:
+		item.set_text(COL_VALUE, new_value_str)
 	item.set_editable(COL_VALUE, true)
 	item.set_cell_mode(COL_DEBUG_LOGS, TreeItem.CELL_MODE_CHECK)
 	item.set_editable(COL_DEBUG_LOGS, true)
@@ -232,6 +271,9 @@ func _on_tree_item_edited() -> void:
 	var column := _tree.get_edited_column()
 	match column:
 		COL_VALUE:
+			# Custom cells (vectors) are edited through the popup, not here.
+			if item.get_cell_mode(COL_VALUE) == TreeItem.CELL_MODE_CUSTOM:
+				return
 			var value_meta := _get_metadata_dict(item, COL_VALUE)
 			if value_meta.is_empty():
 				return
@@ -242,6 +284,8 @@ func _on_tree_item_edited() -> void:
 				push_warning("Variable Values: can't edit values for resources without a saved path.")
 				return
 			var value_str := item.get_text(COL_VALUE)
+			if item.get_cell_mode(COL_VALUE) == TreeItem.CELL_MODE_RANGE:
+				value_str = "true" if item.get_range(COL_VALUE) >= 0.5 else "false"
 			variable_value_set_requested.emit(session_id, path, type_name, value_str)
 			return
 
@@ -260,6 +304,202 @@ func _on_tree_item_edited() -> void:
 
 		_:
 			return
+
+
+func _get_vector_component_count(type_name: String) -> int:
+	match type_name:
+		"Vector2Variable":
+			return 2
+		"Vector3Variable":
+			return 3
+	return 0
+
+
+func _parse_vector_components(value_str: String, count: int) -> PackedFloat64Array:
+	# Accepts the displayed "(x, y)" form as well as "Vector2(x, y)", "x, y" and "x y".
+	var s := value_str.strip_edges()
+	var open_idx := s.find("(")
+	var close_idx := s.rfind(")")
+	if open_idx != -1 and close_idx > open_idx:
+		s = s.substr(open_idx + 1, close_idx - open_idx - 1)
+	var result := PackedFloat64Array()
+	for chunk in s.split(",", false):
+		for token in chunk.strip_edges().split(" ", false):
+			if token.is_valid_float():
+				result.append(token.to_float())
+	if result.size() != count:
+		result.resize(count)
+		result.fill(0.0)
+	return result
+
+
+func _build_vector_popup() -> void:
+	_vector_popup = PopupPanel.new()
+	_vector_popup.popup_hide.connect(func() -> void: _vector_edit_item = null)
+	add_child(_vector_popup)
+
+	var row := HBoxContainer.new()
+	_vector_popup.add_child(row)
+
+	var axis_labels: Array[String] = ["x", "y", "z"]
+	for i in axis_labels.size():
+		var spin := EditorSpinSlider.new()
+		spin.label = axis_labels[i]
+		spin.flat = true
+		spin.hide_slider = true
+		spin.step = 0.001
+		spin.min_value = -100000.0
+		spin.max_value = 100000.0
+		spin.allow_greater = true
+		spin.allow_lesser = true
+		spin.custom_minimum_size = Vector2(110, 0)
+		spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var color_name := "property_color_" + axis_labels[i]
+		if has_theme_color(color_name, "Editor"):
+			spin.add_theme_color_override("label_color", get_theme_color(color_name, "Editor"))
+		spin.value_changed.connect(_on_vector_spin_value_changed.unbind(1))
+		row.add_child(spin)
+		_vector_spins.append(spin)
+
+
+func _on_tree_custom_popup_edited(_arrow_clicked: bool) -> void:
+	var item := _tree.get_edited()
+	if item == null or _tree.get_edited_column() != COL_VALUE:
+		return
+	var value_meta := _get_metadata_dict(item, COL_VALUE)
+	var count := _get_vector_component_count(str(value_meta.get("type", "")))
+	if count == 0:
+		return
+	if str(value_meta.get("path", "")) == "":
+		push_warning("Variable Values: can't edit values for resources without a saved path.")
+		return
+
+	_vector_edit_item = item
+	_vector_edit_count = count
+	var components := _parse_vector_components(str(value_meta.get("value_str", "")), count)
+	_is_populating_vector_popup = true
+	for i in _vector_spins.size():
+		var spin := _vector_spins[i]
+		spin.visible = i < count
+		if i < count:
+			spin.value = components[i]
+	_is_populating_vector_popup = false
+
+	# get_custom_popup_rect() is in canvas (global) coordinates and already starts at the cell's bottom edge.
+	var cell_rect := _tree.get_custom_popup_rect()
+	var screen_pos := cell_rect.position - _tree.get_global_position() + _tree.get_screen_position()
+	_vector_popup.reset_size()
+	_vector_popup.popup(Rect2i(Vector2i(screen_pos), Vector2i(int(cell_rect.size.x), 0)))
+
+
+func _on_vector_spin_value_changed() -> void:
+	if _is_populating_vector_popup or not is_instance_valid(_vector_edit_item):
+		return
+	var value_meta := _get_metadata_dict(_vector_edit_item, COL_VALUE)
+	var path := str(value_meta.get("path", ""))
+	if path == "":
+		return
+	var new_value: Variant
+	if _vector_edit_count == 2:
+		new_value = Vector2(_vector_spins[0].value, _vector_spins[1].value)
+	else:
+		new_value = Vector3(_vector_spins[0].value, _vector_spins[1].value, _vector_spins[2].value)
+	# Apply live so dragging a field updates the running game immediately.
+	variable_value_set_requested.emit(int(value_meta.get("session_id", 0)), path, str(value_meta.get("type", "")), var_to_str(new_value))
+
+
+func _is_numeric_type(type_name: String) -> bool:
+	return type_name == "IntVariable" or type_name == "FloatVariable"
+
+
+# Returns the item when `pos` is over an editable int/float value cell, otherwise null.
+func _get_numeric_value_item_at(pos: Vector2) -> TreeItem:
+	var item := _tree.get_item_at_position(pos)
+	if item == null or _tree.get_column_at_position(pos) != COL_VALUE:
+		return null
+	var value_meta := _get_metadata_dict(item, COL_VALUE)
+	if not _is_numeric_type(str(value_meta.get("type", ""))):
+		return null
+	if str(value_meta.get("path", "")) == "" or not item.get_text(COL_VALUE).strip_edges().is_valid_float():
+		return null
+	return item
+
+
+# Inspector-style drag editing: press on an int/float value and drag horizontally.
+# A plain click (no drag) falls through to the Tree, so click-to-type still works.
+func _on_tree_gui_input(event: InputEvent) -> void:
+	var mb := event as InputEventMouseButton
+	if mb != null and mb.button_index == MOUSE_BUTTON_LEFT:
+		if mb.pressed:
+			_num_drag_item = _get_numeric_value_item_at(mb.position)
+			_num_drag_press_pos = mb.position
+			_num_drag_active = false
+		else:
+			if _num_drag_active:
+				_end_numeric_drag()
+				# Swallow the release so the Tree doesn't open the text editor after a drag.
+				_tree.accept_event()
+			_num_drag_item = null
+		return
+
+	var mm := event as InputEventMouseMotion
+	if mm == null:
+		return
+
+	if _num_drag_item == null or (mm.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
+		var hovering_numeric := _get_numeric_value_item_at(mm.position) != null
+		_tree.mouse_default_cursor_shape = Control.CURSOR_HSIZE if hovering_numeric else Control.CURSOR_ARROW
+		return
+	if not is_instance_valid(_num_drag_item):
+		_end_numeric_drag()
+		return
+
+	if not _num_drag_active:
+		if mm.position.distance_to(_num_drag_press_pos) < NUMERIC_DRAG_THRESHOLD_PX:
+			return
+		_begin_numeric_drag()
+
+	var delta := mm.relative.x * _num_drag_per_px
+	if mm.shift_pressed:
+		delta *= 0.1
+	_num_drag_value += delta
+	_apply_numeric_drag_value()
+	_tree.accept_event()
+
+
+func _begin_numeric_drag() -> void:
+	var value_meta := _get_metadata_dict(_num_drag_item, COL_VALUE)
+	_num_drag_is_int = str(value_meta.get("type", "")) == "IntVariable"
+	_num_drag_value = _num_drag_item.get_text(COL_VALUE).strip_edges().to_float()
+	# Scale drag speed with the value's magnitude so both small and large numbers feel usable.
+	var min_per_px := 0.1 if _num_drag_is_int else 0.01
+	_num_drag_per_px = maxf(absf(_num_drag_value) * 0.005, min_per_px)
+	_num_drag_last_sent = _num_drag_item.get_text(COL_VALUE)
+	_num_drag_active = true
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+func _apply_numeric_drag_value() -> void:
+	var value_str: String
+	if _num_drag_is_int:
+		value_str = str(roundi(_num_drag_value))
+	else:
+		value_str = str(snappedf(_num_drag_value, 0.001))
+	if value_str == _num_drag_last_sent:
+		return
+	_num_drag_last_sent = value_str
+	_num_drag_item.set_text(COL_VALUE, value_str)
+	var value_meta := _get_metadata_dict(_num_drag_item, COL_VALUE)
+	variable_value_set_requested.emit(int(value_meta.get("session_id", 0)), str(value_meta.get("path", "")), str(value_meta.get("type", "")), value_str)
+
+
+func _end_numeric_drag() -> void:
+	if _num_drag_active:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		if _tree != null:
+			_tree.warp_mouse(_num_drag_press_pos)
+	_num_drag_active = false
+	_num_drag_item = null
 
 
 func _on_enable_all_debug_logs_pressed() -> void:

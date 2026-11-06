@@ -143,6 +143,11 @@ static func _handle_debugger_message(message: String, data: Array) -> bool:
 		var type_name := str(payload.get("type", res.get_class()))
 		var value_str := str(payload.get("value_str", ""))
 		var new_val: Variant = _parse_value(type_name, value_str)
+		if new_val == null:
+			push_warning("VariableRuntimeReporter: invalid value '%s' for %s (%s)" % [value_str, path, type_name])
+			# Re-report the current value so the editor cell reverts.
+			report(res, res.get("value"))
+			return true
 		# Apply, then re-report to refresh editor UI.
 		print("VariableRuntimeReporter: set ", path, " = ", value_str, " (", type_name, ")")
 		res.set("value", new_val)
@@ -175,6 +180,35 @@ static func _object_has_property(obj: Object, prop_name: String) -> bool:
 	return false
 
 
+# Accepts "(1, 2)" (the displayed format), "Vector2(1, 2)", "1, 2" and "1 2".
+# Returns null when the input can't be parsed into `component_count` numbers.
+static func _parse_vector(value_str: String, component_count: int) -> Variant:
+	var s := value_str.strip_edges()
+	var open_idx := s.find("(")
+	if open_idx != -1:
+		var close_idx := s.rfind(")")
+		if close_idx <= open_idx:
+			return null
+		s = s.substr(open_idx + 1, close_idx - open_idx - 1)
+
+	var parts := PackedStringArray()
+	for chunk in s.replace(";", ",").split(",", false):
+		for token in chunk.strip_edges().split(" ", false):
+			parts.append(token)
+	if parts.size() != component_count:
+		return null
+
+	var nums: Array[float] = []
+	for p in parts:
+		if not p.is_valid_float():
+			return null
+		nums.append(p.to_float())
+
+	if component_count == 2:
+		return Vector2(nums[0], nums[1])
+	return Vector3(nums[0], nums[1], nums[2])
+
+
 static func _parse_value(type_name: String, value_str: String) -> Variant:
 	match type_name:
 		"BoolVariable":
@@ -201,13 +235,10 @@ static func _parse_value(type_name: String, value_str: String) -> Variant:
 			if typeof(v_hex_fallback) == TYPE_COLOR:
 				return v_hex_fallback
 			return s
-		"Vector2Variable", "Vector3Variable":
-			# Best effort: accept Godot's printed forms like Vector2(1, 2) and Color(1, 1, 1, 1)
-			# and also allow raw literals supported by str_to_var.
-			var v: Variant = str_to_var(value_str)
-			if v != null:
-				return v
-			return value_str
+		"Vector2Variable":
+			return _parse_vector(value_str, 2)
+		"Vector3Variable":
+			return _parse_vector(value_str, 3)
 		_:
 			# Fallback: try to parse as Variant; if that fails, keep as string.
 			var vv: Variant = str_to_var(value_str)
