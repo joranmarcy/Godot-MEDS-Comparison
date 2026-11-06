@@ -70,6 +70,8 @@ flowchart LR
 
 ### MEDS
 
+This diagram is hand-curated. The MEDS project can generate the full version itself: open the **Dependencies** bottom panel in the editor (see [scenario 6](#6-see-every-dependency-at-a-glance)).
+
 ```mermaid
 flowchart LR
     Coin -- raises --> CC([coin-collected])
@@ -179,10 +181,25 @@ Press **F1** (or **II** → **Debug overlay** on a phone) in both games. In MEDS
 - Classic [debug_overlay.gd](./classic-game/scripts/debug_overlay.gd) hard-codes each field and signal; every new piece of state must be added by hand (adding the volume settings meant editing the script and reading a second singleton).
 - MEDS [debug_overlay.gd](./meds-game/game/scripts/debug_overlay.gd) knows nothing about the game: it iterates over the variables/events dragged into its arrays, highlights values as they change and timestamps every event raise. It can be dropped into any MEDS project unchanged; the volumes were added by dragging two resources into its array.
 
+### 6. "See every dependency at a glance"
+
+**Classic:** draw the diagram by hand by reading every script that touches `GameState`, then keep it up to date by hand. A direct call such as `GameState.damage_player()` looks the same as any other method call, so a tool would have to understand all of GDScript to draw it.
+
+**MEDS:** open the **Dependencies** bottom panel. Because every dependency is an exported variable or event, the editor can generate the graph from the saved scenes:
+
+- **What it shows:** which nodes **write**, **raise**, **listen to** or **read** each variable/event, and which nodes **spawn** other scenes. The link kind is found by analysing the node's script (`set_value`, `raise_event`, `value_changed.connect`, `.value`...).
+- **Scope:** the edited scene, the main scene (following instanced and spawned sub-scenes) or the whole project. *Collapse sub-scenes* shows `HUD`, `Player`... as single boxes. *Hide* removes noisy nodes such as `DebugOverlay`.
+- **Navigation:** **Open** on a box selects the node in its scene, or the resource in the FileSystem.
+- **Layout:** columns follow cause and effect (writer → variable → listeners), links run in lanes between boxes instead of across them, and feedback links (e.g. `game-over` read by the spawners) loop back around their columns. **Auto layout** re-applies it after you drag boxes around.
+- **While the game runs:** a variable flashes when it changes and an event when it is raised, together with the links to the nodes that react. Values and raise counts appear on the boxes.
+- **Export:** **Copy Mermaid** / **Save Mermaid...** produce a diagram like the one above, ready for a README or a design review.
+
+It is the same idea as *Log references*, but for the whole game at once. It reflects saved files, and it only sees what goes through exported properties. A script that `load()`s a `.tres` directly is not shown.
+
 ## Trade-offs (the honest part)
 
 - **More files.** MEDS adds 16 variable and 3 event resources and several small rule scripts. For a jam-sized game the classic singleton is quicker to write.
-- **Wiring lives in the inspector.** Dependencies are in `.tscn` files rather than in code, so plain text search is less useful — which is precisely what the MEDS reference tracking and debug logs compensate for.
+- **Wiring lives in the inspector.** Dependencies are in `.tscn` files rather than in code, so plain text search is less useful — which is precisely what the MEDS reference tracking, debug logs and **Dependencies** graph compensate for.
 - **Resources outlive scenes.** A variable keeps its value while anything references it (including across `reload_current_scene()`), so the start of a session must be explicit — here via the `ResetSessionVariables` node, which must stay first in `main.tscn`. The classic version has the same issue with its autoload (`GameState.start_game()`).
 - **Listener order.** Several listeners on the same variable or event run in connection order. Rules that depend on each other (score *then* combo) are kept in one node (`ScoreKeeper`) to stay deterministic. The coin sound reads `combo` for its pitch, so it relies on sitting below `GameRules` in the scene tree (it connects later, so it plays after the combo has been increased).
 - **High-frequency variables.** `player-position` changes every physics frame; avoid enabling `debug_logs` on it.
@@ -202,11 +219,12 @@ classic-game/
   tests/test_gameplay.gd
 meds-game/
   addons/godot_meds_core/    MEDS runtime (copied from Godot-MEDS-Sample)
-  addons/godot_meds_editor/  MEDS editor tools (docks, reference tracking)
+  addons/godot_meds_editor/  MEDS editor tools (docks, reference tracking, dependency graph)
   game/variables/*.tres      shared state, tuning & volume settings
   game/events/*.tres         coin-collected, player-hit, player-died
   game/scripts/*.gd          gameplay nodes + one script per rule + reusable sound/volume bindings + touch input
   game/scenes/*.tscn
   game/sounds/*.wav
   tests/test_gameplay.gd
+  tests/test_dependency_graph.gd   dependency graph scanner, Mermaid export and dock
 ```

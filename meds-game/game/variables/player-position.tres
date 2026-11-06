@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="Vector2Variable" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="Vector2Variable" format=3 uid="uid://dn0l7pn3p5xh6"]
 
-[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/vector2-variable.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://d2xqcrividul4" path="res://addons/godot_meds_core/scripts/variables/vector2-variable.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
-initial_value = Vector2(640, 360)
+initial_value = Vector2(623.63, 360)

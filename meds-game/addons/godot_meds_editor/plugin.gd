@@ -7,6 +7,7 @@ const VariableValuesDock := preload("res://addons/godot_meds_editor/variable_val
 const VariableValuesDebugger := preload("res://addons/godot_meds_editor/variable_values_debugger.gd")
 const EventsDock := preload("res://addons/godot_meds_editor/events_dock.gd")
 const EventsDebugger := preload("res://addons/godot_meds_editor/events_debugger.gd")
+const DependencyGraphDock := preload("res://addons/godot_meds_editor/dependency_graph/dependency_graph_dock.gd")
 
 
 var _context_menu_plugin: EditorContextMenuPlugin
@@ -18,6 +19,8 @@ var _values_debugger: EditorDebuggerPlugin
 
 var _events_dock: Control
 var _events_debugger: EditorDebuggerPlugin
+
+var _dependency_dock: Control
 
 var _was_playing := false
 
@@ -61,9 +64,39 @@ func _enter_tree() -> void:
 	if _events_dock.has_signal("event_debug_logs_set_requested") and _events_debugger.has_method("request_set_debug_logs"):
 		_events_dock.connect("event_debug_logs_set_requested", Callable(_events_debugger, "request_set_debug_logs"))
 
+	_setup_dependency_dock()
+
 	_connect_output_meta_handlers_deferred()
 	_listen_for_rich_text_labels()
 	set_process(true)
+
+
+func _setup_dependency_dock() -> void:
+	_dependency_dock = DependencyGraphDock.new()
+	_dependency_dock.call("set_editor_interface", get_editor_interface())
+	add_control_to_bottom_panel(_dependency_dock, "Dependencies")
+	_dependency_dock.connect("open_node_requested", func(scene_path: String, node_path: String) -> void:
+		_open_scene_and_select_node.call_deferred(scene_path, node_path))
+	# Live highlighting reuses the Variable Values and Events debugger channels.
+	_values_debugger.connect("variable_value_updated", Callable(_dependency_dock, "on_variable_value_updated"))
+	_events_debugger.connect("event_updated", Callable(_dependency_dock, "on_event_updated"))
+	_events_debugger.connect("debug_session_ended", Callable(_dependency_dock, "clear_runtime"))
+	# The graph reflects saved files: rescan when the edited scene changes or anything is saved.
+	scene_changed.connect(_on_scene_changed_for_dependencies)
+	scene_saved.connect(func(_path: String) -> void: _mark_dependencies_dirty())
+	resource_saved.connect(func(_resource: Resource) -> void: _mark_dependencies_dirty())
+	var edited_root := get_editor_interface().get_edited_scene_root()
+	_on_scene_changed_for_dependencies(edited_root)
+
+
+func _mark_dependencies_dirty() -> void:
+	if is_instance_valid(_dependency_dock):
+		_dependency_dock.call("mark_dirty")
+
+
+func _on_scene_changed_for_dependencies(scene_root: Node) -> void:
+	if is_instance_valid(_dependency_dock):
+		_dependency_dock.call("set_edited_scene", scene_root.scene_file_path if scene_root != null else "")
 
 
 func _exit_tree() -> void:
@@ -86,6 +119,11 @@ func _exit_tree() -> void:
 		remove_control_from_bottom_panel(_events_dock)
 		_events_dock.queue_free()
 		_events_dock = null
+
+	if _dependency_dock:
+		remove_control_from_bottom_panel(_dependency_dock)
+		_dependency_dock.queue_free()
+		_dependency_dock = null
 
 	if _context_menu_plugin:
 		remove_context_menu_plugin(_context_menu_plugin)
@@ -112,6 +150,8 @@ func _process(_delta: float) -> void:
 			_events_dock.call("clear_events")
 		if is_instance_valid(_values_dock) and _values_dock.has_method("clear_values"):
 			_values_dock.call("clear_values")
+		if is_instance_valid(_dependency_dock):
+			_dependency_dock.call("clear_runtime")
 
 	_was_playing = is_playing
 
