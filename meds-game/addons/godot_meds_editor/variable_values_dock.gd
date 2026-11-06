@@ -27,6 +27,16 @@ var _vector_edit_item: TreeItem = null
 var _vector_edit_count := 0
 var _is_populating_vector_popup := false
 
+const NUMERIC_DRAG_THRESHOLD_PX := 4.0
+
+var _num_drag_item: TreeItem = null
+var _num_drag_press_pos := Vector2.ZERO
+var _num_drag_active := false
+var _num_drag_is_int := false
+var _num_drag_value := 0.0
+var _num_drag_per_px := 0.0
+var _num_drag_last_sent := ""
+
 
 func _get_pretty_type_name(type_name: String) -> String:
 	# Runtime reports use script class names like "BoolVariable".
@@ -76,6 +86,7 @@ func _ready() -> void:
 	if _tree.has_signal("cell_selected"):
 		_tree.cell_selected.connect(_on_tree_cell_selected)
 	_tree.custom_popup_edited.connect(_on_tree_custom_popup_edited)
+	_tree.gui_input.connect(_on_tree_gui_input)
 	add_child(_tree)
 
 	_build_vector_popup()
@@ -85,6 +96,7 @@ func _ready() -> void:
 
 func clear_values() -> void:
 	_items_by_id.clear()
+	_end_numeric_drag()
 	_vector_edit_item = null
 	if _vector_popup != null:
 		_vector_popup.hide()
@@ -382,6 +394,100 @@ func _on_vector_spin_value_changed() -> void:
 		new_value = Vector3(_vector_spins[0].value, _vector_spins[1].value, _vector_spins[2].value)
 	# Apply live so dragging a field updates the running game immediately.
 	variable_value_set_requested.emit(int(value_meta.get("session_id", 0)), path, str(value_meta.get("type", "")), var_to_str(new_value))
+
+
+func _is_numeric_type(type_name: String) -> bool:
+	return type_name == "IntVariable" or type_name == "FloatVariable"
+
+
+# Returns the item when `pos` is over an editable int/float value cell, otherwise null.
+func _get_numeric_value_item_at(pos: Vector2) -> TreeItem:
+	var item := _tree.get_item_at_position(pos)
+	if item == null or _tree.get_column_at_position(pos) != COL_VALUE:
+		return null
+	var value_meta := _get_metadata_dict(item, COL_VALUE)
+	if not _is_numeric_type(str(value_meta.get("type", ""))):
+		return null
+	if str(value_meta.get("path", "")) == "" or not item.get_text(COL_VALUE).strip_edges().is_valid_float():
+		return null
+	return item
+
+
+# Inspector-style drag editing: press on an int/float value and drag horizontally.
+# A plain click (no drag) falls through to the Tree, so click-to-type still works.
+func _on_tree_gui_input(event: InputEvent) -> void:
+	var mb := event as InputEventMouseButton
+	if mb != null and mb.button_index == MOUSE_BUTTON_LEFT:
+		if mb.pressed:
+			_num_drag_item = _get_numeric_value_item_at(mb.position)
+			_num_drag_press_pos = mb.position
+			_num_drag_active = false
+		else:
+			if _num_drag_active:
+				_end_numeric_drag()
+				# Swallow the release so the Tree doesn't open the text editor after a drag.
+				_tree.accept_event()
+			_num_drag_item = null
+		return
+
+	var mm := event as InputEventMouseMotion
+	if mm == null:
+		return
+
+	if _num_drag_item == null or (mm.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
+		var hovering_numeric := _get_numeric_value_item_at(mm.position) != null
+		_tree.mouse_default_cursor_shape = Control.CURSOR_HSIZE if hovering_numeric else Control.CURSOR_ARROW
+		return
+	if not is_instance_valid(_num_drag_item):
+		_end_numeric_drag()
+		return
+
+	if not _num_drag_active:
+		if mm.position.distance_to(_num_drag_press_pos) < NUMERIC_DRAG_THRESHOLD_PX:
+			return
+		_begin_numeric_drag()
+
+	var delta := mm.relative.x * _num_drag_per_px
+	if mm.shift_pressed:
+		delta *= 0.1
+	_num_drag_value += delta
+	_apply_numeric_drag_value()
+	_tree.accept_event()
+
+
+func _begin_numeric_drag() -> void:
+	var value_meta := _get_metadata_dict(_num_drag_item, COL_VALUE)
+	_num_drag_is_int = str(value_meta.get("type", "")) == "IntVariable"
+	_num_drag_value = _num_drag_item.get_text(COL_VALUE).strip_edges().to_float()
+	# Scale drag speed with the value's magnitude so both small and large numbers feel usable.
+	var min_per_px := 0.1 if _num_drag_is_int else 0.01
+	_num_drag_per_px = maxf(absf(_num_drag_value) * 0.005, min_per_px)
+	_num_drag_last_sent = _num_drag_item.get_text(COL_VALUE)
+	_num_drag_active = true
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+func _apply_numeric_drag_value() -> void:
+	var value_str: String
+	if _num_drag_is_int:
+		value_str = str(roundi(_num_drag_value))
+	else:
+		value_str = str(snappedf(_num_drag_value, 0.001))
+	if value_str == _num_drag_last_sent:
+		return
+	_num_drag_last_sent = value_str
+	_num_drag_item.set_text(COL_VALUE, value_str)
+	var value_meta := _get_metadata_dict(_num_drag_item, COL_VALUE)
+	variable_value_set_requested.emit(int(value_meta.get("session_id", 0)), str(value_meta.get("path", "")), str(value_meta.get("type", "")), value_str)
+
+
+func _end_numeric_drag() -> void:
+	if _num_drag_active:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		if _tree != null:
+			_tree.warp_mouse(_num_drag_press_pos)
+	_num_drag_active = false
+	_num_drag_item = null
 
 
 func _on_enable_all_debug_logs_pressed() -> void:
