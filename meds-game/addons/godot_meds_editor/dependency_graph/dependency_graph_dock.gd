@@ -8,6 +8,9 @@ extends VBoxContainer
 ## Variable Values and Events docks.
 
 signal open_node_requested(scene_path: String, node_path: String)
+## Same signals as the Variable Values and Events docks, wired to the same debugger plugins.
+signal variable_value_set_requested(session_id: int, path: String, type_name: String, value_str: String)
+signal event_raise_requested(session_id: int, event_id: String, path: String)
 
 const Scanner := preload("res://addons/godot_meds_editor/dependency_graph/dependency_scanner.gd")
 const Mermaid := preload("res://addons/godot_meds_editor/dependency_graph/dependency_graph_mermaid.gd")
@@ -73,6 +76,12 @@ var _ports: Dictionary = {}           # graph id -> {"in": [kinds], "out": [kind
 var _base_subtitles: Dictionary = {}  # graph id -> subtitle text without runtime info
 var _subtitle_labels: Dictionary = {} # graph id -> Label
 var _port_labels: Dictionary = {}     # graph id -> {"in": [texts], "out": [texts]}
+var _value_editors: Dictionary = {}   # graph id -> {"control", "type", "path", "initial"}
+var _raise_buttons: Dictionary = {}   # graph id -> Button
+var _value_sessions: Dictionary = {}  # variable path -> debug session that reported it
+var _event_sessions: Dictionary = {}  # event path -> debug session that reported it
+var _event_ids: Dictionary = {}       # event path -> runtime id reported by the game
+var _shown_values: Dictionary = {}    # variable path -> value text currently shown
 var _connections: Array = []          # {from_id, to_id, kind, link (index in _graph_edit.links)}
 var _focus_update_queued := false
 var _layout_version := 0
@@ -176,26 +185,37 @@ func get_mermaid() -> String:
 
 # --- Runtime highlighting -----------------------------------------------------
 
-## Payload from the Variable Values debugger channel ("path", "value_str").
+## Payload from the Variable Values debugger channel ("path", "value_str", "session_id").
 func on_variable_value_updated(payload: Dictionary) -> void:
 	var path := str(payload.get("path", ""))
 	var id := "res:" + path
 	if path == "" or not _graph_nodes.has(id):
 		return
 	var value_str := str(payload.get("value_str", ""))
-	_set_runtime_subtitle(id, "= " + value_str)
+	_value_sessions[path] = int(payload.get("session_id", 0))
+	if _value_editors.has(id):
+		_set_editor_live(id, true)
+		_show_value(id, value_str)
+	else:
+		_set_runtime_subtitle(id, "= " + value_str)
 	# The first report of a session is the initial value, not a change.
 	if _seen_values.has(path) and _seen_values[path] != value_str:
 		_start_flash(id)
 	_seen_values[path] = value_str
 
 
-## Payload from the Events debugger channel ("path", "raised_count").
+## Payload from the Events debugger channel ("id", "path", "raised_count", "session_id").
 func on_event_updated(payload: Dictionary) -> void:
 	var path := str(payload.get("path", ""))
 	var id := "res:" + path
 	if path == "" or not _graph_nodes.has(id):
 		return
+	_event_sessions[path] = int(payload.get("session_id", 0))
+	_event_ids[path] = str(payload.get("id", path))
+	if _raise_buttons.has(id):
+		var button: Button = _raise_buttons[id]
+		button.disabled = false
+		button.tooltip_text = "Raise %s in the running game" % path.get_file().get_basename()
 	var count := int(payload.get("raised_count", 0))
 	if count > int(_raised_counts.get(path, 0)):
 		_start_flash(id)
@@ -210,9 +230,148 @@ func clear_runtime(_session_id: int = 0) -> void:
 	_flash_left.clear()
 	_seen_values.clear()
 	_raised_counts.clear()
+	_value_sessions.clear()
+	_event_sessions.clear()
+	_event_ids.clear()
 	for id in _subtitle_labels:
 		(_subtitle_labels[id] as Label).text = _base_subtitles[id]
+	# Back to the saved initial values, read-only until the game runs again.
+	for id in _value_editors:
+		_set_editor_live(id, false)
+		_show_value(id, _format_value(_value_editors[id]["initial"]))
+	for id in _raise_buttons:
+		(_raise_buttons[id] as Button).disabled = true
+		(_raise_buttons[id] as Button).tooltip_text = "Run the game to raise this event"
 	set_process(false)
+
+
+# --- Editing values and raising events ------------------------------------------
+
+## A type-appropriate editor for the variable's value. While the game is stopped it shows the
+## saved initial value, read-only; while it runs it shows the live value and edits it live.
+func _create_value_editor(node: Dictionary) -> Control:
+	var id: String = node["id"]
+	var path: String = node["resource_path"]
+	var type_name: String = node["type"]
+	var editor: Control
+	match type_name:
+		"BoolVariable":
+			var check := CheckBox.new()
+			check.text = "value"
+			check.toggled.connect(func(on: bool) -> void: _send_value(id, "true" if on else "false"))
+			editor = check
+		"IntVariable", "FloatVariable":
+			var spin := SpinBox.new()
+			spin.min_value = -1e9
+			spin.max_value = 1e9
+			spin.allow_greater = true
+			spin.allow_lesser = true
+			spin.step = 1.0 if type_name == "IntVariable" else 0.01
+			spin.rounded = type_name == "IntVariable"
+			spin.select_all_on_focus = true
+			spin.custom_minimum_size.x = 120
+			spin.value_changed.connect(func(v: float) -> void:
+				_send_value(id, str(roundi(v)) if type_name == "IntVariable" else str(v)))
+			editor = spin
+		"ColorVariable":
+			var picker := ColorPickerButton.new()
+			picker.custom_minimum_size = Vector2(120, 26)
+			picker.color_changed.connect(func(c: Color) -> void: _send_value(id, "#" + c.to_html(true)))
+			editor = picker
+		_:
+			# Strings, vectors ("(x, y)") and anything else the game can parse from text.
+			var line := LineEdit.new()
+			line.custom_minimum_size.x = 150
+			line.text_submitted.connect(func(text: String) -> void: _send_value(id, text))
+			line.focus_exited.connect(func() -> void:
+				if line.editable and line.text != _shown_values.get(path, line.text):
+					_send_value(id, line.text))
+			editor = line
+	_value_editors[id] = {"control": editor, "type": type_name, "path": path, "initial": _initial_value(path)}
+	_set_editor_live(id, false)
+	_show_value(id, _format_value(_value_editors[id]["initial"]))
+	return editor
+
+
+func _create_raise_button(node: Dictionary) -> Button:
+	var button := Button.new()
+	button.text = "Raise"
+	button.disabled = true
+	button.tooltip_text = "Run the game to raise this event"
+	button.pressed.connect(_on_raise_pressed.bind(node["id"]))
+	_raise_buttons[node["id"]] = button
+	return button
+
+
+func _on_raise_pressed(id: String) -> void:
+	var path: String = _graph["nodes"][id]["resource_path"]
+	if not _event_sessions.has(path):
+		return
+	event_raise_requested.emit(_event_sessions[path], _event_ids.get(path, path), path)
+
+
+func _send_value(id: String, value_str: String) -> void:
+	var info: Dictionary = _value_editors[id]
+	var path: String = info["path"]
+	if not _value_sessions.has(path):
+		return
+	_shown_values[path] = value_str
+	variable_value_set_requested.emit(_value_sessions[path], path, info["type"], value_str)
+
+
+## Updates the editor without sending anything back, and without overwriting a field the user
+## is typing in.
+func _show_value(id: String, value_str: String) -> void:
+	var info: Dictionary = _value_editors[id]
+	var control: Control = info["control"]
+	_shown_values[info["path"]] = value_str
+	if control is CheckBox:
+		(control as CheckBox).set_pressed_no_signal(value_str.strip_edges().to_lower() in ["true", "1"])
+	elif control is SpinBox:
+		var spin := control as SpinBox
+		if not spin.get_line_edit().has_focus():
+			spin.set_value_no_signal(value_str.to_float())
+	elif control is ColorPickerButton:
+		var picker := control as ColorPickerButton
+		picker.color = Color.from_string(value_str, picker.color)
+	elif control is LineEdit:
+		var line := control as LineEdit
+		if not line.has_focus():
+			line.text = value_str
+
+
+func _set_editor_live(id: String, live: bool) -> void:
+	var control: Control = _value_editors[id]["control"]
+	if control is SpinBox:
+		(control as SpinBox).editable = live
+	elif control is LineEdit:
+		(control as LineEdit).editable = live
+	elif control is BaseButton:
+		(control as BaseButton).disabled = not live
+	control.tooltip_text = "Live value: edits apply to the running game" if live else "Initial value. Run the game to edit the live value"
+
+
+static func _initial_value(path: String) -> Variant:
+	if not ResourceLoader.exists(path):
+		return null
+	var resource := load(path)
+	return resource.get("initial_value") if resource != null else null
+
+
+static func _format_value(value: Variant) -> String:
+	if value is Color:
+		var color: Color = value
+		return "#" + color.to_html(color.a < 1.0)
+	return "" if value == null else str(value)
+
+
+## Test helpers.
+func get_value_editor(resource_path: String) -> Control:
+	return _value_editors.get("res:" + resource_path, {}).get("control")
+
+
+func get_raise_button(resource_path: String) -> Button:
+	return _raise_buttons.get("res:" + resource_path)
 
 
 func is_flashing(resource_path: String) -> bool:
@@ -399,6 +558,13 @@ func _create_graph_node(node: Dictionary, ports: Dictionary, index: int) -> Grap
 	graph_node.add_child(subtitle)
 	_subtitle_labels[node["id"]] = subtitle
 	_base_subtitles[node["id"]] = node["subtitle"]
+	if node["resource_path"] != "":
+		if node["kind"] == Scanner.KIND_VARIABLE:
+			graph_node.add_child(_create_value_editor(node))
+		elif node["kind"] == Scanner.KIND_EVENT:
+			graph_node.add_child(_create_raise_button(node))
+	# Port rows come after the header rows (subtitle, value editor or Raise button).
+	var first_port_row := graph_node.get_child_count()
 
 	var ins: Array = ports["in"]
 	var outs: Array = ports["out"]
@@ -426,7 +592,7 @@ func _create_graph_node(node: Dictionary, ports: Dictionary, index: int) -> Grap
 		if row < outs.size():
 			labels["out"].append(right.text)
 		graph_node.add_child(row_box)
-		graph_node.set_slot(row + 1,
+		graph_node.set_slot(row + first_port_row,
 			row < ins.size(), EDGE_PORT_TYPES.get(ins[row], 0) if row < ins.size() else 0, EDGE_COLORS[ins[row]] if row < ins.size() else Color.WHITE,
 			row < outs.size(), EDGE_PORT_TYPES.get(outs[row], 0) if row < outs.size() else 0, EDGE_COLORS[outs[row]] if row < outs.size() else Color.WHITE)
 	_port_labels[node["id"]] = labels
@@ -485,6 +651,9 @@ func _clear_graph() -> void:
 	_graph_nodes.clear()
 	_subtitle_labels.clear()
 	_port_labels.clear()
+	_value_editors.clear()
+	_raise_buttons.clear()
+	_shown_values.clear()
 	_base_subtitles.clear()
 	_connections.clear()
 	_graph = {}

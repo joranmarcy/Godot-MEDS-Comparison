@@ -77,6 +77,9 @@ func _setup_dependency_dock() -> void:
 	add_control_to_bottom_panel(_dependency_dock, "Dependencies")
 	_dependency_dock.connect("open_node_requested", func(scene_path: String, node_path: String) -> void:
 		_open_scene_and_select_node.call_deferred(scene_path, node_path))
+	# Editing values and raising events use the same debugger requests as the other docks.
+	_dependency_dock.connect("variable_value_set_requested", Callable(_values_debugger, "request_set_value"))
+	_dependency_dock.connect("event_raise_requested", Callable(_events_debugger, "request_raise"))
 	# Live highlighting reuses the Variable Values and Events debugger channels.
 	_values_debugger.connect("variable_value_updated", Callable(_dependency_dock, "on_variable_value_updated"))
 	_events_debugger.connect("event_updated", Callable(_dependency_dock, "on_event_updated"))

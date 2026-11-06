@@ -175,6 +175,53 @@ func _check_port_labels(dock: Control) -> void:
 	check(keeper["out"].has("writes") and keeper["in"].has("listens"), "labels: a rule says 'writes' and 'listens' (%s)" % [keeper])
 
 
+func _check_editing(dock: Control) -> void:
+	var sent: Array = []
+	var raised: Array = []
+	var on_set := func(session_id: int, path: String, type_name: String, value_str: String) -> void: sent.append([session_id, path, type_name, value_str])
+	var on_raise := func(session_id: int, event_id: String, path: String) -> void: raised.append([session_id, event_id, path])
+	dock.variable_value_set_requested.connect(on_set)
+	dock.event_raise_requested.connect(on_raise)
+
+	var health := "res://game/variables/player-health.tres"
+	var spin := dock.get_value_editor(health) as SpinBox
+	check(spin != null and spin.value == 5.0 and not spin.editable, "edit: before running, an int variable shows its initial value read-only")
+	spin.value = 3
+	check(sent.is_empty(), "edit: nothing is sent while the game is not running")
+
+	dock.on_variable_value_updated({"path": health, "value_str": "5", "session_id": 7})
+	check(spin.editable, "edit: the editor becomes live once the game reports the variable")
+	spin.value = 2
+	check(sent.size() == 1 and sent[0] == [7, health, "IntVariable", "2"], "edit: changing the number sends it to the running game (%s)" % [sent])
+	dock.on_variable_value_updated({"path": health, "value_str": "4", "session_id": 7})
+	check(spin.value == 4.0 and sent.size() == 1, "edit: values reported by the game update the editor without echoing back")
+
+	var paused := "res://game/variables/game-paused.tres"
+	var check_box := dock.get_value_editor(paused) as CheckBox
+	dock.on_variable_value_updated({"path": paused, "value_str": "false", "session_id": 7})
+	check_box.button_pressed = true
+	check(sent.back() == [7, paused, "BoolVariable", "true"], "edit: a bool variable is a checkbox")
+
+	var position := "res://game/variables/player-position.tres"
+	var line := dock.get_value_editor(position) as LineEdit
+	dock.on_variable_value_updated({"path": position, "value_str": "(640.0, 360.0)", "session_id": 7})
+	line.text_submitted.emit("(10, 20)")
+	check(sent.back() == [7, position, "Vector2Variable", "(10, 20)"], "edit: a vector variable is a text field in the game's (x, y) format")
+
+	var hit := "res://game/events/player-hit.tres"
+	var raise: Button = dock.get_raise_button(hit)
+	check(raise != null and raise.disabled, "raise: the button is disabled while the game is not running")
+	dock.on_event_updated({"path": hit, "id": hit, "raised_count": 0, "session_id": 7})
+	check(not raise.disabled, "raise: the button is enabled once the game reports the event")
+	raise.pressed.emit()
+	check(raised == [[7, hit, hit]], "raise: pressing it asks the running game to raise the event (%s)" % [raised])
+
+	dock.clear_runtime()
+	check(not spin.editable and spin.value == 5.0 and raise.disabled, "edit: stopping the game restores initial values, read-only")
+	dock.variable_value_set_requested.disconnect(on_set)
+	dock.event_raise_requested.disconnect(on_raise)
+
+
 func _check_focus(dock: Control) -> void:
 	var keeper := "node:%s::GameRules/ScoreKeeper" % MAIN
 	var player := "node:%s::Player" % MAIN
@@ -245,6 +292,7 @@ func _check_dock(graph: Dictionary) -> void:
 	await _check_layout(dock, graph)
 	_check_port_labels(dock)
 	await _check_focus(dock)
+	await _check_editing(dock)
 
 	var score := "res://game/variables/score.tres"
 	dock.on_variable_value_updated({"path": score, "value_str": "0"})
