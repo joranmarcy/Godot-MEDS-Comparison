@@ -11,28 +11,44 @@ Gameplay, visuals, tuning values and scene layout are identical; most scripts (p
 
 ## The game
 
-Move the blue orb with **WASD / arrow keys**, collect gold coins and dodge the red enemies.
+Move the blue orb with **WASD / arrow keys**, a **gamepad**, or on a phone by **dragging anywhere** on the screen (floating virtual joystick). Collect gold coins and dodge the red enemies.
 
 - Each coin gives `10 × combo`. The combo grows with each coin and resets after 2 s without a pickup.
 - Every 200 points the level increases: enemies spawn faster and move faster.
 - Touching an enemy costs 1 health (then 1 s of invulnerability). At 0 health the game is over.
-- The best score is saved to disk. Press **Enter** on the game-over screen to restart.
+- The best score is saved to disk. Press **Restart** (or Enter) on the game-over screen to play again.
 - Sounds for coins (pitch rises with the combo), hits, level-ups and game over, plus a looping music track.
-- **Esc** pauses and opens the volume settings (separate **Music** and **Sound effects** sliders, saved to disk).
-- **F1** toggles an in-game debug overlay.
+- **Esc**, gamepad **Start** or the on-screen **II** button pauses and opens the volume settings (separate **Music** and **Sound effects** sliders, saved to disk).
+- **F1**, or the **Debug overlay** button in the pause menu, toggles an in-game debug overlay.
 
 ## Running
 
 Requires **Godot 4.6** (MEDS also supports 4.5). Open either `project.godot` from the Godot project manager and press **F5**.
 
-Both projects ship the same headless gameplay test (physics pickup/contact, combo scoring, levels, game over, restart reset, sounds, volume settings and pause menu):
+Both projects ship the same gameplay test (physics pickup/contact, combo scoring, levels, game over, restart reset, sounds, volume settings, pause menu, touch joystick and on-screen buttons):
 
 ```powershell
 cd classic-game   # or meds-game
-godot --headless --path . -s res://tests/test_gameplay.gd
+godot --path . -s res://tests/test_gameplay.gd             # full run (opens a window briefly)
+godot --headless --path . -s res://tests/test_gameplay.gd  # no window; touch checks are skipped
 ```
 
+Touch checks need a display: headless Godot never delivers events sent with `Input.parse_input_event()`, which is how the test simulates fingers.
+
 The sounds are generated, not downloaded. To change them, edit [tools/generate_sounds.py](./tools/generate_sounds.py) and run `python tools/generate_sounds.py`; it writes identical files into both projects.
+
+## Phones and touch
+
+Both games are set up for phones and tablets in the same way:
+
+- **Touch controls:** [virtual_joystick.gd](./meds-game/game/scripts/virtual_joystick.gd), a full-screen floating joystick (in `touch_controls.tscn`). It presses the same `move_*` input actions as the keyboard and gamepad, with analog strength, so the player script doesn't know touch exists. Buttons and menus drawn above it take their taps first.
+- **On-screen buttons:** [action_button.gd](./meds-game/game/scripts/action_button.gd) triggers an input action (`pause`, `toggle_debug_overlay`) as if its key had been pressed, so features that used to be keyboard-only work on phones without extra wiring.
+- **Any screen shape:** the window stretch aspect is `expand`, so the arena fills 20:9 phones and 4:3 tablets instead of showing black bars. The camera is anchored top-left, so the visible area always matches the arena, the arena redraws when the screen size changes, and the player starts in the middle of the screen.
+- **Project settings:** landscape orientation (sensor), ETC2/ASTC texture import (required for Android export), and *emulate touch from mouse* so you can test the joystick on desktop by dragging with the mouse.
+
+Input is deliberately **not** turned into MEDS variables. Godot's input actions already decouple input devices from gameplay, and keeping that code identical keeps the comparison about game state. If you wanted to watch or edit the joystick direction in the *Variable Values* panel, a `move-input` `Vector2Variable` written by an input node would be the MEDS way.
+
+To build for Android, install the Android export templates and SDK, then add an Android preset under **Project → Export**. On iOS, export from macOS with Xcode.
 
 ## Architecture at a glance
 
@@ -153,7 +169,7 @@ You get the writer, the full causal chain (coin → event → rule → variable)
 
 ### 5. In-game overlay (works in exported builds)
 
-Press **F1** in both games.
+Press **F1** (or **II** → **Debug overlay** on a phone) in both games.
 
 - Classic [debug_overlay.gd](./classic-game/scripts/debug_overlay.gd) hard-codes each field and signal; every new piece of state must be added by hand (adding the volume settings meant editing the script and reading a second singleton).
 - MEDS [debug_overlay.gd](./meds-game/game/scripts/debug_overlay.gd) knows nothing about the game: it iterates over the variables/events dragged into its arrays, highlights values as they change and timestamps every event raise. It can be dropped into any MEDS project unchanged; the volumes were added by dragging two resources into its array.
@@ -174,7 +190,7 @@ tools/generate_sounds.py     generates the .wav files for both projects
 classic-game/
   scripts/game_state.gd      autoload: all state + rules
   scripts/settings.gd        autoload: volume settings + save/load
-  scripts/*.gd               player, coin, enemy, spawner, hud, game_over_screen, effects, sounds, settings menu, overlay
+  scripts/*.gd               player, coin, enemy, spawner, hud, game_over_screen, effects, sounds, settings menu, overlay, touch input
   scenes/*.tscn
   sounds/*.wav
   tests/test_gameplay.gd
@@ -183,7 +199,7 @@ meds-game/
   addons/godot_meds_editor/  MEDS editor tools (docks, reference tracking)
   game/variables/*.tres      shared state, tuning & volume settings
   game/events/*.tres         coin-collected, player-hit, game-over
-  game/scripts/*.gd          gameplay nodes + one script per rule + reusable sound/volume bindings
+  game/scripts/*.gd          gameplay nodes + one script per rule + reusable sound/volume bindings + touch input
   game/scenes/*.tscn
   game/sounds/*.wav
   tests/test_gameplay.gd

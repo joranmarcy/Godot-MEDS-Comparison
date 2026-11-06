@@ -1,5 +1,5 @@
 extends CanvasLayer
-## In-game debug overlay (toggle with F1).
+## In-game debug overlay ("toggle_debug_overlay" action: F1, or the button in the pause menu).
 ##
 ## Every displayed field and every logged signal is wired by hand: adding a new
 ## piece of state to GameState means remembering to update this script too.
@@ -20,7 +20,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F1:
+	if event.is_action_pressed("toggle_debug_overlay"):
 		_panel.visible = not _panel.visible
 
 

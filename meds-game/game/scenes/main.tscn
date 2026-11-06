@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3]
+[gd_scene load_steps=34 format=3]
 
 [ext_resource type="Script" path="res://game/scripts/reset_variables_on_ready.gd" id="1_reset"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
@@ -32,6 +32,7 @@
 [ext_resource type="PackedScene" path="res://game/scenes/debug_overlay.tscn" id="30_overlay"]
 [ext_resource type="PackedScene" path="res://game/scenes/audio.tscn" id="31_audio"]
 [ext_resource type="PackedScene" path="res://game/scenes/settings_menu.tscn" id="42_settings"]
+[ext_resource type="PackedScene" path="res://game/scenes/touch_controls.tscn" id="90_touch_controls"]
 
 [node name="Main" type="Node2D"]
 
@@ -76,7 +77,7 @@ game_over = ExtResource("20_over")
 script = ExtResource("21_arena")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(640, 360)
+anchor_mode = 0
 script = ExtResource("22_shake")
 event = ExtResource("17_hit")
 
@@ -111,6 +112,8 @@ spawn_on_edges = true
 
 [node name="Player" parent="." instance=ExtResource("26_player")]
 position = Vector2(640, 360)
+
+[node name="TouchControls" parent="." instance=ExtResource("90_touch_controls")]
 
 [node name="HUD" parent="." instance=ExtResource("27_hud")]
 

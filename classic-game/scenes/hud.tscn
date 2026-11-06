@@ -1,6 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://scripts/action_button.gd" id="90_action_button"]
+[ext_resource type="Script" path="res://scripts/hint_label.gd" id="91_hint_label"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0.2, 0.08, 0.1, 1)
@@ -79,6 +81,17 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Best: 0"
 
+[node name="PauseButton" type="Button" parent="TopBar/Margin/HBox"]
+custom_minimum_size = Vector2(48, 40)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Pause / volume (Esc)"
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "II"
+script = ExtResource("90_action_button")
+action = &"pause"
+
 [node name="Hint" type="Label" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
@@ -93,4 +106,6 @@ grow_horizontal = 2
 grow_vertical = 0
 modulate = Color(1, 1, 1, 0.6)
 text = "Move: WASD / Arrows   -   Collect coins, dodge red enemies   -   Esc: pause / volume   -   F1: debug overlay"
+script = ExtResource("91_hint_label")
+touch_text = "Drag anywhere to move   -   Collect coins, dodge red enemies   -   II: pause / volume"
 horizontal_alignment = 1

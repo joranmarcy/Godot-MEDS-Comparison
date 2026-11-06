@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/settings_menu.gd" id="1_menu"]
+[ext_resource type="Script" path="res://scripts/action_button.gd" id="90_action_button"]
 [ext_resource type="AudioStream" path="res://sounds/coin.wav" id="2_coin"]
 
 [node name="SettingsMenu" type="CanvasLayer"]
@@ -62,7 +63,7 @@ text = "Music"
 
 [node name="MusicSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -77,7 +78,7 @@ text = "Sound effects"
 
 [node name="SfxSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -85,8 +86,30 @@ max_value = 1.0
 step = 0.05
 value = 0.8
 
+[node name="Buttons" type="HBoxContainer" parent="Root/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ResumeButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Resume"
+script = ExtResource("90_action_button")
+action = &"pause"
+
+[node name="DebugOverlayButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Debug overlay"
+script = ExtResource("90_action_button")
+action = &"toggle_debug_overlay"
+
 [node name="Hint" type="Label" parent="Root/Center/Panel/Margin/VBox"]
 modulate = Color(1, 1, 1, 0.6)
 layout_mode = 2
-text = "Esc: resume"
+text = "Esc: resume   -   F1: debug overlay"
 horizontal_alignment = 1

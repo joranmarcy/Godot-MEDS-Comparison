@@ -22,6 +22,7 @@
 [ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="20_sfx_volume"]
 
 [node name="DebugOverlay" type="CanvasLayer"]
+process_mode = 3
 layer = 3
 script = ExtResource("1_overlay")
 variables = Array[ExtResource("2_base")]([ExtResource("4_running"), ExtResource("5_health"), ExtResource("6_score"), ExtResource("7_combo"), ExtResource("8_level"), ExtResource("9_high"), ExtResource("10_position"), ExtResource("11_pspeed"), ExtResource("12_espeed"), ExtResource("13_damage"), ExtResource("14_coin"), ExtResource("15_window"), ExtResource("19_music_volume"), ExtResource("20_sfx_volume")])

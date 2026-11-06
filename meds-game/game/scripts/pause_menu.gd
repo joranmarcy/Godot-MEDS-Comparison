@@ -1,5 +1,5 @@
 extends CanvasLayer
-## Pause menu (toggle with Esc). Volume sliders are bound to MEDS variables in the scene, not here.
+## Pause menu ("pause" action: Esc, gamepad Start or the on-screen pause button). Volume sliders are bound to MEDS variables in the scene, not here.
 
 @export var focus_on_open: Control
 
@@ -11,7 +11,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("pause"):
 		_set_open(not _root.visible)
 		get_viewport().set_input_as_handled()
 

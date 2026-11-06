@@ -1,6 +1,8 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-label.gd" id="1_label"]
+[ext_resource type="Script" path="res://game/scripts/action_button.gd" id="90_action_button"]
+[ext_resource type="Script" path="res://game/scripts/hint_label.gd" id="91_hint_label"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-progress-bar.gd" id="2_bar"]
 [ext_resource type="Resource" path="res://game/variables/player-health.tres" id="3_health"]
 [ext_resource type="Resource" path="res://game/variables/score.tres" id="4_score"]
@@ -93,6 +95,17 @@ script = ExtResource("1_label")
 variable = ExtResource("7_high")
 prefix = "Best: "
 
+[node name="PauseButton" type="Button" parent="TopBar/Margin/HBox"]
+custom_minimum_size = Vector2(48, 40)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Pause / volume (Esc)"
+focus_mode = 0
+theme_override_font_sizes/font_size = 20
+text = "II"
+script = ExtResource("90_action_button")
+action = &"pause"
+
 [node name="Hint" type="Label" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
@@ -107,4 +120,6 @@ grow_horizontal = 2
 grow_vertical = 0
 modulate = Color(1, 1, 1, 0.6)
 text = "Move: WASD / Arrows   -   Collect coins, dodge red enemies   -   Esc: pause / volume   -   F1: debug overlay"
+script = ExtResource("91_hint_label")
+touch_text = "Drag anywhere to move   -   Collect coins, dodge red enemies   -   II: pause / volume"
 horizontal_alignment = 1

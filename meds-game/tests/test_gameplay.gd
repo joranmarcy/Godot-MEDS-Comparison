@@ -58,6 +58,70 @@ func _check_pause_menu(main: Node) -> void:
 	check(not menu_root.visible and not paused, "Esc closes settings menu and resumes")
 	check(main.get_viewport().gui_get_focus_owner() == null, "sliders lose focus when menu closes")
 
+func _touch(position: Vector2, pressed: bool) -> void:
+	var event := InputEventScreenTouch.new()
+	event.index = 0
+	event.position = position
+	event.pressed = pressed
+	Input.parse_input_event(event)
+
+func _drag(position: Vector2) -> void:
+	var event := InputEventScreenDrag.new()
+	event.index = 0
+	event.position = position
+	Input.parse_input_event(event)
+
+func _tap(control: Control) -> void:
+	var center := control.get_global_rect().get_center()
+	_touch(center, true)
+	await process_frame
+	_touch(center, false)
+	await _settle()
+
+# Events sent with Input.parse_input_event() are delivered on the next frame.
+func _settle() -> void:
+	for i in 2: await process_frame
+
+func _strength(action: StringName) -> float:
+	return Input.get_action_strength(action)
+
+func _check_touch_controls(main: Node, player: Node2D) -> void:
+	if DisplayServer.get_name() == "headless":
+		print("skipped: touch checks need a display (headless never delivers Input.parse_input_event); run without --headless")
+		return
+	var start := player.global_position
+	_touch(Vector2(300, 500), true)
+	_drag(Vector2(400, 500))
+	await _settle()
+	check(is_equal_approx(_strength(&"move_right"), 1.0) and _strength(&"move_left") == 0.0, "touch drag right presses move_right fully")
+	for i in 10: await physics_frame
+	check(player.global_position.x > start.x + 20.0, "player moves right while dragging (%.0f -> %.0f)" % [start.x, player.global_position.x])
+	# The joystick base followed the finger to x=320, so dragging straight down from there is pure "down".
+	_drag(Vector2(320, 580))
+	await _settle()
+	check(is_equal_approx(_strength(&"move_down"), 1.0) and _strength(&"move_right") == 0.0, "joystick base follows finger, drag down")
+	_touch(Vector2(320, 580), false)
+	await _settle()
+	var moving := false
+	for action in [&"move_left", &"move_right", &"move_up", &"move_down"]:
+		moving = moving or _strength(action) > 0.0
+	check(not moving, "releasing the finger releases all move actions")
+	var stopped_at := player.global_position
+	for i in 5: await physics_frame
+	check(player.global_position.is_equal_approx(stopped_at), "player stops after release")
+
+	var menu_root: Control = main.get_node("SettingsMenu/Root")
+	var buttons := "SettingsMenu/Root/Center/Panel/Margin/VBox/Buttons/"
+	await _tap(main.get_node("HUD/TopBar/Margin/HBox/PauseButton"))
+	check(menu_root.visible and paused, "tapping the on-screen pause button opens the menu")
+	await _tap(main.get_node(buttons + "DebugOverlayButton"))
+	check(main.get_node("DebugOverlay/Panel").visible, "debug overlay button works while paused")
+	await _tap(main.get_node(buttons + "DebugOverlayButton"))
+	check(not main.get_node("DebugOverlay/Panel").visible, "debug overlay button toggles it off")
+	await _tap(main.get_node(buttons + "ResumeButton"))
+	check(not menu_root.visible and not paused, "resume button closes the menu")
+
+
 func _run() -> void:
 	_backup_saves()
 	var health: IntVariable = load("res://game/variables/player-health.tres")
@@ -122,6 +186,7 @@ func _run() -> void:
 	check(is_equal_approx(float(_saved_value("variables", "res://game/variables/sfx-volume")), 0.5), "volume saved to disk")
 	music_volume.set_value(0.8)
 	_check_pause_menu(main)
+	await _check_touch_controls(main, player)
 
 	for i in 4: hit_evt.raise_event()
 	check(health.value == 0, "health 0")

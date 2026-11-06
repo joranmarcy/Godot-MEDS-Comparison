@@ -1,5 +1,5 @@
 extends CanvasLayer
-## Pause menu with volume sliders (toggle with Esc).
+## Pause menu with volume sliders ("pause" action: Esc, gamepad Start or the on-screen pause button).
 ##
 ## Every slider is wired by hand to its Settings property, in both directions.
 
@@ -21,7 +21,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("pause"):
 		_set_open(not _root.visible)
 		get_viewport().set_input_as_handled()
 

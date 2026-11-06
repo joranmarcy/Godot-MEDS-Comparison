@@ -1,6 +1,7 @@
 [gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://game/scripts/pause_menu.gd" id="1_menu"]
+[ext_resource type="Script" path="res://game/scripts/action_button.gd" id="90_action_button"]
 [ext_resource type="AudioStream" path="res://game/sounds/coin.wav" id="2_coin"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-slider.gd" id="3_slider"]
 [ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="4_music"]
@@ -65,7 +66,7 @@ theme_override_font_sizes/font_size = 20
 text = "Music"
 
 [node name="MusicSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -81,7 +82,7 @@ theme_override_font_sizes/font_size = 20
 text = "Sound effects"
 
 [node name="SfxSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -91,10 +92,32 @@ value = 0.8
 script = ExtResource("3_slider")
 variable = ExtResource("5_sfx")
 
+[node name="Buttons" type="HBoxContainer" parent="Root/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ResumeButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Resume"
+script = ExtResource("90_action_button")
+action = &"pause"
+
+[node name="DebugOverlayButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Debug overlay"
+script = ExtResource("90_action_button")
+action = &"toggle_debug_overlay"
+
 [node name="Hint" type="Label" parent="Root/Center/Panel/Margin/VBox"]
 modulate = Color(1, 1, 1, 0.6)
 layout_mode = 2
-text = "Esc: resume"
+text = "Esc: resume   -   F1: debug overlay"
 horizontal_alignment = 1
 
 [connection signal="drag_ended" from="Root/Center/Panel/Margin/VBox/Grid/SfxSlider" to="SfxPreview" method="play" unbinds=1]

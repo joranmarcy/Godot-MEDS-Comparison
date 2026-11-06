@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/arena.gd" id="2_arena"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/debug_overlay.tscn" id="11_overlay"]
 [ext_resource type="PackedScene" path="res://scenes/sound_effects.tscn" id="12_sound_effects"]
 [ext_resource type="PackedScene" path="res://scenes/settings_menu.tscn" id="18_settings"]
+[ext_resource type="PackedScene" path="res://scenes/touch_controls.tscn" id="90_touch_controls"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -21,7 +22,7 @@ script = ExtResource("1_main")
 script = ExtResource("2_arena")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(640, 360)
+anchor_mode = 0
 script = ExtResource("3_shake")
 
 [node name="Coins" type="Node2D" parent="."]
@@ -51,6 +52,8 @@ spawn_on_edges = true
 
 [node name="Player" parent="." instance=ExtResource("7_player")]
 position = Vector2(640, 360)
+
+[node name="TouchControls" parent="." instance=ExtResource("90_touch_controls")]
 
 [node name="HUD" parent="." instance=ExtResource("8_hud")]
 

@@ -1,5 +1,6 @@
 extends CanvasLayer
-## Generic in-game debug overlay (toggle with F1). Works in exported builds too.
+## Generic in-game debug overlay ("toggle_debug_overlay" action: F1, or the button in the pause menu).
+## Works in exported builds too, including on phones.
 ##
 ## It knows nothing about the game: drag any MEDS variable or event into the
 ## arrays in the inspector and it is displayed. Recently changed values are
@@ -30,7 +31,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F1:
+	if event.is_action_pressed("toggle_debug_overlay"):
 		_panel.visible = not _panel.visible
 
 
