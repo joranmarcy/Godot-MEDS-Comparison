@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3]
+[gd_scene load_steps=35 format=3]
 
 [ext_resource type="Script" path="res://game/scripts/reset_variables_on_ready.gd" id="1_reset"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
@@ -33,12 +33,13 @@
 [ext_resource type="PackedScene" path="res://game/scenes/audio.tscn" id="31_audio"]
 [ext_resource type="PackedScene" path="res://game/scenes/settings_menu.tscn" id="42_settings"]
 [ext_resource type="PackedScene" path="res://game/scenes/touch_controls.tscn" id="90_touch_controls"]
+[ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="91_paused"]
 
 [node name="Main" type="Node2D"]
 
 [node name="ResetSessionVariables" type="Node" parent="."]
 script = ExtResource("1_reset")
-variables = Array[ExtResource("2_base")]([ExtResource("3_running"), ExtResource("4_health"), ExtResource("5_score"), ExtResource("6_combo"), ExtResource("7_level"), ExtResource("8_position")])
+variables = Array[ExtResource("2_base")]([ExtResource("3_running"), ExtResource("4_health"), ExtResource("5_score"), ExtResource("6_combo"), ExtResource("7_level"), ExtResource("8_position"), ExtResource("91_paused")])
 
 [node name="GameRules" type="Node" parent="."]
 

@@ -42,11 +42,11 @@ The sounds are generated, not downloaded. To change them, edit [tools/generate_s
 Both games are set up for phones and tablets in the same way:
 
 - **Touch controls:** [virtual_joystick.gd](./meds-game/game/scripts/virtual_joystick.gd), a full-screen floating joystick (in `touch_controls.tscn`). It presses the same `move_*` input actions as the keyboard and gamepad, with analog strength, so the player script doesn't know touch exists. Buttons and menus drawn above it take their taps first.
-- **On-screen buttons:** [action_button.gd](./meds-game/game/scripts/action_button.gd) triggers an input action (`pause`, `toggle_debug_overlay`) as if its key had been pressed, so features that used to be keyboard-only work on phones without extra wiring.
+- **On-screen buttons:** the **II** pause button and the pause menu's **Resume** / **Debug overlay** buttons make keyboard-only features usable on phones. Classic uses [action_button.gd](./classic-game/scripts/action_button.gd), which fakes the key press of an input action. MEDS uses [toggle_bool_button.gd](./meds-game/game/scripts/toggle_bool_button.gd), which flips the same `game-paused` / `debug-overlay-visible` variable as the keyboard shortcut.
 - **Any screen shape:** the window stretch aspect is `expand`, so the arena fills 20:9 phones and 4:3 tablets instead of showing black bars. The camera is anchored top-left, so the visible area always matches the arena, the arena redraws when the screen size changes, and the player starts in the middle of the screen.
 - **Project settings:** landscape orientation (sensor), ETC2/ASTC texture import (required for Android export), and *emulate touch from mouse* so you can test the joystick on desktop by dragging with the mouse.
 
-Input is deliberately **not** turned into MEDS variables. Godot's input actions already decouple input devices from gameplay, and keeping that code identical keeps the comparison about game state. If you wanted to watch or edit the joystick direction in the *Variable Values* panel, a `move-input` `Vector2Variable` written by an input node would be the MEDS way.
+Input is deliberately **not** turned into MEDS variables. Godot's input actions already decouple input devices from gameplay, and keeping that code identical keeps the comparison about game state. If you wanted to watch or edit the joystick direction in the *Variable Values* panel, a `move-input` `Vector2Variable` written by an input node would be the MEDS way. What input *changes* is a different matter: pausing and showing the debug overlay are state, so in MEDS they are variables (see below).
 
 To build for Android, install the Android export templates and SDK, then add an Android preset under **Project → Export**. On iOS, export from macOS with Xcode.
 
@@ -111,6 +111,8 @@ flowchart LR
 | Game-over screen | Custom script listening to `GameState.game_over` | `bool_to_visibility` + MEDS labels + restart button |
 | Session reset on restart | `GameState.start_game()` called from `main.gd` | `ResetSessionVariables` node listing the variables to reset |
 | Debug overlay | Hand-written field by field | Generic: takes `Array[BaseVariable]` / `Array[Event]` |
+| Pause | `get_tree().paused`, set by [settings_menu.gd](./classic-game/scripts/settings_menu.gd); the menu decides when it opens | `game-paused.tres`: written by [toggle_bool_on_action.gd](./meds-game/game/scripts/toggle_bool_on_action.gd) (Esc / Start) and [toggle_bool_button.gd](./meds-game/game/scripts/toggle_bool_button.gd) (II, Resume); read by [bind_bool_to_tree_paused.gd](./meds-game/game/scripts/bind_bool_to_tree_paused.gd), the menu's `bool_to_visibility` and [focus_while_true.gd](./meds-game/game/scripts/focus_while_true.gd). Reset at session start |
+| Debug overlay on/off | Private to the overlay script | `debug-overlay-visible.tres` (`On Application Start`, so it stays open across restarts) |
 | Sounds | [sound_effects.gd](./classic-game/scripts/sound_effects.gd) connects to 4 `GameState` signals and reads `GameState.combo` | Reusable players: [play_sound_on_event.gd](./meds-game/game/scripts/play_sound_on_event.gd), [play_sound_on_increase.gd](./meds-game/game/scripts/play_sound_on_increase.gd), [play_while_true.gd](./meds-game/game/scripts/play_while_true.gd), wired to events/variables in [audio.tscn](./meds-game/game/scenes/audio.tscn) |
 | Volume settings | Second autoload, [settings.gd](./classic-game/scripts/settings.gd): one property + signal + save/load code per setting; [settings_menu.gd](./classic-game/scripts/settings_menu.gd) wires each slider both ways | `music-volume.tres` / `sfx-volume.tres` (`save_to_device`), MEDS `variable-driven-slider`, [bind_float_to_bus_volume.gd](./meds-game/game/scripts/bind_float_to_bus_volume.gd) |
 
@@ -161,6 +163,8 @@ You get the writer, the full causal chain (coin → event → rule → variable)
 
 **MEDS:** in the **Events** bottom panel, raise `player-hit` five times — or set `player-health` to `0` in **Variable Values**. Because the game-over rule *listens to the data*, both paths trigger the real game-over flow, exactly as in gameplay.
 
+The same applies to pausing. In classic, setting `paused` on the SceneTree from the Remote tree freezes the game but the menu doesn't open; the "menu is open" state lives in the menu script. In MEDS, ticking `game-paused` in **Variable Values** pauses the tree, opens the menu and focuses the first slider. Enable `debug_logs` on it and the Output names the node that paused the game: the **II** button, the **Resume** button or the Esc handler.
+
 ### 4. "Is it safe to rename or remove this piece of state?"
 
 **Classic:** text-search `GameState.combo` / `combo_changed` and hope nobody used `GameState.get("combo")` or connected by string.
@@ -169,18 +173,19 @@ You get the writer, the full causal chain (coin → event → rule → variable)
 
 ### 5. In-game overlay (works in exported builds)
 
-Press **F1** (or **II** → **Debug overlay** on a phone) in both games.
+Press **F1** (or **II** → **Debug overlay** on a phone) in both games. In MEDS you can also tick `debug-overlay-visible` in the **Variable Values** panel, which is handy when the game runs on a phone connected for remote debugging.
 
 - Classic [debug_overlay.gd](./classic-game/scripts/debug_overlay.gd) hard-codes each field and signal; every new piece of state must be added by hand (adding the volume settings meant editing the script and reading a second singleton).
 - MEDS [debug_overlay.gd](./meds-game/game/scripts/debug_overlay.gd) knows nothing about the game: it iterates over the variables/events dragged into its arrays, highlights values as they change and timestamps every event raise. It can be dropped into any MEDS project unchanged; the volumes were added by dragging two resources into its array.
 
 ## Trade-offs (the honest part)
 
-- **More files.** MEDS adds 14 variable and 3 event resources and several small rule scripts. For a jam-sized game the classic singleton is quicker to write.
+- **More files.** MEDS adds 16 variable and 3 event resources and several small rule scripts. For a jam-sized game the classic singleton is quicker to write.
 - **Wiring lives in the inspector.** Dependencies are in `.tscn` files rather than in code, so plain text search is less useful — which is precisely what the MEDS reference tracking and debug logs compensate for.
 - **Resources outlive scenes.** A variable keeps its value while anything references it (including across `reload_current_scene()`), so the start of a session must be explicit — here via the `ResetSessionVariables` node, which must stay first in `main.tscn`. The classic version has the same issue with its autoload (`GameState.start_game()`).
 - **Listener order.** Several listeners on the same variable or event run in connection order. Rules that depend on each other (score *then* combo) are kept in one node (`ScoreKeeper`) to stay deterministic. The coin sound reads `combo` for its pitch, so it relies on sitting below `GameRules` in the scene tree (it connects later, so it plays after the combo has been increased).
 - **High-frequency variables.** `player-position` changes every physics frame; avoid enabling `debug_logs` on it.
+- **Engine state mirrored in a variable.** `game-paused` only stays the source of truth if nothing sets `get_tree().paused` directly. A script that does will desynchronise the menu, the variable and the tree.
 - **Saved variables write on every change.** With `save_to_device`, dragging a volume slider rewrites `user://settings.cfg` on each step. The classic `Settings` autoload does the same here, but it could be changed to save once when the menu closes.
 
 ## Project structure

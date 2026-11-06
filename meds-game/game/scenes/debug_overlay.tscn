@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://game/scripts/debug_overlay.gd" id="1_overlay"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
@@ -20,13 +20,22 @@
 [ext_resource type="Resource" path="res://game/events/game-over.tres" id="18_over"]
 [ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="19_music_volume"]
 [ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="20_sfx_volume"]
+[ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="21_paused"]
+[ext_resource type="Resource" path="res://game/variables/debug-overlay-visible.tres" id="22_overlay_visible"]
+[ext_resource type="Script" path="res://game/scripts/toggle_bool_on_action.gd" id="23_toggle_action"]
+[ext_resource type="Script" path="res://game/scripts/bool_to_visibility.gd" id="24_visibility"]
 
 [node name="DebugOverlay" type="CanvasLayer"]
 process_mode = 3
 layer = 3
 script = ExtResource("1_overlay")
-variables = Array[ExtResource("2_base")]([ExtResource("4_running"), ExtResource("5_health"), ExtResource("6_score"), ExtResource("7_combo"), ExtResource("8_level"), ExtResource("9_high"), ExtResource("10_position"), ExtResource("11_pspeed"), ExtResource("12_espeed"), ExtResource("13_damage"), ExtResource("14_coin"), ExtResource("15_window"), ExtResource("19_music_volume"), ExtResource("20_sfx_volume")])
+variables = Array[ExtResource("2_base")]([ExtResource("4_running"), ExtResource("21_paused"), ExtResource("5_health"), ExtResource("6_score"), ExtResource("7_combo"), ExtResource("8_level"), ExtResource("9_high"), ExtResource("10_position"), ExtResource("11_pspeed"), ExtResource("12_espeed"), ExtResource("13_damage"), ExtResource("14_coin"), ExtResource("15_window"), ExtResource("19_music_volume"), ExtResource("20_sfx_volume")])
 events = Array[ExtResource("3_event")]([ExtResource("16_collected"), ExtResource("17_hit"), ExtResource("18_over")])
+
+[node name="ToggleOnAction" type="Node" parent="."]
+script = ExtResource("23_toggle_action")
+action = &"toggle_debug_overlay"
+variable = ExtResource("22_overlay_visible")
 
 [node name="Panel" type="PanelContainer" parent="."]
 offset_left = 16.0
@@ -34,6 +43,8 @@ offset_top = 60.0
 offset_right = 376.0
 offset_bottom = 100.0
 mouse_filter = 2
+script = ExtResource("24_visibility")
+variable = ExtResource("22_overlay_visible")
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 layout_mode = 2

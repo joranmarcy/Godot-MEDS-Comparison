@@ -1,17 +1,34 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=12 format=3]
 
-[ext_resource type="Script" path="res://game/scripts/pause_menu.gd" id="1_menu"]
-[ext_resource type="Script" path="res://game/scripts/action_button.gd" id="90_action_button"]
+[ext_resource type="Script" path="res://game/scripts/toggle_bool_on_action.gd" id="1_toggle_action"]
+[ext_resource type="Script" path="res://game/scripts/toggle_bool_button.gd" id="90_toggle_button"]
+[ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="91_paused"]
+[ext_resource type="Resource" path="res://game/variables/debug-overlay-visible.tres" id="92_overlay_visible"]
+[ext_resource type="Script" path="res://game/scripts/bind_bool_to_tree_paused.gd" id="93_tree_paused"]
+[ext_resource type="Script" path="res://game/scripts/bool_to_visibility.gd" id="94_visibility"]
+[ext_resource type="Script" path="res://game/scripts/focus_while_true.gd" id="95_focus"]
 [ext_resource type="AudioStream" path="res://game/sounds/coin.wav" id="2_coin"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-slider.gd" id="3_slider"]
 [ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="4_music"]
 [ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="5_sfx"]
 
-[node name="SettingsMenu" type="CanvasLayer" node_paths=PackedStringArray("focus_on_open")]
+[node name="SettingsMenu" type="CanvasLayer"]
 process_mode = 3
 layer = 4
-script = ExtResource("1_menu")
-focus_on_open = NodePath("Root/Center/Panel/Margin/VBox/Grid/MusicSlider")
+
+[node name="TogglePauseOnAction" type="Node" parent="."]
+script = ExtResource("1_toggle_action")
+action = &"pause"
+variable = ExtResource("91_paused")
+
+[node name="PauseTreeWhileTrue" type="Node" parent="."]
+script = ExtResource("93_tree_paused")
+variable = ExtResource("91_paused")
+
+[node name="FocusSliderWhileOpen" type="Node" parent="." node_paths=PackedStringArray("focus_target")]
+script = ExtResource("95_focus")
+variable = ExtResource("91_paused")
+focus_target = NodePath("../Root/Center/Panel/Margin/VBox/Grid/MusicSlider")
 
 [node name="SfxPreview" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_coin")
@@ -24,6 +41,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
+script = ExtResource("94_visibility")
+variable = ExtResource("91_paused")
 
 [node name="Center" type="CenterContainer" parent="Root"]
 layout_mode = 1
@@ -102,8 +121,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 18
 text = "Resume"
-script = ExtResource("90_action_button")
-action = &"pause"
+script = ExtResource("90_toggle_button")
+variable = ExtResource("91_paused")
 
 [node name="DebugOverlayButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons"]
 custom_minimum_size = Vector2(0, 48)
@@ -111,8 +130,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 18
 text = "Debug overlay"
-script = ExtResource("90_action_button")
-action = &"toggle_debug_overlay"
+script = ExtResource("90_toggle_button")
+variable = ExtResource("92_overlay_visible")
 
 [node name="Hint" type="Label" parent="Root/Center/Panel/Margin/VBox"]
 modulate = Color(1, 1, 1, 0.6)

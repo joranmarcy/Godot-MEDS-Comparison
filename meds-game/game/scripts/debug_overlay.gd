@@ -1,10 +1,10 @@
 extends CanvasLayer
-## Generic in-game debug overlay ("toggle_debug_overlay" action: F1, or the button in the pause menu).
-## Works in exported builds too, including on phones.
+## Generic in-game debug overlay. Works in exported builds too, including on phones.
 ##
 ## It knows nothing about the game: drag any MEDS variable or event into the
 ## arrays in the inspector and it is displayed. Recently changed values are
 ## highlighted, and every event raise is logged with a timestamp.
+## Visibility is driven by `debug-overlay-visible` (F1, the pause-menu button, or the Variable Values panel).
 
 const MAX_LOG_LINES := 8
 
@@ -21,18 +21,12 @@ var _log: PackedStringArray = []
 
 
 func _ready() -> void:
-	_panel.hide()
 	for variable in variables:
 		if variable != null:
 			variable.connect("value_changed", _on_variable_changed.bind(variable))
 	for event in events:
 		if event != null:
 			event.event_raised.connect(_on_event_raised.bind(event))
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("toggle_debug_overlay"):
-		_panel.visible = not _panel.visible
 
 
 func _process(_delta: float) -> void:

@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-label.gd" id="1_label"]
-[ext_resource type="Script" path="res://game/scripts/action_button.gd" id="90_action_button"]
+[ext_resource type="Script" path="res://game/scripts/toggle_bool_button.gd" id="90_toggle_button"]
+[ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="92_paused"]
 [ext_resource type="Script" path="res://game/scripts/hint_label.gd" id="91_hint_label"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-progress-bar.gd" id="2_bar"]
 [ext_resource type="Resource" path="res://game/variables/player-health.tres" id="3_health"]
@@ -103,8 +104,8 @@ tooltip_text = "Pause / volume (Esc)"
 focus_mode = 0
 theme_override_font_sizes/font_size = 20
 text = "II"
-script = ExtResource("90_action_button")
-action = &"pause"
+script = ExtResource("90_toggle_button")
+variable = ExtResource("92_paused")
 
 [node name="Hint" type="Label" parent="."]
 anchors_preset = 7

@@ -36,6 +36,13 @@ func _bus_db(bus_name: StringName) -> float:
 func _bus_muted(bus_name: StringName) -> bool:
 	return AudioServer.is_bus_mute(AudioServer.get_bus_index(bus_name))
 
+func _press_key(keycode: Key) -> void:
+	var event := InputEventKey.new()
+	event.keycode = keycode
+	event.physical_keycode = keycode
+	event.pressed = true
+	root.push_input(event)
+
 func _press_escape() -> void:
 	var event := InputEventKey.new()
 	event.keycode = KEY_ESCAPE
@@ -132,6 +139,8 @@ func _run() -> void:
 	var running: BoolVariable = load("res://game/variables/game-running.tres")
 	var music_volume: FloatVariable = load("res://game/variables/music-volume.tres")
 	var sfx_volume: FloatVariable = load("res://game/variables/sfx-volume.tres")
+	var game_paused: BoolVariable = load("res://game/variables/game-paused.tres")
+	var overlay_visible: BoolVariable = load("res://game/variables/debug-overlay-visible.tres")
 	var coin_evt: Event = load("res://game/events/coin-collected.tres")
 	var hit_evt: Event = load("res://game/events/player-hit.tres")
 	var over_evt: Event = load("res://game/events/game-over.tres")
@@ -144,9 +153,9 @@ func _run() -> void:
 	await process_frame
 	check(health.value == 5, "health starts at 5")
 	check(running.value, "game running at start")
-	check(main.get_node("DebugOverlay").variables.size() == 14, "overlay typed variables array loaded")
+	check(main.get_node("DebugOverlay").variables.size() == 15, "overlay typed variables array loaded")
 	check(main.get_node("DebugOverlay").events.size() == 3, "overlay typed events array loaded")
-	check(main.get_node("ResetSessionVariables").variables.size() == 6, "reset typed array loaded")
+	check(main.get_node("ResetSessionVariables").variables.size() == 7, "reset typed array loaded")
 	check(not main.get_node("GameOverScreen/Root").visible, "game over hidden at start")
 	check(main.get_node("Audio/MusicWhileRunning").playing, "music plays at start")
 
@@ -186,10 +195,20 @@ func _run() -> void:
 	check(is_equal_approx(float(_saved_value("variables", "res://game/variables/sfx-volume")), 0.5), "volume saved to disk")
 	music_volume.set_value(0.8)
 	_check_pause_menu(main)
+	# Writing the variable is what the Variable Values panel does: it must drive the real pause flow.
+	game_paused.set_value(true)
+	check(paused and main.get_node("SettingsMenu/Root").visible, "writing game-paused pauses the tree and opens the menu")
+	game_paused.set_value(false)
+	check(not paused and not main.get_node("SettingsMenu/Root").visible, "clearing game-paused resumes")
+	_press_key(KEY_F1)
+	check(overlay_visible.value and main.get_node("DebugOverlay/Panel").visible, "F1 toggles debug-overlay-visible")
+	_press_key(KEY_F1)
+	check(not overlay_visible.value and not main.get_node("DebugOverlay/Panel").visible, "F1 toggles it back off")
 	await _check_touch_controls(main, player)
 
 	for i in 4: hit_evt.raise_event()
 	check(health.value == 0, "health 0")
+	var score_at_game_over := score.value
 	check(not running.value, "game stopped")
 	check(game_over_count == 1, "game over raised once (got %d)" % game_over_count)
 	check(main.get_node("GameOverScreen/Root").visible, "game over screen visible")
@@ -198,8 +217,11 @@ func _run() -> void:
 	hit_evt.raise_event()
 	check(game_over_count == 1, "no second game over")
 	coin_evt.raise_event()
-	check(score.value == 450, "no scoring after game over")
+	check(score.value == score_at_game_over, "no scoring after game over")
 
+	# Restart while paused and with the overlay open, to check what is reset and what is kept.
+	game_paused.set_value(true)
+	overlay_visible.set_value(true)
 	# Simulate restart (same as reload_current_scene: resources stay alive).
 	main.free()
 	var main2: Node = load("res://game/scenes/main.tscn").instantiate()
@@ -210,6 +232,9 @@ func _run() -> void:
 	check(high.value >= 450, "high score survives restart")
 	check(is_equal_approx(sfx_volume.value, 0.5), "volume survives restart")
 	check(not main2.get_node("GameOverScreen/Root").visible, "game over hidden after restart")
+	check(not game_paused.value and not paused and not main2.get_node("SettingsMenu/Root").visible, "restart un-pauses (game-paused is a session variable)")
+	check(overlay_visible.value and main2.get_node("DebugOverlay/Panel").visible, "debug overlay stays open across restart")
+	overlay_visible.set_value(false)
 	check(main2.get_node("Audio/MusicWhileRunning").playing, "music restarts")
 	check(not main2.get_node("Audio/LevelUpSound").playing, "no level up sound on restart reset")
 	for i in 30: await process_frame
