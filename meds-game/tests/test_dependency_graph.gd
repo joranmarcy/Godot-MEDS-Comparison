@@ -162,6 +162,19 @@ func _check_layout(dock: Control, graph: Dictionary) -> void:
 		and dock.get_node_rect(score_id).position.x < dock.get_node_rect(level_rule_id).position.x, "layout: ScoreKeeper -> score -> LevelFromScore left to right")
 
 
+func _check_port_labels(dock: Control) -> void:
+	var enemy_speed: Dictionary = dock.get_port_labels("res:res://game/variables/enemy-speed.tres")
+	check(enemy_speed["out"].has("read by") and enemy_speed["out"].has("listened to by") and not enemy_speed["out"].has("reads"), "labels: a variable says 'read by', not 'reads' (%s)" % [enemy_speed])
+	var score: Dictionary = dock.get_port_labels("res:res://game/variables/score.tres")
+	check(score["in"].has("written by") and not score["in"].has("writes"), "labels: a variable says 'written by' (%s)" % [score])
+	var enemy: Dictionary = dock.get_port_labels("node:res://game/scenes/enemy.tscn::.")
+	check(enemy["in"].has("reads") and enemy["in"].has("spawned by") and not enemy["in"].has("spawns"), "labels: the reader says 'reads', the spawned scene says 'spawned by' (%s)" % [enemy])
+	var spawner: Dictionary = dock.get_port_labels("node:%s::EnemySpawner" % MAIN)
+	check(spawner["out"].has("spawns") and spawner["in"].has("reads"), "labels: the spawner says 'spawns' and 'reads' (%s)" % [spawner])
+	var keeper: Dictionary = dock.get_port_labels("node:%s::GameRules/ScoreKeeper" % MAIN)
+	check(keeper["out"].has("writes") and keeper["in"].has("listens"), "labels: a rule says 'writes' and 'listens' (%s)" % [keeper])
+
+
 func _check_focus(dock: Control) -> void:
 	var keeper := "node:%s::GameRules/ScoreKeeper" % MAIN
 	var player := "node:%s::Player" % MAIN
@@ -230,6 +243,7 @@ func _check_dock(graph: Dictionary) -> void:
 	check(dock.get_connection_count() == graph["edges"].size(), "dock: one GraphEdit connection per link (%d)" % dock.get_connection_count())
 	check(dock.get_mermaid().begins_with("```mermaid"), "dock: mermaid export")
 	await _check_layout(dock, graph)
+	_check_port_labels(dock)
 	await _check_focus(dock)
 
 	var score := "res://game/variables/score.tres"

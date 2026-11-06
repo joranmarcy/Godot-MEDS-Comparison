@@ -34,6 +34,17 @@ const EDGE_ORDER := [
 	Scanner.EDGE_WRITES, Scanner.EDGE_RAISES, Scanner.EDGE_SPAWNS,
 	Scanner.EDGE_LISTENS, Scanner.EDGE_READS, Scanner.EDGE_REFERENCES,
 ]
+const ACTIVE_OUTPUT_KINDS := [Scanner.EDGE_WRITES, Scanner.EDGE_RAISES, Scanner.EDGE_SPAWNS]
+const ACTIVE_INPUT_KINDS := [Scanner.EDGE_LISTENS, Scanner.EDGE_READS, Scanner.EDGE_REFERENCES]
+const PASSIVE_LABELS := {
+	Scanner.EDGE_WRITES: "written by",
+	Scanner.EDGE_RAISES: "raised by",
+	Scanner.EDGE_SPAWNS: "spawned by",
+	Scanner.EDGE_LISTENS: "listened to by",
+	Scanner.EDGE_READS: "read by",
+	Scanner.EDGE_REFERENCES: "referenced by",
+}
+const PASSIVE_LABEL_ALPHA := 0.7
 const NODE_COLORS := {
 	Scanner.KIND_NODE: Color(0.28, 0.3, 0.35),
 	Scanner.KIND_EVENT: Color(0.45, 0.24, 0.55),
@@ -61,6 +72,7 @@ var _graph_nodes: Dictionary = {}     # graph id -> GraphNode
 var _ports: Dictionary = {}           # graph id -> {"in": [kinds], "out": [kinds]}
 var _base_subtitles: Dictionary = {}  # graph id -> subtitle text without runtime info
 var _subtitle_labels: Dictionary = {} # graph id -> Label
+var _port_labels: Dictionary = {}     # graph id -> {"in": [texts], "out": [texts]}
 var _connections: Array = []          # {from_id, to_id, kind, link (index in _graph_edit.links)}
 var _focus_update_queued := false
 var _layout_version := 0
@@ -390,25 +402,53 @@ func _create_graph_node(node: Dictionary, ports: Dictionary, index: int) -> Grap
 
 	var ins: Array = ports["in"]
 	var outs: Array = ports["out"]
+	var labels: Dictionary = {"in": [], "out": []}
 	for row in maxi(ins.size(), outs.size()):
 		var row_box := HBoxContainer.new()
 		var left := Label.new()
-		left.text = ins[row] if row < ins.size() else ""
+		left.text = _port_label(ins[row], "in") if row < ins.size() else ""
 		left.add_theme_color_override("font_color", EDGE_COLORS[ins[row]] if row < ins.size() else Color.WHITE)
+		if row < ins.size() and _is_passive_label(ins[row], "in"):
+			left.modulate.a = PASSIVE_LABEL_ALPHA
 		row_box.add_child(left)
 		var gap := Control.new()
 		gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		gap.custom_minimum_size.x = 24
 		row_box.add_child(gap)
 		var right := Label.new()
-		right.text = outs[row] if row < outs.size() else ""
+		right.text = _port_label(outs[row], "out") if row < outs.size() else ""
 		right.add_theme_color_override("font_color", EDGE_COLORS[outs[row]] if row < outs.size() else Color.WHITE)
+		if row < outs.size() and _is_passive_label(outs[row], "out"):
+			right.modulate.a = PASSIVE_LABEL_ALPHA
 		row_box.add_child(right)
+		if row < ins.size():
+			labels["in"].append(left.text)
+		if row < outs.size():
+			labels["out"].append(right.text)
 		graph_node.add_child(row_box)
 		graph_node.set_slot(row + 1,
 			row < ins.size(), EDGE_PORT_TYPES.get(ins[row], 0) if row < ins.size() else 0, EDGE_COLORS[ins[row]] if row < ins.size() else Color.WHITE,
 			row < outs.size(), EDGE_PORT_TYPES.get(outs[row], 0) if row < outs.size() else 0, EDGE_COLORS[outs[row]] if row < outs.size() else Color.WHITE)
+	_port_labels[node["id"]] = labels
 	return graph_node
+
+
+## A link kind is a verb: the box that performs it shows the active form (a node *writes*,
+## *raises* and *spawns* through its outputs, *listens*, *reads* and *references* through its
+## inputs) and the other end, the variable or event or the spawned scene, the passive form
+## ("written by", "read by"...).
+static func _port_label(kind: String, side: String) -> String:
+	var active_kinds: Array = ACTIVE_OUTPUT_KINDS if side == "out" else ACTIVE_INPUT_KINDS
+	return kind if active_kinds.has(kind) else PASSIVE_LABELS.get(kind, kind)
+
+
+static func _is_passive_label(kind: String, side: String) -> bool:
+	return not (ACTIVE_OUTPUT_KINDS if side == "out" else ACTIVE_INPUT_KINDS).has(kind)
+
+
+## Port label texts per side, in port order (empty for passive ends), for tests.
+func get_port_labels(id: String) -> Dictionary:
+	return _port_labels.get(id, {})
 
 
 ## One port per link kind on each side, so every link keeps a single colour end to end.
@@ -444,6 +484,7 @@ func _clear_graph() -> void:
 		graph_node.queue_free()
 	_graph_nodes.clear()
 	_subtitle_labels.clear()
+	_port_labels.clear()
 	_base_subtitles.clear()
 	_connections.clear()
 	_graph = {}
