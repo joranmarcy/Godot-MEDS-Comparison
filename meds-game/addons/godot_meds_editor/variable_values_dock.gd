@@ -137,12 +137,22 @@ func on_variable_value_updated(payload: Dictionary) -> void:
 		old_value_str = str(vd.get("value_str", ""))
 		old_blink_token = int(vd.get("blink_token", 0))
 	item.set_text(COL_TYPE, _get_pretty_type_name(raw_type))
-	# Vectors are edited through a popup with per-component fields instead of raw text.
-	# Note: set_cell_mode() clears the cell text, so only switch when needed and before set_text().
-	var value_cell_mode := TreeItem.CELL_MODE_CUSTOM if _get_vector_component_count(raw_type) > 0 else TreeItem.CELL_MODE_STRING
+	# Vectors are edited through a popup with per-component fields, bools through a true/false dropdown.
+	# Note: set_cell_mode() clears the cell text and range, so only switch when needed and before setting them.
+	var value_cell_mode := TreeItem.CELL_MODE_STRING
+	if _get_vector_component_count(raw_type) > 0:
+		value_cell_mode = TreeItem.CELL_MODE_CUSTOM
+	elif raw_type == "BoolVariable":
+		value_cell_mode = TreeItem.CELL_MODE_RANGE
 	if item.get_cell_mode(COL_VALUE) != value_cell_mode:
 		item.set_cell_mode(COL_VALUE, value_cell_mode)
-	item.set_text(COL_VALUE, new_value_str)
+	if value_cell_mode == TreeItem.CELL_MODE_RANGE:
+		# A range cell with comma-separated text is shown by the Tree as a dropdown; the range is the option index.
+		item.set_text(COL_VALUE, "false,true")
+		item.set_range_config(COL_VALUE, 0, 1, 1)
+		item.set_range(COL_VALUE, 1 if new_value_str.strip_edges().to_lower() == "true" else 0)
+	else:
+		item.set_text(COL_VALUE, new_value_str)
 	item.set_editable(COL_VALUE, true)
 	item.set_cell_mode(COL_DEBUG_LOGS, TreeItem.CELL_MODE_CHECK)
 	item.set_editable(COL_DEBUG_LOGS, true)
@@ -274,6 +284,8 @@ func _on_tree_item_edited() -> void:
 				push_warning("Variable Values: can't edit values for resources without a saved path.")
 				return
 			var value_str := item.get_text(COL_VALUE)
+			if item.get_cell_mode(COL_VALUE) == TreeItem.CELL_MODE_RANGE:
+				value_str = "true" if item.get_range(COL_VALUE) >= 0.5 else "false"
 			variable_value_set_requested.emit(session_id, path, type_name, value_str)
 			return
 
