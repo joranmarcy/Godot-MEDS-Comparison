@@ -1,40 +1,40 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene format=3 uid="uid://djgrc2ato5dl0"]
 
-[ext_resource type="Script" path="res://game/scripts/toggle_bool_on_action.gd" id="1_toggle_action"]
-[ext_resource type="Script" path="res://game/scripts/toggle_bool_button.gd" id="90_toggle_button"]
-[ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="91_paused"]
-[ext_resource type="Resource" path="res://game/variables/debug-overlay-visible.tres" id="92_overlay_visible"]
-[ext_resource type="Script" path="res://game/scripts/bind_bool_to_tree_paused.gd" id="93_tree_paused"]
-[ext_resource type="Script" path="res://game/scripts/bool_to_visibility.gd" id="94_visibility"]
-[ext_resource type="Script" path="res://game/scripts/focus_while_true.gd" id="95_focus"]
-[ext_resource type="AudioStream" path="res://game/sounds/coin.wav" id="2_coin"]
-[ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-slider.gd" id="3_slider"]
+[ext_resource type="Script" uid="uid://d0sujyokj80j" path="res://game/scripts/toggle_bool_on_action.gd" id="1_toggle_action"]
+[ext_resource type="AudioStream" uid="uid://d3s3rg2iuqfbc" path="res://game/sounds/coin.wav" id="2_coin"]
+[ext_resource type="Script" uid="uid://bkb1yi6tc68ai" path="res://addons/godot_meds_core/scripts/ui/variable-driven-slider.gd" id="3_slider"]
 [ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="4_music"]
 [ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="5_sfx"]
+[ext_resource type="Script" uid="uid://yyw8yeblixky" path="res://game/scripts/toggle_bool_button.gd" id="90_toggle_button"]
+[ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="91_paused"]
+[ext_resource type="Resource" path="res://game/variables/debug-overlay-visible.tres" id="92_overlay_visible"]
+[ext_resource type="Script" uid="uid://d0u2x4j1c28fq" path="res://game/scripts/bind_bool_to_tree_paused.gd" id="93_tree_paused"]
+[ext_resource type="Script" uid="uid://dw37dqm0g42s7" path="res://game/scripts/bool_to_visibility.gd" id="94_visibility"]
+[ext_resource type="Script" uid="uid://cdp5l0qli8f2u" path="res://game/scripts/focus_while_true.gd" id="95_focus"]
 
-[node name="SettingsMenu" type="CanvasLayer"]
+[node name="SettingsMenu" type="CanvasLayer" unique_id=1069588666]
 process_mode = 3
 layer = 4
 
-[node name="TogglePauseOnAction" type="Node" parent="."]
+[node name="TogglePauseOnAction" type="Node" parent="." unique_id=1645761198]
 script = ExtResource("1_toggle_action")
 action = &"pause"
 variable = ExtResource("91_paused")
 
-[node name="PauseTreeWhileTrue" type="Node" parent="."]
+[node name="PauseTreeWhileTrue" type="Node" parent="." unique_id=211638073]
 script = ExtResource("93_tree_paused")
 variable = ExtResource("91_paused")
 
-[node name="FocusSliderWhileOpen" type="Node" parent="." node_paths=PackedStringArray("focus_target")]
+[node name="FocusSliderWhileOpen" type="Node" parent="." unique_id=1434221120 node_paths=PackedStringArray("focus_target")]
 script = ExtResource("95_focus")
 variable = ExtResource("91_paused")
 focus_target = NodePath("../Root/Center/Panel/Margin/VBox/Grid/MusicSlider")
 
-[node name="SfxPreview" type="AudioStreamPlayer" parent="."]
+[node name="SfxPreview" type="AudioStreamPlayer" parent="." unique_id=687864840]
 stream = ExtResource("2_coin")
 bus = &"SFX"
 
-[node name="Root" type="ColorRect" parent="."]
+[node name="Root" type="ColorRect" parent="." unique_id=1813597307]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -44,7 +44,7 @@ color = Color(0, 0, 0, 0.6)
 script = ExtResource("94_visibility")
 variable = ExtResource("91_paused")
 
-[node name="Center" type="CenterContainer" parent="Root"]
+[node name="Center" type="CenterContainer" parent="Root" unique_id=811565069]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,39 +52,39 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="Root/Center"]
+[node name="Panel" type="PanelContainer" parent="Root/Center" unique_id=1759778670]
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="Root/Center/Panel"]
+[node name="Margin" type="MarginContainer" parent="Root/Center/Panel" unique_id=1472249441]
 layout_mode = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 24
 
-[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel/Margin" unique_id=410061079]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Title" type="Label" parent="Root/Center/Panel/Margin/VBox"]
+[node name="Title" type="Label" parent="Root/Center/Panel/Margin/VBox" unique_id=1850222724]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "PAUSED"
 horizontal_alignment = 1
 
-[node name="Grid" type="GridContainer" parent="Root/Center/Panel/Margin/VBox"]
+[node name="Grid" type="GridContainer" parent="Root/Center/Panel/Margin/VBox" unique_id=2054646617]
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 12
 columns = 2
 
-[node name="MusicLabel" type="Label" parent="Root/Center/Panel/Margin/VBox/Grid"]
+[node name="MusicLabel" type="Label" parent="Root/Center/Panel/Margin/VBox/Grid" unique_id=1171611554]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Music"
 
-[node name="MusicSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
+[node name="MusicSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid" unique_id=1799932576]
 custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -95,12 +95,12 @@ value = 0.8
 script = ExtResource("3_slider")
 variable = ExtResource("4_music")
 
-[node name="SfxLabel" type="Label" parent="Root/Center/Panel/Margin/VBox/Grid"]
+[node name="SfxLabel" type="Label" parent="Root/Center/Panel/Margin/VBox/Grid" unique_id=1826241596]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Sound effects"
 
-[node name="SfxSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid"]
+[node name="SfxSlider" type="HSlider" parent="Root/Center/Panel/Margin/VBox/Grid" unique_id=194193550]
 custom_minimum_size = Vector2(240, 40)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -111,11 +111,11 @@ value = 0.8
 script = ExtResource("3_slider")
 variable = ExtResource("5_sfx")
 
-[node name="Buttons" type="HBoxContainer" parent="Root/Center/Panel/Margin/VBox"]
+[node name="Buttons" type="HBoxContainer" parent="Root/Center/Panel/Margin/VBox" unique_id=839419730]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="ResumeButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons"]
+[node name="ResumeButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons" unique_id=1101135582]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -124,7 +124,7 @@ text = "Resume"
 script = ExtResource("90_toggle_button")
 variable = ExtResource("91_paused")
 
-[node name="DebugOverlayButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons"]
+[node name="DebugOverlayButton" type="Button" parent="Root/Center/Panel/Margin/VBox/Buttons" unique_id=491578563]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -133,7 +133,7 @@ text = "Debug overlay"
 script = ExtResource("90_toggle_button")
 variable = ExtResource("92_overlay_visible")
 
-[node name="Hint" type="Label" parent="Root/Center/Panel/Margin/VBox"]
+[node name="Hint" type="Label" parent="Root/Center/Panel/Margin/VBox" unique_id=1809673051]
 modulate = Color(1, 1, 1, 0.6)
 layout_mode = 2
 text = "Esc: resume   -   F1: debug overlay"

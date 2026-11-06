@@ -80,17 +80,17 @@ flowchart LR
     SCORE --> LevelFromScore -- writes --> LEVEL[(level)]
     SCORE --> HighScoreTracker -- writes --> HIGH[(high-score)]
     PH --> DamageOnPlayerHit -- writes --> HEALTH[(player-health)]
-    HEALTH --> GameOverOnZeroHealth -- writes --> RUN[(game-running)]
-    GameOverOnZeroHealth -- raises --> GO([game-over])
+    HEALTH --> GameOverOnZeroHealth -- writes --> OVER[(game-over)]
+    GameOverOnZeroHealth -- raises --> DIED([player-died])
     PH --> ScreenFlash & ScreenShake
     SCORE & COMBO & LEVEL & HIGH & HEALTH --> HUD["HUD (addon label / progress-bar bindings)"]
-    RUN --> GameOverScreen
+    OVER --> GameOverScreen
     CC --> CoinSound
     COMBO -. pitch .-> CoinSound
     PH --> HitSound
     LEVEL --> LevelUpSound
-    GO --> GameOverSound
-    RUN --> MusicWhileRunning
+    DIED --> GameOverSound
+    OVER --> MusicUntilGameOver
     SettingsMenu["SettingsMenu (addon slider bindings)"] -- writes --> VOL[(music-volume<br/>sfx-volume)]
     VOL --> BusVolume["MusicVolume / SfxVolume bus bindings"]
 ```
@@ -108,12 +108,13 @@ flowchart LR
 | Game-over rule | `GameState.damage_player()` → `_end_game()` | [game_over_on_zero_health.gd](./meds-game/game/scripts/game_over_on_zero_health.gd) node |
 | Enemy → player position | `get_tree().get_first_node_in_group("player")` | Reads `player-position.tres` |
 | HUD | Custom [hud.gd](./classic-game/scripts/hud.gd) (5 signal handlers) | **No custom script**: MEDS `variable-driven-label` / `variable-driven-progress-bar` |
-| Game-over screen | Custom script listening to `GameState.game_over` | `bool_to_visibility` + MEDS labels + restart button |
+| Game-over screen | Custom script listening to `GameState.game_over` | `bool_to_visibility` on `game-over` + MEDS labels + restart button |
 | Session reset on restart | `GameState.start_game()` called from `main.gd` | `ResetSessionVariables` node listing the variables to reset |
 | Debug overlay | Hand-written field by field | Generic: takes `Array[BaseVariable]` / `Array[Event]` |
-| Pause | `get_tree().paused`, set by [settings_menu.gd](./classic-game/scripts/settings_menu.gd); the menu decides when it opens | `game-paused.tres`: written by [toggle_bool_on_action.gd](./meds-game/game/scripts/toggle_bool_on_action.gd) (Esc / Start) and [toggle_bool_button.gd](./meds-game/game/scripts/toggle_bool_button.gd) (II, Resume); read by [bind_bool_to_tree_paused.gd](./meds-game/game/scripts/bind_bool_to_tree_paused.gd), the menu's `bool_to_visibility` and [focus_while_true.gd](./meds-game/game/scripts/focus_while_true.gd). Reset at session start |
+| Game state flags | `GameState.is_running`, plus the engine's `get_tree().paused` | Two independent `BoolVariable`s: `game-over` (the run has ended; gameplay nodes stop, game-over screen shows) and `game-paused` (time is frozen; menu shows). Both are session variables, reset to `false` on restart |
+| Pause | `get_tree().paused`, set by [settings_menu.gd](./classic-game/scripts/settings_menu.gd); the menu decides when it opens | `game-paused.tres`: written by [toggle_bool_on_action.gd](./meds-game/game/scripts/toggle_bool_on_action.gd) (Esc / Start) and [toggle_bool_button.gd](./meds-game/game/scripts/toggle_bool_button.gd) (II, Resume); read by [bind_bool_to_tree_paused.gd](./meds-game/game/scripts/bind_bool_to_tree_paused.gd), the menu's `bool_to_visibility` and [focus_while_true.gd](./meds-game/game/scripts/focus_while_true.gd) |
 | Debug overlay on/off | Private to the overlay script | `debug-overlay-visible.tres` (`On Application Start`, so it stays open across restarts) |
-| Sounds | [sound_effects.gd](./classic-game/scripts/sound_effects.gd) connects to 4 `GameState` signals and reads `GameState.combo` | Reusable players: [play_sound_on_event.gd](./meds-game/game/scripts/play_sound_on_event.gd), [play_sound_on_increase.gd](./meds-game/game/scripts/play_sound_on_increase.gd), [play_while_true.gd](./meds-game/game/scripts/play_while_true.gd), wired to events/variables in [audio.tscn](./meds-game/game/scenes/audio.tscn) |
+| Sounds | [sound_effects.gd](./classic-game/scripts/sound_effects.gd) connects to 4 `GameState` signals and reads `GameState.combo` | Reusable players: [play_sound_on_event.gd](./meds-game/game/scripts/play_sound_on_event.gd), [play_sound_on_increase.gd](./meds-game/game/scripts/play_sound_on_increase.gd), [play_while_bool.gd](./meds-game/game/scripts/play_while_bool.gd), wired to events/variables in [audio.tscn](./meds-game/game/scenes/audio.tscn) |
 | Volume settings | Second autoload, [settings.gd](./classic-game/scripts/settings.gd): one property + signal + save/load code per setting; [settings_menu.gd](./classic-game/scripts/settings_menu.gd) wires each slider both ways | `music-volume.tres` / `sfx-volume.tres` (`save_to_device`), MEDS `variable-driven-slider`, [bind_float_to_bus_volume.gd](./meds-game/game/scripts/bind_float_to_bus_volume.gd) |
 
 ## How MEDS improves *understanding*
@@ -203,7 +204,7 @@ meds-game/
   addons/godot_meds_core/    MEDS runtime (copied from Godot-MEDS-Sample)
   addons/godot_meds_editor/  MEDS editor tools (docks, reference tracking)
   game/variables/*.tres      shared state, tuning & volume settings
-  game/events/*.tres         coin-collected, player-hit, game-over
+  game/events/*.tres         coin-collected, player-hit, player-died
   game/scripts/*.gd          gameplay nodes + one script per rule + reusable sound/volume bindings + touch input
   game/scenes/*.tscn
   game/sounds/*.wav

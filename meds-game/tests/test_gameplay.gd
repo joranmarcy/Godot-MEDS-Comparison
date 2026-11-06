@@ -136,15 +136,15 @@ func _run() -> void:
 	var combo: IntVariable = load("res://game/variables/combo.tres")
 	var level: IntVariable = load("res://game/variables/level.tres")
 	var high: IntVariable = load("res://game/variables/high-score.tres")
-	var running: BoolVariable = load("res://game/variables/game-running.tres")
+	var game_over: BoolVariable = load("res://game/variables/game-over.tres")
 	var music_volume: FloatVariable = load("res://game/variables/music-volume.tres")
 	var sfx_volume: FloatVariable = load("res://game/variables/sfx-volume.tres")
 	var game_paused: BoolVariable = load("res://game/variables/game-paused.tres")
 	var overlay_visible: BoolVariable = load("res://game/variables/debug-overlay-visible.tres")
 	var coin_evt: Event = load("res://game/events/coin-collected.tres")
 	var hit_evt: Event = load("res://game/events/player-hit.tres")
-	var over_evt: Event = load("res://game/events/game-over.tres")
-	over_evt.event_raised.connect(func(): game_over_count += 1)
+	var died_evt: Event = load("res://game/events/player-died.tres")
+	died_evt.event_raised.connect(func(): game_over_count += 1)
 
 	var main: Node = load("res://game/scenes/main.tscn").instantiate()
 	root.add_child(main)
@@ -152,12 +152,12 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	check(health.value == 5, "health starts at 5")
-	check(running.value, "game running at start")
+	check(not game_over.value, "game not over at start")
 	check(main.get_node("DebugOverlay").variables.size() == 15, "overlay typed variables array loaded")
 	check(main.get_node("DebugOverlay").events.size() == 3, "overlay typed events array loaded")
 	check(main.get_node("ResetSessionVariables").variables.size() == 7, "reset typed array loaded")
 	check(not main.get_node("GameOverScreen/Root").visible, "game over hidden at start")
-	check(main.get_node("Audio/MusicWhileRunning").playing, "music plays at start")
+	check(main.get_node("Audio/MusicUntilGameOver").playing, "music plays at start")
 
 	var player: Node2D = main.get_node("Player")
 	var coin: Node2D = load("res://game/scenes/coin.tscn").instantiate()
@@ -209,10 +209,10 @@ func _run() -> void:
 	for i in 4: hit_evt.raise_event()
 	check(health.value == 0, "health 0")
 	var score_at_game_over := score.value
-	check(not running.value, "game stopped")
+	check(game_over.value, "game-over set at zero health")
 	check(game_over_count == 1, "game over raised once (got %d)" % game_over_count)
 	check(main.get_node("GameOverScreen/Root").visible, "game over screen visible")
-	check(not main.get_node("Audio/MusicWhileRunning").playing, "music stops on game over")
+	check(not main.get_node("Audio/MusicUntilGameOver").playing, "music stops on game over")
 	check(main.get_node("Audio/GameOverSound").playing, "game over sound")
 	hit_evt.raise_event()
 	check(game_over_count == 1, "no second game over")
@@ -228,14 +228,14 @@ func _run() -> void:
 	root.add_child(main2)
 	current_scene = main2
 	await process_frame
-	check(health.value == 5 and score.value == 0 and combo.value == 1 and level.value == 1 and running.value, "restart resets session variables")
+	check(health.value == 5 and score.value == 0 and combo.value == 1 and level.value == 1 and not game_over.value, "restart resets session variables")
 	check(high.value >= 450, "high score survives restart")
 	check(is_equal_approx(sfx_volume.value, 0.5), "volume survives restart")
 	check(not main2.get_node("GameOverScreen/Root").visible, "game over hidden after restart")
 	check(not game_paused.value and not paused and not main2.get_node("SettingsMenu/Root").visible, "restart un-pauses (game-paused is a session variable)")
 	check(overlay_visible.value and main2.get_node("DebugOverlay/Panel").visible, "debug overlay stays open across restart")
 	overlay_visible.set_value(false)
-	check(main2.get_node("Audio/MusicWhileRunning").playing, "music restarts")
+	check(main2.get_node("Audio/MusicUntilGameOver").playing, "music restarts")
 	check(not main2.get_node("Audio/LevelUpSound").playing, "no level up sound on restart reset")
 	for i in 30: await process_frame
 	main2.free()

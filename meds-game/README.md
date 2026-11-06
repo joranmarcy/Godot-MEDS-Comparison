@@ -3,7 +3,8 @@
 The same game built with [Godot MEDS](https://github.com/joranmarcy/Godot-MEDS-Sample) (both plugins are enabled in `project.godot`).
 
 - **State** → one Resource per value in [game/variables/](./game/variables/) (`IntVariable`, `FloatVariable`, `BoolVariable`, `Vector2Variable`).
-- **Communication** → Resource events in [game/events/](./game/events/): `coin-collected`, `player-hit`, `game-over`.
+- **Communication** → Resource events in [game/events/](./game/events/): `coin-collected`, `player-hit`, `player-died`.
+- **Game state flags** → two independent `BoolVariable`s: `game-over` (the run has ended) and `game-paused` (time is frozen). Gameplay nodes check `game-over`; `game-paused` pauses the SceneTree, so they never need to check it.
 - **Rules** → one small node each under `Main/GameRules` in [main.tscn](./game/scenes/main.tscn).
 - **UI** → MEDS addon bindings (`variable-driven-label`, `variable-driven-progress-bar`, `variable-driven-slider`), no HUD script.
 - **Audio** → [audio.tscn](./game/scenes/audio.tscn), instanced as `Main/Audio`: sound players driven by events/variables, and `music-volume` / `sfx-volume` variables (saved with `save_to_device`) bound to the `Music` and `SFX` buses. It only references resources, so it can be run on its own (F6) and its sounds triggered from the **Events** panel. Esc (or the on-screen **II** button) sets `game-paused`, which pauses the tree and opens the pause menu with the volume sliders.

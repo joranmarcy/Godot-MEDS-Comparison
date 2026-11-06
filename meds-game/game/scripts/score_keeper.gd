@@ -3,7 +3,7 @@ extends Node
 ## The combo falls back to its initial value if no coin is collected within `combo_window` seconds.
 
 @export var coin_collected: Event
-@export var game_running: BoolVariable
+@export var game_over: BoolVariable
 @export var score: IntVariable
 @export var combo: IntVariable
 @export var coin_value: IntVariable
@@ -17,7 +17,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if not game_running.value or combo.value == combo.initial_value:
+	if game_over.value or combo.value == combo.initial_value:
 		return
 	_combo_time_left -= delta
 	if _combo_time_left <= 0.0:
@@ -25,7 +25,7 @@ func _process(delta: float) -> void:
 
 
 func _on_coin_collected() -> void:
-	if not game_running.value:
+	if game_over.value:
 		return
 	score.set_value(score.value + coin_value.value * combo.value, self)
 	combo.set_value(combo.value + 1, self)

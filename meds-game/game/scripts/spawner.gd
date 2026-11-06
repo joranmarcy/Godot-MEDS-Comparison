@@ -4,7 +4,7 @@ extends Node
 @export var container: Node2D
 @export var group_name: StringName
 @export var level: IntVariable
-@export var game_running: BoolVariable
+@export var game_over: BoolVariable
 @export var max_alive: int = 5
 @export var base_interval: float = 1.5
 @export var interval_decrease_per_level: float = 0.0
@@ -17,7 +17,7 @@ var _time_left := 0.0
 
 
 func _process(delta: float) -> void:
-	if not game_running.value or scene == null or container == null:
+	if game_over.value or scene == null or container == null:
 		return
 	_time_left -= delta
 	if _time_left > 0.0:

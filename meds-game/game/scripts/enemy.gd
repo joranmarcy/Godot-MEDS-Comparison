@@ -4,7 +4,7 @@ extends Area2D
 @export var target_position: Vector2Variable
 @export var base_speed: FloatVariable
 @export var level: IntVariable
-@export var game_running: BoolVariable
+@export var game_over: BoolVariable
 @export var speed_per_level: float = 15.0
 @export var size: float = 14.0
 @export var color: Color = Color(1.0, 0.3, 0.35)
@@ -15,7 +15,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not game_running.value:
+	if game_over.value:
 		return
 	var speed := base_speed.value + (level.value - 1) * speed_per_level
 	global_position = global_position.move_toward(target_position.value, speed * delta)

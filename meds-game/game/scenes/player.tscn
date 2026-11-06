@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://game/scripts/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://game/variables/player-speed.tres" id="2_speed"]
 [ext_resource type="Resource" path="res://game/variables/player-position.tres" id="3_position"]
-[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="4_running"]
+[ext_resource type="Resource" path="res://game/variables/game-over.tres" id="4_game_over"]
 [ext_resource type="Resource" path="res://game/events/player-hit.tres" id="5_hit"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
@@ -18,7 +18,7 @@ motion_mode = 1
 script = ExtResource("1_player")
 move_speed = ExtResource("2_speed")
 position_variable = ExtResource("3_position")
-game_running = ExtResource("4_running")
+game_over = ExtResource("4_game_over")
 player_hit = ExtResource("5_hit")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

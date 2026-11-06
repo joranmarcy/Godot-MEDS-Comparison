@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://game/scripts/bool_to_visibility.gd" id="1_visibility"]
-[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="2_running"]
+[ext_resource type="Resource" path="res://game/variables/game-over.tres" id="2_game_over"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/ui/variable-driven-label.gd" id="3_label"]
 [ext_resource type="Resource" path="res://game/variables/score.tres" id="4_score"]
 [ext_resource type="Resource" path="res://game/variables/high-score.tres" id="5_high"]
@@ -19,8 +19,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 script = ExtResource("1_visibility")
-variable = ExtResource("2_running")
-invert = true
+variable = ExtResource("2_game_over")
 
 [node name="Center" type="CenterContainer" parent="Root"]
 layout_mode = 1

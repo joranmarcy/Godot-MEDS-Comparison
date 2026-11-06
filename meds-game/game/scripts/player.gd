@@ -7,7 +7,7 @@ extends CharacterBody2D
 
 @export var move_speed: FloatVariable
 @export var position_variable: Vector2Variable
-@export var game_running: BoolVariable
+@export var game_over: BoolVariable
 @export var player_hit: Event
 @export var radius: float = 18.0
 @export var invulnerability_time: float = 1.0
@@ -30,7 +30,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_update_blink(delta)
-	if not game_running.value:
+	if game_over.value:
 		velocity = Vector2.ZERO
 		return
 	velocity = _read_move_input() * move_speed.value
@@ -44,7 +44,7 @@ func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if not area.is_in_group("enemies"):
 		return
 	area.call("explode")
-	if _invulnerable_left > 0.0 or not game_running.value:
+	if _invulnerable_left > 0.0 or game_over.value:
 		return
 	_invulnerable_left = invulnerability_time
 	player_hit.raise_event()

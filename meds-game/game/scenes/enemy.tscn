@@ -4,7 +4,7 @@
 [ext_resource type="Resource" path="res://game/variables/player-position.tres" id="2_target"]
 [ext_resource type="Resource" path="res://game/variables/enemy-speed.tres" id="3_speed"]
 [ext_resource type="Resource" path="res://game/variables/level.tres" id="4_level"]
-[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="5_running"]
+[ext_resource type="Resource" path="res://game/variables/game-over.tres" id="5_game_over"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
 radius = 11.0
@@ -17,7 +17,7 @@ script = ExtResource("1_enemy")
 target_position = ExtResource("2_target")
 base_speed = ExtResource("3_speed")
 level = ExtResource("4_level")
-game_running = ExtResource("5_running")
+game_over = ExtResource("5_game_over")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_enemy")

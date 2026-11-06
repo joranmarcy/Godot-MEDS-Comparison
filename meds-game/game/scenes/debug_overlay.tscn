@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://game/scripts/debug_overlay.gd" id="1_overlay"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/events/event.gd" id="3_event"]
-[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="4_running"]
+[ext_resource type="Resource" path="res://game/variables/game-over.tres" id="4_game_over"]
 [ext_resource type="Resource" path="res://game/variables/player-health.tres" id="5_health"]
 [ext_resource type="Resource" path="res://game/variables/score.tres" id="6_score"]
 [ext_resource type="Resource" path="res://game/variables/combo.tres" id="7_combo"]
@@ -17,7 +17,7 @@
 [ext_resource type="Resource" path="res://game/variables/combo-window.tres" id="15_window"]
 [ext_resource type="Resource" path="res://game/events/coin-collected.tres" id="16_collected"]
 [ext_resource type="Resource" path="res://game/events/player-hit.tres" id="17_hit"]
-[ext_resource type="Resource" path="res://game/events/game-over.tres" id="18_over"]
+[ext_resource type="Resource" path="res://game/events/player-died.tres" id="18_player_died"]
 [ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="19_music_volume"]
 [ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="20_sfx_volume"]
 [ext_resource type="Resource" path="res://game/variables/game-paused.tres" id="21_paused"]
@@ -29,8 +29,8 @@
 process_mode = 3
 layer = 3
 script = ExtResource("1_overlay")
-variables = Array[ExtResource("2_base")]([ExtResource("4_running"), ExtResource("21_paused"), ExtResource("5_health"), ExtResource("6_score"), ExtResource("7_combo"), ExtResource("8_level"), ExtResource("9_high"), ExtResource("10_position"), ExtResource("11_pspeed"), ExtResource("12_espeed"), ExtResource("13_damage"), ExtResource("14_coin"), ExtResource("15_window"), ExtResource("19_music_volume"), ExtResource("20_sfx_volume")])
-events = Array[ExtResource("3_event")]([ExtResource("16_collected"), ExtResource("17_hit"), ExtResource("18_over")])
+variables = Array[ExtResource("2_base")]([ExtResource("4_game_over"), ExtResource("21_paused"), ExtResource("5_health"), ExtResource("6_score"), ExtResource("7_combo"), ExtResource("8_level"), ExtResource("9_high"), ExtResource("10_position"), ExtResource("11_pspeed"), ExtResource("12_espeed"), ExtResource("13_damage"), ExtResource("14_coin"), ExtResource("15_window"), ExtResource("19_music_volume"), ExtResource("20_sfx_volume")])
+events = Array[ExtResource("3_event")]([ExtResource("16_collected"), ExtResource("17_hit"), ExtResource("18_player_died")])
 
 [node name="ToggleOnAction" type="Node" parent="."]
 script = ExtResource("23_toggle_action")

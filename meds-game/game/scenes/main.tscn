@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://game/scripts/reset_variables_on_ready.gd" id="1_reset"]
 [ext_resource type="Script" path="res://addons/godot_meds_core/scripts/variables/base-variable.gd" id="2_base"]
-[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="3_running"]
+[ext_resource type="Resource" path="res://game/variables/game-over.tres" id="3_game_over"]
 [ext_resource type="Resource" path="res://game/variables/player-health.tres" id="4_health"]
 [ext_resource type="Resource" path="res://game/variables/score.tres" id="5_score"]
 [ext_resource type="Resource" path="res://game/variables/combo.tres" id="6_combo"]
@@ -19,7 +19,7 @@
 [ext_resource type="Resource" path="res://game/events/player-hit.tres" id="17_hit"]
 [ext_resource type="Resource" path="res://game/variables/player-damage.tres" id="18_damage"]
 [ext_resource type="Script" path="res://game/scripts/game_over_on_zero_health.gd" id="19_over_rule"]
-[ext_resource type="Resource" path="res://game/events/game-over.tres" id="20_over"]
+[ext_resource type="Resource" path="res://game/events/player-died.tres" id="20_player_died"]
 [ext_resource type="Script" path="res://game/scripts/arena.gd" id="21_arena"]
 [ext_resource type="Script" path="res://game/scripts/screen_shake.gd" id="22_shake"]
 [ext_resource type="Script" path="res://game/scripts/spawner.gd" id="23_spawner"]
@@ -39,14 +39,14 @@
 
 [node name="ResetSessionVariables" type="Node" parent="."]
 script = ExtResource("1_reset")
-variables = Array[ExtResource("2_base")]([ExtResource("3_running"), ExtResource("4_health"), ExtResource("5_score"), ExtResource("6_combo"), ExtResource("7_level"), ExtResource("8_position"), ExtResource("91_paused")])
+variables = Array[ExtResource("2_base")]([ExtResource("3_game_over"), ExtResource("4_health"), ExtResource("5_score"), ExtResource("6_combo"), ExtResource("7_level"), ExtResource("8_position"), ExtResource("91_paused")])
 
 [node name="GameRules" type="Node" parent="."]
 
 [node name="ScoreKeeper" type="Node" parent="GameRules"]
 script = ExtResource("9_score_keeper")
 coin_collected = ExtResource("10_collected")
-game_running = ExtResource("3_running")
+game_over = ExtResource("3_game_over")
 score = ExtResource("5_score")
 combo = ExtResource("6_combo")
 coin_value = ExtResource("11_coin_value")
@@ -71,8 +71,8 @@ damage = ExtResource("18_damage")
 [node name="GameOverOnZeroHealth" type="Node" parent="GameRules"]
 script = ExtResource("19_over_rule")
 health = ExtResource("4_health")
-game_running = ExtResource("3_running")
-game_over = ExtResource("20_over")
+game_over = ExtResource("3_game_over")
+player_died = ExtResource("20_player_died")
 
 [node name="Arena" type="Node2D" parent="."]
 script = ExtResource("21_arena")
@@ -92,7 +92,7 @@ scene = ExtResource("24_coin")
 container = NodePath("../Coins")
 group_name = &"coins"
 level = ExtResource("7_level")
-game_running = ExtResource("3_running")
+game_over = ExtResource("3_game_over")
 max_alive = 6
 base_interval = 0.8
 min_interval = 0.8
@@ -104,7 +104,7 @@ scene = ExtResource("25_enemy")
 container = NodePath("../Enemies")
 group_name = &"enemies"
 level = ExtResource("7_level")
-game_running = ExtResource("3_running")
+game_over = ExtResource("3_game_over")
 max_alive = 25
 base_interval = 1.6
 interval_decrease_per_level = 0.15

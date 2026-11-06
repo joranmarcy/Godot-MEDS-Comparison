@@ -3,9 +3,9 @@
 [ext_resource type="Script" path="res://game/scripts/bind_float_to_bus_volume.gd" id="1_bus_volume"]
 [ext_resource type="Resource" path="res://game/variables/music-volume.tres" id="2_music_volume"]
 [ext_resource type="Resource" path="res://game/variables/sfx-volume.tres" id="3_sfx_volume"]
-[ext_resource type="Script" path="res://game/scripts/play_while_true.gd" id="4_play_while"]
+[ext_resource type="Script" path="res://game/scripts/play_while_bool.gd" id="4_play_while"]
 [ext_resource type="AudioStream" path="res://game/sounds/music.wav" id="5_music"]
-[ext_resource type="Resource" path="res://game/variables/game-running.tres" id="6_running"]
+[ext_resource type="Resource" path="res://game/variables/game-over.tres" id="6_game_over"]
 [ext_resource type="Script" path="res://game/scripts/play_sound_on_event.gd" id="7_play_on_event"]
 [ext_resource type="AudioStream" path="res://game/sounds/coin.wav" id="8_coin_sound"]
 [ext_resource type="Resource" path="res://game/events/coin-collected.tres" id="9_collected"]
@@ -16,7 +16,7 @@
 [ext_resource type="AudioStream" path="res://game/sounds/level_up.wav" id="14_level_up_sound"]
 [ext_resource type="Resource" path="res://game/variables/level.tres" id="15_level"]
 [ext_resource type="AudioStream" path="res://game/sounds/game_over.wav" id="16_game_over_sound"]
-[ext_resource type="Resource" path="res://game/events/game-over.tres" id="17_over"]
+[ext_resource type="Resource" path="res://game/events/player-died.tres" id="17_player_died"]
 
 [node name="Audio" type="Node"]
 
@@ -30,12 +30,13 @@ script = ExtResource("1_bus_volume")
 variable = ExtResource("3_sfx_volume")
 bus = &"SFX"
 
-[node name="MusicWhileRunning" type="AudioStreamPlayer" parent="."]
+[node name="MusicUntilGameOver" type="AudioStreamPlayer" parent="."]
 process_mode = 3
 stream = ExtResource("5_music")
 bus = &"Music"
 script = ExtResource("4_play_while")
-variable = ExtResource("6_running")
+variable = ExtResource("6_game_over")
+play_while = false
 
 [node name="CoinSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_coin_sound")
@@ -61,4 +62,4 @@ variable = ExtResource("15_level")
 stream = ExtResource("16_game_over_sound")
 bus = &"SFX"
 script = ExtResource("7_play_on_event")
-event = ExtResource("17_over")
+event = ExtResource("17_player_died")

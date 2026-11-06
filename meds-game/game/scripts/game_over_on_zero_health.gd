@@ -1,9 +1,9 @@
 extends Node
-## Rule: when `health` reaches zero, stop the game and raise `game_over`.
+## Rule: when `health` reaches zero, the game is over. Sets `game_over` and raises `player_died`.
 
 @export var health: IntVariable
-@export var game_running: BoolVariable
-@export var game_over: Event
+@export var game_over: BoolVariable
+@export var player_died: Event
 
 
 func _ready() -> void:
@@ -11,7 +11,7 @@ func _ready() -> void:
 
 
 func _on_health_changed(new_health: int) -> void:
-	if new_health > 0 or not game_running.value:
+	if new_health > 0 or game_over.value:
 		return
-	game_running.set_value(false, self)
-	game_over.raise_event()
+	game_over.set_value(true, self)
+	player_died.raise_event()
