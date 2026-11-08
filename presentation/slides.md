@@ -737,22 +737,14 @@ Et pour ça, on va s'appuyer sur une fonctionnalité native de Godot : les Resou
 -->
 
 ---
+clicks: 3
+---
 
 # Les variables partagées
 
-<div class="mermaid-fit mermaid-small">
+<ArchMorph :after="$clicks >= 1" class="mt-4" />
 
-```mermaid
-flowchart LR
-  Player["Player"] -- "writes" --> PP[("PlayerPosition<br/>Vector2Variable")]
-  PP -- "reads" --> Enemy["Enemy"]
-  classDef var fill:#1f3d57,stroke:#478cbf,color:#fff
-  class PP var
-```
-
-</div>
-
-<v-clicks>
+<v-clicks at="2">
 
 - La position est une **dépendance explicite**, indépendante du `GameState`
 - Remplacer le joueur, ou piloter la position depuis l'éditeur : l'ennemi fonctionne **pareil**
@@ -762,7 +754,7 @@ flowchart LR
 <!--
 Reprenons notre exemple de l'ennemi qui doit connaître la position du joueur. Dans notre architecture classique, le joueur écrit cette position dans GameState et l'ennemi la lit depuis ce singleton. Avec MEDS, on va isoler cette donnée dans une Resource.
 
-On va créer une Resource partagée qu'on va appeler PlayerPosition. Cette Resource va simplement contenir un Vector2, c'est-à-dire une position en X et Y.
+[click] On va créer une Resource partagée qu'on va appeler PlayerPosition. Cette Resource va simplement contenir un Vector2, c'est-à-dire une position en X et Y.
 
 Ensuite, on va donner cette même Resource à deux systèmes. D'un côté, le joueur va mettre à jour sa position dans PlayerPosition. De l'autre, l'ennemi va simplement lire cette valeur pour savoir où se déplacer. Et c'est tout.
 
