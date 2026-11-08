@@ -22,11 +22,9 @@ drawings:
   persist: false
 ---
 
-<h1 class="!text-8xl !font-800 tracking-tight">
-  <span class="m">M</span><span class="e">E</span><span class="d">D</span><span class="s">S</span>
-</h1>
+<MedsLogo class="mx-auto h-56 w-56 shadow-2xl" />
 
-<div class="flex items-center justify-center gap-4 mt-2 text-3xl font-600" style="font-family: 'Montserrat Variable'">
+<div class="flex items-center justify-center gap-4 mt-8 text-3xl font-600" style="font-family: 'Montserrat Variable'">
   Une architecture modulaire pour
   <img src="/godot/logo_large_color_dark.svg" alt="Godot Engine" class="h-14" />
 </div>
@@ -38,9 +36,11 @@ drawings:
   <span class="s font-700">S</span>calable
 </div>
 
-<div class="abs-b mb-10 text-sm opacity-60">
-  Joran — Numix · ~25 min · Théorie courte puis démo dans Godot
+<div class="abs-b mb-10 text-sm opacity-70 flex items-center justify-center gap-2">
+  <carbon-logo-github />
+  <a href="https://github.com/joranmarcy" target="_blank">github.com/joranmarcy</a>
 </div>
+
 
 <!--
 Bonjour à toutes et à tous, et bienvenue dans cette présentation !
@@ -71,11 +71,17 @@ layoutClass: gap-12
 
 ::right::
 
-<div class="h-full flex flex-col justify-center items-center gap-6" v-click>
-  <img src="/godot/icon_color.svg" alt="Godot Engine" class="h-32" />
-  <div class="text-xl opacity-80 text-center">
-    Unity au travail…<br/>
-    <span class="godot font-bold">Godot</span> par passion
+<div class="h-full flex flex-col justify-center items-center gap-8">
+  <figure v-click="4" class="w-full">
+    <img src="/numix/agence.png" alt="L'agence Numix" class="w-full rounded-xl shadow-2xl border border-[#55595e]" />
+    <figcaption class="mt-2 text-xs text-center opacity-60">L'agence Numix</figcaption>
+  </figure>
+  <div v-click class="flex items-center gap-4">
+    <img src="/godot/icon_color.svg" alt="Godot Engine" class="h-16" />
+    <div class="text-xl opacity-80">
+      Depuis un an, je m'intéresse<br/>
+      sérieusement à <span class="godot font-bold">Godot</span> pour remplacer Unity
+    </div>
   </div>
 </div>
 
@@ -90,32 +96,44 @@ Je m'appelle Joran et ça fait un peu plus de 12 ans que je suis ingénieur en d
 
 [click] Chez Numix, on utilise principalement Unity pour développer nos applications. C'est donc le moteur de jeu que je connais le mieux et sur lequel j'ai le plus d'expérience.
 
-[click] Mais depuis quelque temps, je m'intéresse beaucoup à Godot.
+[click] Mais depuis quelque temps, je m'intéresse beaucoup à Godot pour remplacer Unity.
 -->
 
 ---
 
 # Pourquoi Godot ?
 
-<p class="opacity-70">L'open source, une piste sérieuse pour la 3D temps réel</p>
+<p class="opacity-70">L'open source, une piste sérieuse pour le développement d'application VR Mobile</p>
 
-<div class="grid grid-cols-3 gap-6 mt-10">
-  <div v-click class="card">
-    <h3>Sécurité & transparence</h3>
-    <p>Accéder au code source du moteur et comprendre exactement ce qu'il fait.</p>
+<div class="grid grid-cols-3 gap-6 mt-6">
+  <div v-click class="card media-card">
+    <img src="/gifs/cat-coding.gif" alt="" class="media" style="object-position: center 12%" />
+    <div class="p-5">
+      <h3>Maîtrise & transparence</h3>
+      <p>Accéder au code source du moteur et comprendre exactement ce qu'il fait. Possibilité de l'adapter pour nos besoins précis.</p>
+    </div>
   </div>
-  <div v-click class="card">
-    <h3>Curiosité technique</h3>
-    <p>Comprendre ses outils, sans être limité à ce qu'on veut bien nous montrer.</p>
+  <div v-click class="card media-card">
+    <video
+      src="/videos/godot-post-process-vr.mp4"
+      class="media"
+      autoplay
+      muted
+      loop
+      playsinline
+    />
+    <div class="p-5">
+      <h3>3D mobile & VR</h3>
+      <p>Renderer Mobile et support OpenXR : assez mature pour de la VR mobile.</p>
+    </div>
   </div>
-  <div v-click class="card">
-    <h3>Indépendance</h3>
-    <p>Ne pas dépendre des décisions commerciales d'un éditeur.<br/><em class="opacity-60">cf. la tarification Unity…</em></p>
+  <div v-click class="card media-card">
+    <img src="/gifs/freedom.gif" alt="" class="media" />
+    <div class="p-5">
+      <h3>Indépendance</h3>
+      <p>Ne pas dépendre des décisions commerciales d'un éditeur.<br/><em class="opacity-60">cf. la tarification Unity…</em></p>
+    </div>
   </div>
-</div>
-
-<div v-click class="mt-10 text-center text-lg">
-  ➜ Retrouver dans Godot les bonnes pratiques appréciées dans Unity… <strong>et c'est comme ça qu'est née MEDS.</strong>
 </div>
 
 <!--
@@ -127,7 +145,7 @@ Pourquoi ? Parce que je pense que l'open source représente une piste particuli�
 
 [click] Et enfin, pour une question d'indépendance. J'aime bien l'idée de ne pas dépendre des décisions commerciales d'une entreprise qui pourraient, du jour au lendemain, mettre en difficulté un projet, voire une société entière. On a d'ailleurs eu un très bon exemple de ce risque avec les changements de tarification annoncés par Unity.
 
-[click] C'est donc assez naturellement que j'ai commencé à explorer Godot, avec l'envie d'y retrouver certaines pratiques de développement que j'appréciais particulièrement dans Unity. Et c'est comme ça qu'est née la librairie MEDS.
+C'est donc assez naturellement que j'ai commencé à explorer Godot, avec l'envie d'y retrouver certaines pratiques de développement que j'appréciais particulièrement dans Unity. Et c'est comme ça qu'est née la librairie MEDS.
 -->
 
 ---
