@@ -914,41 +914,18 @@ On obtient donc deux systèmes qui peuvent communiquer sans dépendre directemen
 
 # Architecture MEDS
 
-<div class="mermaid-fit">
+<ArchitectureMorph :after="$clicks >= 1" />
 
-```mermaid
-flowchart LR
-  Player["Player"] -- "writes" --> PP[("PlayerPosition")]
-  PP --> Enemy["Enemy"]
-  Player -- "déclenche" --> PH>"PlayerHit"]
-  PH --> Shake["ScreenShake"]
-  PH --> SFX["PlaySoundOnEvent"]
-  PH --> DMG["DamageOnEvent"]
-  DMG -- "writes" --> HP[("PlayerHealth")]
-  HP --> HUD["HUD (bindings)"]
-  HP --> GOZ["GameOverOnZeroHealth"]
-  GOZ --> GO[("GameOver")]
-  Coin["Coin"] -- "déclenche" --> CC>"CoinCollected"]
-  CC --> SK["ScoreKeeper"]
-  SK --> SC[("Score")]
-  SC --> HUD
-  SC --> LFS["LevelFromScore"]
-  LFS --> LV[("Level")]
-  LV --> Enemy
-  classDef var fill:#1f3d57,stroke:#478cbf,color:#fff
-  classDef evt fill:#4d2a2e,stroke:#fc7f7f,color:#fff
-  class PP,HP,GO,SC,LV var
-  class PH,CC evt
-```
-
-</div>
-
-<div class="absolute bottom-6 right-10 text-sm flex gap-6">
+<div v-click="1" class="absolute bottom-6 left-14 text-sm flex gap-6">
   <span><span class="legend var-legend"></span> Variable</span>
   <span><span class="legend evt-legend"></span> Événement</span>
 </div>
 
 <!--
+On repart de notre architecture classique : tout passe par le GameState.
+
+[click] Avec MEDS, le GameState éclate en petites pièces : des variables, des événements, et des règles qui ne font qu'une seule chose.
+
 On voit que les systèmes ne communiquent plus directement entre eux. Ils passent par des variables et des événements partagés.
 
 Chaque système reçoit uniquement les dépendances dont il a besoin pour fonctionner. Et ces dépendances sont configurées directement depuis l'inspecteur de Godot.
@@ -956,27 +933,6 @@ Chaque système reçoit uniquement les dépendances dont il a besoin pour foncti
 C'est une forme d'injection de dépendances, mais avec une approche très visuelle, particulièrement adaptée au fonctionnement d'un moteur de jeu.
 
 Et maintenant, on va voir ce que ça donne concrètement dans l'éditeur.
--->
-
----
-layout: center
-class: text-center
----
-
-# Démonstration dans Godot
-
-<div class="mt-8 text-xl opacity-80">Coin Rush — version MEDS</div>
-
-<div class="mt-12 grid grid-cols-3 gap-6 text-left">
-  <div class="card"><h3>1️⃣ Ennemi isolé</h3><p>Lancer une scène seule, piloter <code>PlayerPosition</code></p></div>
-  <div class="card"><h3>2️⃣ HUD & bindings</h3><p>Connecter l'UI aux variables sans script</p></div>
-  <div class="card"><h3>3️⃣ Cycle de vie</h3><p><code>reset_on</code> et sauvegarde</p></div>
-</div>
-
-<!--
-[Ouvrir le projet Coin Rush avec MEDS.]
-
-On va commencer par regarder comment MEDS fonctionne directement dans Godot.
 -->
 
 ---
@@ -1005,6 +961,8 @@ On va commencer par regarder comment MEDS fonctionne directement dans Godot.
 </div>
 
 <!--
+[Ouvrir le projet Coin Rush avec MEDS.]
+
 Je vais ouvrir la scène de mon ennemi.
 
 [click] Et là, vous pouvez voir que je peux la lancer toute seule.
