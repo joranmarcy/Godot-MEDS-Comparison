@@ -1,0 +1,300 @@
+1. Introduction et présentation
+Bonjour à toutes et à tous, et bienvenue dans cette présentation !
+Aujourd’hui, je vais vous présenter MEDS, une librairie pour Godot, vous expliquer à quoi elle sert, pourquoi elle a été créée et surtout ce qu’elle peut apporter au développement de jeux et d’applications.
+La présentation va durer environ 25 minutes. On va commencer par une petite partie théorique, assez courte, puis on passera rapidement à une démonstration directement dans Godot.
+Mais avant ça, je vais me présenter rapidement.
+Je m’appelle Joran et ça fait un peu plus de 12 ans que je suis ingénieur en développement logiciel.
+J’ai commencé ma carrière dans le domaine des logiciels critiques, notamment dans le contrôle aérien. Puis je me suis assez rapidement orienté vers les technologies immersives, quand j’ai découvert ce qu’il était possible de faire avec les casques de réalité virtuelle et de réalité augmentée, comme le Microsoft HoloLens.
+Aujourd’hui, ça fait six ans et demi que je travaille chez Numix, une entreprise spécialisée dans la création de formations en réalité virtuelle, d’applications mobiles et de contenus e-learning.
+Chez Numix, on utilise principalement Unity pour développer nos applications. C’est donc le moteur de jeu que je connais le mieux et sur lequel j’ai le plus d’expérience.
+Mais depuis quelque temps, je m’intéresse beaucoup à Godot.
+Pourquoi ? Parce que je pense que l'open source représente une piste particulièrement intéressante pour le développement d’applications 3D temps réel.
+D’abord, pour des questions de sécurité et de transparence. Pouvoir accéder au code source d’un moteur, comprendre exactement ce qu’il fait, c’est un vrai avantage.
+Ensuite, par curiosité technique. Personnellement, j’aime bien comprendre comment fonctionnent les outils que j’utilise, et ne pas être limité à ce qu’on veut bien me montrer.
+Et enfin, pour une question d’indépendance. J’aime bien l’idée de ne pas dépendre des décisions commerciales d’une entreprise qui pourraient, du jour au lendemain, mettre en difficulté un projet, voire une société entière.
+On a d’ailleurs eu un très bon exemple de ce risque avec les changements de tarification annoncés par Unity.
+C’est donc assez naturellement que j’ai commencé à explorer Godot, avec l’envie d’y retrouver certaines pratiques de développement que j’appréciais particulièrement dans Unity.
+Et c’est comme ça qu’est née la librairie MEDS.
+2. MEDS, qu’est-ce que c’est ?
+Alors, MEDS, qu’est-ce que c’est exactement ?
+MEDS, c’est un acronyme qui reprend une philosophie de développement popularisée par Ryan Hipple pour Unity.
+Cette philosophie, je l’ai découverte en arrivant chez Numix. Et franchement, j’ai trouvé ça génial.
+Parce qu’elle résolvait pas mal de problèmes qui m’embêtaient dans le développement d’applications Unity.
+En venant du monde des logiciels critiques, j’avais notamment pris goût à certains principes d’architecture, comme l’injection de dépendances et le découplage des systèmes.
+Et avec cette approche, je retrouvais justement une partie de ces principes, mais d’une manière très adaptée au développement de jeux vidéo.
+MEDS repose sur quatre grands principes.
+M — Modular
+Le premier, c’est Modular, pour modulaire.
+L’idée, c’est que les différents systèmes de notre jeu doivent être aussi indépendants que possible.
+On veut pouvoir les assembler un peu comme des LEGO.
+Par exemple, si je développe un système d’ennemis, je veux pouvoir le réutiliser dans un autre niveau, voire dans un autre projet, sans devoir embarquer la moitié de mon jeu avec lui.
+Je veux aussi pouvoir lancer une scène toute seule, directement depuis l’éditeur, sans avoir besoin de lancer toute l’application.
+Pour les développeurs Unity, vous pouvez imaginer les scènes Godot un peu comme des prefabs qu’on pourrait exécuter directement.
+Et ça passe aussi par des scripts qui ont des responsabilités bien définies. Un script fait une chose, et il la fait bien.
+L’objectif, c’est d’avoir des systèmes qu’on peut facilement assembler, remplacer, tester et réutiliser.
+E — Editable
+Le deuxième principe, c’est Editable, pour éditable.
+L’idée, ici, c’est de placer les données au centre du développement.
+Plutôt que de coder en dur toutes les valeurs de notre jeu, on va chercher à les rendre facilement modifiables depuis l’extérieur du code.
+Par exemple, la vitesse d’un personnage, ses points de vie ou encore la couleur d’un élément d’interface.
+On veut pouvoir modifier ces données directement dans l’éditeur, sans toucher au code.
+Mais on veut aussi pouvoir le faire pendant que le jeu tourne, en temps réel.
+Et ça, c’est particulièrement pratique pour ajuster le comportement d’un jeu, expérimenter ou faire du game design.
+D — Debuggable
+Le troisième principe, c’est Debuggable, pour facile à déboguer.
+L’objectif, c’est de pouvoir comprendre rapidement ce qui se passe dans notre application, et surtout de pouvoir tester nos systèmes indépendamment les uns des autres.
+Si j’ai un problème avec mes ennemis, je veux pouvoir lancer uniquement mon système d’ennemis, reproduire le problème et le corriger.
+Je ne veux pas devoir lancer tout le jeu, passer trois menus, charger un niveau et attendre que les bonnes conditions soient réunies pour pouvoir observer mon bug.
+Plus les systèmes sont isolés, plus il devient facile de comprendre ce qui ne fonctionne pas.
+S — Scalable
+Et enfin, le dernier principe, c’est Scalable, pour la capacité à passer à l’échelle.
+C’est mon apport personnel à cette philosophie.
+Comme je vous le disais, chez Numix, on utilisait déjà cette approche avec Unity.
+Et elle fonctionnait très bien.
+Mais au fil du temps, on a aussi rencontré certaines limites, notamment quand les projets devenaient plus gros et que le nombre de systèmes, de variables et d’événements augmentait.
+On gagnait beaucoup en modularité, mais on pouvait aussi perdre en lisibilité globale.
+J’ai donc voulu reprendre les mêmes principes dans Godot, tout en apportant des outils supplémentaires pour mieux gérer la complexité des projets de grande taille.
+Et c’est notamment là que MEDS va se différencier d’une simple bibliothèque de variables et d’événements.
+3. Présentation de Coin Rush
+Bon, assez de théorie !
+Pour vous montrer concrètement comment tout ça fonctionne, j’ai créé un petit jeu qui s’appelle Coin Rush.
+[Lancer le jeu et faire une courte démonstration.]
+Le principe est assez simple : on contrôle un personnage, on récupère des pièces et on essaie d’éviter les ennemis.
+Rien de révolutionnaire, mais c’est largement suffisant pour illustrer les problèmes d’architecture dont on va parler.
+Et surtout, j’ai développé ce jeu deux fois.
+Une première fois avec une architecture classique, sans MEDS.
+Et une deuxième fois avec MEDS.
+L'intérêt, c'est qu'on va pouvoir comparer exactement le même jeu, avec les mêmes fonctionnalités, mais deux manières différentes d'organiser le code et de faire communiquer les systèmes.
+Les deux projets sont disponibles sur GitHub si vous voulez y jeter un œil après la présentation.
+4. L’architecture classique : les singletons
+On va commencer par regarder la version classique.
+Pour cette version, j’ai utilisé une approche assez courante dans Godot : le pattern singleton.
+Concrètement, j’ai un script que j’ai appelé GameState, qui centralise une bonne partie de la logique du jeu.
+Ce script est chargé grâce au système d’AutoLoad de Godot.
+L’avantage, c’est qu’il reste disponible pendant toute la durée de l’application et qu’on peut y accéder depuis n’importe quel autre script.
+Je vous ai préparé un petit schéma pour illustrer le fonctionnement.
+[Afficher le schéma de l’architecture classique.]
+Prenons un exemple.
+Quand notre joueur se fait toucher par un ennemi, son script appelle directement la fonction player_damaged() du GameState.
+Le GameState va alors mettre à jour l’état du jeu, puis émettre des signaux Godot pour prévenir les autres systèmes qui doivent réagir.
+Par exemple, l'interface peut mettre à jour les points de vie, et un autre système peut déclencher un effet de tremblement de caméra.
+Et en soi, cette approche est plutôt pratique.
+On a un point d’entrée central pour gérer la logique du jeu, le GameState reste disponible entre les scènes, et tous les scripts peuvent facilement communiquer avec lui. Il reste persistant tout au long du runtime. Facile à comprendre.
+On pourrait même aller plus loin et découper ce gros singleton en plusieurs petits singletons : un AudioManager, un HUDManager, un ScreenEffectManager, etc.
+Ça permettrait d’éviter d’avoir un seul script gigantesque.
+Et pour un petit jeu, notamment un projet de game jam, c’est une solution qui fonctionne très bien.
+Mais les choses commencent à se compliquer quand le projet grossit, surtout quand plusieurs développeurs travaillent dessus.
+Le problème des dépendances
+Imaginons que je travaille sur le comportement des ennemis.
+Je crée une scène avec uniquement mon ennemi, pour pouvoir tester son déplacement.
+Sauf que ça ne fonctionne pas.
+Pourquoi ?
+Parce que mon ennemi cherche directement le nœud du joueur dans l’arborescence de la scène pour récupérer sa position.
+Donc pour tester mon ennemi, je suis obligé d’avoir aussi un joueur dans ma scène.
+Et potentiellement, ce joueur a lui-même besoin d’autres systèmes.
+On commence alors à accumuler les dépendances.
+Autre exemple : je veux simplement tester le comportement de mon joueur.
+Mais mon script dépend du GameState.
+Donc, même si je veux uniquement tester le déplacement du joueur, je reste dépendant de ce singleton.
+Maintenant, imaginons qu’un collègue modifie le GameState et introduise un bug.
+Je lance ma scène pour tester mon joueur, et elle ne fonctionne plus.
+Pourtant, je n’ai absolument rien changé à mon système de joueur.
+Mon bug vient d’une dépendance extérieure.
+Et c’est précisément ce qu’on aimerait éviter.
+Casse le contrat de la programmation objet. Parce que le script player va récupérer un script qui lui donne accès à la totalité de l’accès du jeu (audio manager, hud manager).
+Le problème, ce n’est pas le singleton en lui-même. C’est le couplage qu’il peut créer entre les différents systèmes de notre application.
+Plus ce couplage est important, plus il devient difficile de tester, modifier et réutiliser nos systèmes indépendamment.
+Alors, comment est-ce qu’on peut faire autrement ?
+5. L’approche MEDS : découpler les systèmes avec les Resources
+L’idée avec MEDS, ça va être de limiter les dépendances directes entre les différents systèmes du jeu.
+Et pour ça, on va s’appuyer sur une fonctionnalité native de Godot : les Resources.
+Pour ceux qui viennent d’Unity, c’est assez proche du concept de ScriptableObject.
+Une Resource, c’est un objet qui peut contenir des données, être enregistré dans un fichier et être partagé entre plusieurs éléments de notre jeu.
+Et ce qui est intéressant, c’est qu’on peut créer nos propres types de Resources.
+Avec MEDS, on va utiliser ces Resources comme des objets intermédiaires pour faire communiquer nos systèmes.
+Les variables partagées
+Reprenons notre exemple de l’ennemi qui doit connaître la position du joueur.
+Dans notre architecture classique, l’ennemi allait chercher directement le joueur dans la scène.
+Avec MEDS, on va faire autrement.
+On va créer une Resource partagée qu’on va appeler PlayerPosition.
+Cette Resource va simplement contenir un Vector2, c’est-à-dire une position en X et Y.
+Ensuite, on va donner cette même Resource à deux systèmes.
+D’un côté, le joueur va mettre à jour sa position dans PlayerPosition.
+De l’autre, l’ennemi va simplement lire cette valeur pour savoir où se déplacer.
+Et c’est tout.
+L’ennemi n’a plus besoin de connaître l’existence du joueur.
+Il a uniquement besoin d’une position.
+Et ça change pas mal de choses.
+Par exemple, si demain je décide de remplacer le joueur par un autre objet, ou même de contrôler directement la position depuis l’éditeur, mon ennemi continuera à fonctionner exactement de la même façon.
+Parce qu’il ne dépend plus d’un objet particulier, mais simplement d’une donnée qu’on lui fournit.
+C’est ce principe qu’on va appliquer à toutes sortes de données.
+Des nombres flottants, des entiers, des chaînes de caractères, des booléens, des couleurs, des vecteurs...
+Bref, les types de données dont on a besoin pour construire notre application.
+Et dans MEDS, on va appeler ça des variables MEDS.
+Les événements partagés
+Mais évidemment, dans un jeu, on n’a pas uniquement besoin de partager des valeurs.
+On a aussi besoin de réagir à des événements.
+Par exemple, quand le joueur se fait toucher, quand une pièce est ramassée ou quand une partie se termine.
+Et pour ça, MEDS propose un autre type de Resource : les événements.
+Le fonctionnement est assez simple.
+Un script peut déclencher un événement.
+Un autre script peut écouter cet événement.
+Et les deux n’ont pas besoin de se connaître.
+Reprenons notre exemple du joueur qui se fait toucher.
+Avant, notre joueur appelait directement player_damaged() dans le GameState.
+Avec MEDS, on va créer une Resource de type événement, qu’on va appeler PlayerDamaged.
+On va fournir cet événement au script du joueur.
+Et quand le joueur se fait toucher, il va simplement déclencher l’événement.
+Il ne sait pas qui écoute cet événement.
+Il ne sait pas non plus ce qui va se passer ensuite.
+Mais c’est très bien !
+Ce n’est pas sa responsabilité.
+Lui, son travail, c’est de détecter qu’il a subi des dégâts et de le signaler.
+C’est tout.
+De l’autre côté, on va fournir ce même événement aux différents systèmes qui doivent réagir.
+Par exemple, le système de tremblement de caméra.
+Lui, il va simplement écouter l’événement PlayerDamaged, et quand celui-ci est déclenché, il va faire trembler la caméra.
+Il ne sait pas qui a déclenché l’événement.
+Ça pourrait être le joueur, un script de test ou même un bouton dans l’éditeur.
+Mais là encore, on s’en fout un peu !
+Son travail, c’est de faire trembler la caméra quand il reçoit cet événement.
+Et rien d’autre.
+On obtient donc deux systèmes qui peuvent communiquer sans dépendre directement l’un de l’autre.
+La nouvelle architecture
+Maintenant, si on reprend l’ensemble de notre jeu et qu’on applique ce principe un peu partout, on obtient ça...
+[Afficher une image de Chocapic.]
+Bon, non, pas vraiment.
+On obtient plutôt ça !
+[Afficher le schéma de l’architecture MEDS.]
+On voit que les systèmes ne communiquent plus directement entre eux.
+Ils passent par des variables et des événements partagés.
+Chaque système reçoit uniquement les dépendances dont il a besoin pour fonctionner.
+Et ces dépendances sont configurées directement depuis l’inspecteur de Godot.
+C’est une forme d’injection de dépendances, mais avec une approche très visuelle, particulièrement adaptée au fonctionnement d’un moteur de jeu.
+Et maintenant, on va voir ce que ça donne concrètement dans l’éditeur.
+6. Démonstration dans Godot
+[Ouvrir le projet Coin Rush avec MEDS.]
+On va commencer par regarder comment MEDS fonctionne directement dans Godot.
+Démonstration 1 — Le déplacement d’un ennemi
+Je vais ouvrir la scène de mon ennemi.
+Et là, vous pouvez voir que je peux la lancer toute seule.
+Je n’ai pas besoin de charger le jeu entier.
+Je n’ai même pas besoin d’avoir un joueur dans ma scène.
+Mon ennemi utilise simplement une variable MEDS qui contient la position qu’il doit suivre.
+Et cette variable, je peux la modifier directement depuis l’éditeur.
+[Modifier la variable PlayerPosition et montrer le déplacement de l’ennemi.]
+Vous voyez que mon ennemi réagit immédiatement aux changements.
+Et le plus intéressant, c’est que je n’ai pas eu besoin de modifier son code.
+Je lui fournis juste une donnée différente.
+C’est exactement ce qu’on recherchait avec les principes Modular, Editable et Debuggable.
+Mon système est indépendant, ses données sont éditables, et je peux tester son comportement de manière isolée.
+Démonstration 2 — Le HUD et les bindings
+Maintenant, on va regarder un autre exemple avec l’interface utilisateur.
+Dans un jeu, on a souvent besoin d’afficher des données : le score, les points de vie, le temps restant, etc.
+Traditionnellement, on va écrire des scripts qui récupèrent ces valeurs et mettent à jour les composants de l’interface.
+Avec MEDS, on peut simplifier ça grâce à un système de bindings.
+L’idée, c’est de connecter directement un composant d’interface à une variable MEDS.
+Par exemple, je peux associer un label à une variable qui contient le score.
+Et quand la valeur change, le texte affiché se met automatiquement à jour.
+Je n’ai pas besoin d’écrire un script spécifique pour faire cette liaison.
+[Montrer le binding d'un label avec une variable MEDS.]
+Et ça ne fonctionne pas uniquement avec les labels.
+MEDS propose aussi des bindings pour les sliders, les barres de progression, les cases à cocher ou encore les sélecteurs de couleur.
+Cela permet de construire des interfaces qui réagissent directement aux données, sans multiplier les petits scripts de synchronisation.
+Et évidemment, on peut aussi modifier certaines valeurs depuis l’interface, selon le composant utilisé.
+Démonstration 3 — Le cycle de vie des variables
+Un autre sujet important quand on utilise des données partagées, c’est leur cycle de vie.
+Parce qu’une Resource peut conserver une valeur en mémoire pendant que l’application fonctionne.
+Et parfois, ce n’est pas ce qu’on veut.
+Par exemple, les points de vie du joueur doivent peut-être être réinitialisés quand on relance une partie.
+Mais les paramètres audio, eux, doivent probablement conserver leur valeur.
+MEDS propose donc un système de réinitialisation configurable avec reset_on.
+On peut définir à quel moment une variable doit retrouver sa valeur initiale.
+Pour les réinitialisations au démarrage de l’application, MEDS utilise également un mécanisme de cache à l’exécution afin de gérer correctement les valeurs de référence.
+[Montrer les options de réinitialisation et, si possible, un exemple de changement de scène ou de redémarrage.]
+Et on peut également sauvegarder les valeurs de certaines variables, lorsqu’on souhaite les conserver.
+C’est pratique, par exemple, pour les paramètres utilisateur ou certaines données persistantes.
+L’objectif, c’est que le développeur puisse définir clairement le comportement des données sans avoir à réécrire toute cette logique dans chaque système.
+7. Les outils de débogage
+On a vu comment MEDS permettait de rendre les systèmes plus indépendants.
+Mais quand on travaille avec beaucoup de variables et d’événements partagés, une autre difficulté apparaît.
+Comment savoir qui utilise quoi ?
+Et surtout, comment comprendre ce qui se passe quand quelque chose ne fonctionne pas ?
+C’est pour répondre à ces questions que MEDS propose plusieurs outils de débogage intégrés à l’éditeur.
+Le suivi des références
+Le premier, c’est le suivi des références.
+Pour chaque variable ou événement MEDS, on peut retrouver les éléments du projet qui l’utilisent.
+Par exemple, si je sélectionne ma variable PlayerPosition, je peux identifier les scripts ou les scènes qui y font référence.
+C’est particulièrement utile quand un projet commence à grossir.
+Parce qu’on peut rapidement comprendre où une donnée est utilisée, sans devoir faire des recherches manuelles partout dans le code et les scènes.
+[Montrer le suivi des références d’une variable ou d’un événement.]
+Le débogueur de variables
+Ensuite, on a un débogueur de variables en temps réel.
+Il permet d’observer la valeur des variables MEDS pendant que l’application tourne.
+Mais surtout, il permet aussi de les modifier directement.
+Imaginons que je veuille tester ce qui se passe quand le joueur n’a plus qu’un seul point de vie.
+Plutôt que de lancer le jeu et de me faire toucher plusieurs fois, je peux simplement modifier la valeur dans le débogueur.
+Et observer immédiatement le résultat.
+[Modifier une valeur pendant l’exécution.]
+C’est aussi très pratique pour reproduire certains bugs ou tester des situations particulières.
+Le débogueur d’événements
+On retrouve le même principe pour les événements.
+MEDS permet de surveiller les événements déclenchés pendant l’exécution.
+Mais aussi de les déclencher manuellement depuis l’éditeur.
+Par exemple, je peux déclencher PlayerDamaged sans avoir besoin de faire toucher le joueur par un ennemi.
+Et tous les systèmes qui écoutent cet événement vont réagir normalement.
+[Déclencher manuellement un événement depuis l’éditeur.]
+On peut donc tester facilement une animation, un effet visuel, un son ou une réaction de l'interface, sans avoir besoin de reproduire toutes les conditions du jeu.
+Et ça, pour le développement et le débogage, c’est un vrai gain de temps.
+8. Passer à l’échelle : le graphe de dépendances
+Maintenant, il reste un problème important.
+Avec MEDS, on a supprimé beaucoup de dépendances directes entre nos systèmes.
+C’est très bien pour la modularité.
+Mais en contrepartie, les relations entre les systèmes deviennent parfois moins évidentes à comprendre.
+Parce que si un système émet un événement et que cinq autres systèmes l’écoutent, cette relation n’apparaît plus directement dans le code.
+Sur un petit projet, ce n’est pas très grave.
+Mais sur un gros projet, avec des centaines de variables et d’événements, ça peut vite devenir compliqué.
+Et c’est justement pour répondre à ce problème que j’ai ajouté le principe Scalable à MEDS.
+L’un des outils les plus importants pour ça, c’est le graphe de dépendances.
+[Ouvrir le graphe de dépendances de MEDS.]
+L’idée, c’est de pouvoir visualiser les relations entre les différents éléments du projet.
+On peut voir quels systèmes utilisent quelles variables, quels systèmes déclenchent des événements et lesquels y réagissent.
+Cela permet de retrouver une vue d’ensemble de l’architecture, même si les systèmes sont découplés.
+On peut ainsi comprendre plus rapidement comment une modification peut se propager dans le projet.
+Et surtout, ça devient beaucoup plus simple d’explorer une base de code qu’on ne connaît pas.
+C’est particulièrement intéressant quand on travaille à plusieurs sur une même application, ou quand on doit reprendre un projet après plusieurs mois sans y avoir touché.
+9. MEDS à l’ère de la programmation assistée par IA
+Et pour terminer, j’aimerais aborder un sujet qui me semble de plus en plus important : le développement assisté par intelligence artificielle.
+Aujourd’hui, on utilise de plus en plus d’outils capables de générer du code, de modifier des scripts ou même d’implémenter des fonctionnalités entières à partir d’une simple description.
+Et je pense que ce type d’outil rend les principes de modularité encore plus intéressants.
+Pourquoi ?
+Parce que l’un des problèmes avec le code généré par une IA, c’est la gestion du contexte.
+Pour modifier correctement un système, l’IA doit comprendre comment il fonctionne, mais aussi de quoi il dépend et quelles conséquences ses modifications peuvent avoir sur le reste de l’application.
+Plus les systèmes sont fortement couplés, plus cette tâche devient complexe.
+Imaginons qu’on demande à une IA de modifier le comportement d’un ennemi.
+Si cet ennemi dépend directement du joueur, du GameState, du HUD et de plusieurs autres systèmes, l’IA doit potentiellement comprendre une grande partie de l’architecture pour faire une modification relativement simple.
+Et plus elle doit manipuler de contexte, plus il devient difficile de maîtriser les effets de bord.
+Avec une architecture modulaire, on peut beaucoup mieux délimiter le travail.
+On peut lui dire : « Voilà le système d’ennemis. Il reçoit une position cible, une vitesse de déplacement et quelques événements. Modifie son comportement, mais conserve ces interfaces. »
+L’IA peut alors se concentrer sur un périmètre beaucoup plus restreint.
+Elle n’a pas forcément besoin de comprendre toute l’application.
+Et de notre côté, on peut plus facilement vérifier ce qu’elle a produit, puisque le système peut être testé indépendamment.
+Les outils de MEDS peuvent aussi nous aider à reprendre le contrôle sur ce code.
+Avec le suivi des références et le graphe de dépendances, on peut mieux comprendre les relations entre les systèmes.
+Avec les débogueurs, on peut observer les valeurs et déclencher des événements pour vérifier les comportements.
+Et avec l’architecture basée sur les Resources, on dispose de contrats relativement simples entre les différents éléments.
+Bien sûr, MEDS ne garantit pas qu’une IA produira du bon code.
+Mais je pense qu’une architecture qui favorise des composants indépendants, des interfaces explicites et des tests isolés est particulièrement adaptée à ce type de développement.
+Et à mesure que les outils d’IA prennent plus de place dans nos pratiques, je pense que ces qualités vont devenir encore plus importantes.
+10. Conclusion
+Pour conclure, l’objectif de MEDS n’est pas de dire que les singletons sont mauvais ou qu’il n’existe qu’une seule bonne façon de développer un jeu avec Godot.
+Pour un petit projet, une architecture classique peut très bien faire l’affaire, et il n’y a aucune raison de complexifier les choses inutilement.
+En revanche, dès qu’on commence à travailler sur des projets plus importants, avec plusieurs développeurs et des systèmes qui doivent évoluer dans le temps, je pense que les principes de modularité, d’édition des données et de débogage prennent tout leur sens.
+C’est ce que j’ai voulu retrouver avec MEDS : une façon de développer des applications Godot avec des systèmes aussi indépendants que possible, faciles à configurer, à tester et à réutiliser.
+Et surtout, avec les outils nécessaires pour garder une bonne compréhension du projet quand celui-ci commence à grossir.
+La librairie est disponible sur GitHub, tout comme les deux versions de Coin Rush.
+Donc si ça vous intéresse, n’hésitez pas à aller regarder le code, tester la librairie ou même contribuer au projet.
+Merci à toutes et à tous pour votre attention !
+Et si vous avez des questions, ce sera avec plaisir.
+
+
