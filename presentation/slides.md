@@ -407,15 +407,14 @@ Et enfin, le dernier principe, c'est Scalable, pour la capacité à passer à l'
 -->
 
 ---
-layout: center
-class: text-center
+layout: default
 ---
 
 # Coin Rush
 
-<div class="text-xl opacity-80 mt-4">Assez de théorie !</div>
-
-<div class="mt-10 grid grid-cols-2 gap-10 text-left">
+<div class="mt-6 grid grid-cols-[2fr_1fr] gap-6 items-start">
+  <CoinRushDemo />
+  <div class="flex flex-col gap-4">
   <div v-click class="card">
     <h3>classic-game/</h3>
     <p>Architecture classique : singleton <code>GameState</code> en AutoLoad</p>
@@ -424,10 +423,7 @@ class: text-center
     <h3>meds-game/</h3>
     <p>Le même jeu, mêmes fonctionnalités… avec MEDS</p>
   </div>
-</div>
-
-<div v-click class="mt-10 opacity-70">
-  <em>Démo : on contrôle un personnage, on ramasse des pièces, on évite les ennemis.</em>
+  </div>
 </div>
 
 <!--
@@ -435,7 +431,7 @@ Bon, assez de théorie !
 
 Pour vous montrer concrètement comment tout ça fonctionne, j'ai créé un petit jeu qui s'appelle Coin Rush.
 
-[Lancer le jeu et faire une courte démonstration.]
+[Cliquer sur « Jouer à Coin Rush » et faire une courte démonstration dans la slide. Cliquer sur « Arrêter » pour reprendre la navigation.]
 
 Le principe est assez simple : on contrôle un personnage, on récupère des pièces et on essaie d'éviter les ennemis. Rien de révolutionnaire, mais c'est largement suffisant pour illustrer les problèmes d'architecture dont on va parler.
 

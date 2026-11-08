@@ -7,3 +7,26 @@ See the [comparison guide](../README.md) for the side-by-side with the MEDS vers
 - Main scene: [scenes/main.tscn](./scenes/main.tscn)
 - Controls: WASD / arrows / gamepad / touch drag to move, Esc or the on-screen II button to pause (volume, debug overlay), F1 debug overlay, Restart button after game over
 - Test: `godot --path . -s res://tests/test_gameplay.gd` (add `--headless` to skip the touch checks)
+
+## Web demo in the presentation
+
+Slide 10 of the [Slidev deck](../presentation/slides.md) embeds a local Web export.
+With Godot 4.6.2 and its export templates installed, run from the repository root:
+Use the matching Godot executable directly if a version manager selects a newer
+4.6 release without its templates.
+
+```powershell
+New-Item -ItemType Directory -Force presentation\public\games\coin-rush
+godot_console.exe --headless --path classic-game --editor --import
+godot_console.exe --headless --path classic-game --export-release Web ..\presentation\public\games\coin-rush\index.html
+cd presentation
+npm run dev
+```
+
+The Web preset uses Compatibility rendering (Web only) and no threads, so Slidev
+does not need cross-origin isolation headers. Generated game files are kept in
+the deck's public assets; re-export after changing the game. Serve the deck over
+HTTP (localhost) or HTTPS, not `file://`.
+
+Click **Jouer à Coin Rush**, then inside the game to give it keyboard focus.
+**Arrêter** returns control to Slidev. Leaving the slide also unloads the game.
