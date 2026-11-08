@@ -136,6 +136,19 @@
   color: var(--godot-text-dim);
 }
 
+.meds-pill-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+}
+
+.meds-title-pill {
+  width: 2.16em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
 .hero-logo {
   position: relative;
 }

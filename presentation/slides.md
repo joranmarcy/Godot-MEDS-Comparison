@@ -171,7 +171,10 @@ layout: center
 class: text-center
 ---
 
-# MEDS, qu'est-ce que c'est ?
+<h1 class="meds-pill-heading">
+  <MedsLogo pill-only class="meds-title-pill" />
+  <span>MEDS, qu'est-ce que c'est ?</span>
+</h1>
 
 <div class="text-xl mt-6 opacity-80">
 Une philosophie popularisée par <strong>Ryan Hipple</strong> pour Unity<br/>
@@ -179,7 +182,7 @@ Une philosophie popularisée par <strong>Ryan Hipple</strong> pour Unity<br/>
 </div>
 
 <div v-click class="mt-10 text-lg">
-  Découverte chez Numix… et coup de cœur
+  Découverte chez Numix… et coup de ❤️
 </div>
 
 <div v-click class="mt-4 text-lg">
