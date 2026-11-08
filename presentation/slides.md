@@ -814,15 +814,15 @@ Après : l'ennemi déclare simplement ses dépendances avec des @export. Une pos
 
 # Des variables pour tous les types
 
-<div class="grid grid-cols-4 gap-4 mt-10">
-  <div v-click class="type-chip"><img src="/meds/variables/BoolVariable.svg" alt="" />BoolVariable</div>
-  <div v-click class="type-chip"><img src="/meds/variables/IntVariable.svg" alt="" />IntVariable</div>
-  <div v-click class="type-chip"><img src="/meds/variables/FloatVariable.svg" alt="" />FloatVariable</div>
-  <div v-click class="type-chip"><img src="/meds/variables/StringVariable.svg" alt="" />StringVariable</div>
-  <div v-click class="type-chip"><img src="/meds/variables/ColorVariable.svg" alt="" />ColorVariable</div>
-  <div v-click class="type-chip"><img src="/meds/variables/Vector2Variable.svg" alt="" />Vector2Variable</div>
-  <div v-click class="type-chip"><img src="/meds/variables/Vector3Variable.svg" alt="" />Vector3Variable</div>
-  <div v-click class="type-chip opacity-60"><img src="/meds/variables/BaseVariable.svg" alt="" />…</div>
+<div class="grid grid-cols-4 gap-4 mt-10 type-chips">
+  <div class="type-chip"><img src="/meds/variables/BoolVariable.svg" alt="" />BoolVariable</div>
+  <div class="type-chip"><img src="/meds/variables/IntVariable.svg" alt="" />IntVariable</div>
+  <div class="type-chip"><img src="/meds/variables/FloatVariable.svg" alt="" />FloatVariable</div>
+  <div class="type-chip"><img src="/meds/variables/StringVariable.svg" alt="" />StringVariable</div>
+  <div class="type-chip"><img src="/meds/variables/ColorVariable.svg" alt="" />ColorVariable</div>
+  <div class="type-chip"><img src="/meds/variables/Vector2Variable.svg" alt="" />Vector2Variable</div>
+  <div class="type-chip"><img src="/meds/variables/Vector3Variable.svg" alt="" />Vector3Variable</div>
+  <div class="type-chip opacity-60"><img src="/meds/variables/BaseVariable.svg" alt="" />…</div>
 </div>
 
 <div v-click class="mt-14 text-center text-2xl">
