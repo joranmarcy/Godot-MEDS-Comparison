@@ -111,6 +111,193 @@
     var(--godot-hero);
 }
 
+/* Title slide */
+.slidev-layout.cover.hero-cover {
+  padding: 0 4.5rem;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0) 0 0 / 28px 28px,
+    radial-gradient(circle at 22% 50%, rgba(71, 140, 191, 0.4), transparent 45%),
+    radial-gradient(circle at 95% 0%, rgba(71, 140, 191, 0.25), transparent 40%),
+    var(--godot-hero);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 4rem;
+}
+
+.hero-event {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 4.5rem;
+  font-size: 0.9rem;
+  color: var(--godot-text-dim);
+}
+
+.hero-logo {
+  position: relative;
+}
+
+.hero-logo svg {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    0 0 90px rgba(71, 140, 191, 0.45);
+}
+
+.hero-text {
+  text-align: left;
+  border-left: 3px solid var(--godot-blue);
+  padding-left: 2.5rem;
+}
+
+.hero-eyebrow {
+  font-family: 'Montserrat Variable', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.hero-acronym {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: start;
+  gap: 0.35rem 2.5rem;
+  margin: 2rem 0 0 !important;
+  padding: 0 !important;
+  list-style: none;
+  font-size: 1.15rem;
+  color: var(--godot-text-dim);
+}
+
+.hero-acronym li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.hero-acronym li::marker {
+  content: none;
+}
+
+.hero-acronym span {
+  font-family: 'Montserrat Variable', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+}
+
+.hero-github-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.hero-qr {
+  width: 6.5rem;
+  height: 6.5rem;
+  padding: 0.35rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.hero-github {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--godot-text-dim) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.engine-switch-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.engine-switch-unity {
+  position: relative;
+  width: 5rem;
+  height: 5rem;
+}
+
+.engine-switch-unity img {
+  width: 100%;
+  height: 100%;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+.engine-switch-strike {
+  position: absolute;
+  inset: -0.4rem;
+  width: calc(100% + 0.8rem);
+  height: calc(100% + 0.8rem);
+  color: var(--meds-s);
+}
+
+.engine-switch-arrow {
+  width: 5rem;
+  height: 2rem;
+  color: var(--godot-blue-light);
+}
+
+.engine-switch-strike path,
+.engine-switch-arrow path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.engine-switch-godot {
+  width: 5rem;
+  height: 5rem;
+  opacity: 0;
+}
+
+.engine-switch:not(.slidev-vclick-hidden) .engine-switch-strike path {
+  animation: engine-switch-draw 0.5s 0.2s ease-out forwards;
+}
+
+.engine-switch:not(.slidev-vclick-hidden) .engine-switch-arrow path {
+  animation: engine-switch-draw 0.6s 0.8s ease-out forwards;
+}
+
+.engine-switch:not(.slidev-vclick-hidden) .engine-switch-godot {
+  animation: engine-switch-reveal 0.45s 1.25s ease-out forwards;
+}
+
+@keyframes engine-switch-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes engine-switch-reveal {
+  from { opacity: 0; transform: translateX(-0.5rem) scale(0.9); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .engine-switch:not(.slidev-vclick-hidden) .engine-switch-strike path,
+  .engine-switch:not(.slidev-vclick-hidden) .engine-switch-arrow path,
+  .engine-switch:not(.slidev-vclick-hidden) .engine-switch-godot {
+    animation-duration: 0s;
+    animation-delay: 0s;
+  }
+}
+
 /* Section dividers: Godot blue */
 .slidev-layout.section {
   background:
@@ -133,6 +320,11 @@
 .e { color: var(--meds-e); }
 .d { color: var(--meds-d); }
 .s { color: var(--meds-s); }
+
+.slidev-layout span:is(.m, .e, .d, .s),
+.slidev-layout .big-letter {
+  color: #fff;
+}
 
 .card,
 .letter-card {

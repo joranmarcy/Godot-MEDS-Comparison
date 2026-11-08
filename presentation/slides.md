@@ -6,9 +6,10 @@ title: MEDS — Une architecture modulaire pour Godot
 info: |
   Présentation de MEDS (Modular · Editable · Debuggable · Scalable),
   une librairie Godot pour découpler les systèmes avec des Resources.
+  Capitole du Libre, novembre 2026.
 author: Joran
 lang: fr
-class: text-center
+class: hero-cover
 transition: slide-left
 mdc: true
 highlighter: shiki
@@ -22,25 +23,30 @@ drawings:
   persist: false
 ---
 
-<MedsLogo class="mx-auto h-56 w-56 shadow-2xl" />
+<div class="hero-grid">
+  <div class="hero-logo">
+    <MedsLogo class="h-72 w-72 rounded-3xl" />
+  </div>
 
-<div class="flex items-center justify-center gap-4 mt-8 text-3xl font-600" style="font-family: 'Montserrat Variable'">
-  Une architecture modulaire pour
-  <img src="/godot/logo_large_color_dark.svg" alt="Godot Engine" class="h-14" />
+  <div class="hero-text">
+    <div class="hero-eyebrow">Une architecture modulaire pour</div>
+    <img src="/godot/logo_large_color_dark.svg" alt="Godot Engine" class="h-20 mt-3" />
+    <ul class="hero-acronym">
+      <li><span class="m">M</span>odular</li>
+      <li><span class="e">E</span>ditable</li>
+      <li><span class="d">D</span>ebuggable</li>
+      <li><span class="s">S</span>calable</li>
+    </ul>
+    <div class="hero-github-row">
+      <img src="/github-qr.svg" alt="QR code vers github.com/joranmarcy" class="hero-qr" />
+      <a class="hero-github" href="https://github.com/joranmarcy" target="_blank">
+        <carbon-logo-github /> github.com/joranmarcy
+      </a>
+    </div>
+  </div>
 </div>
 
-<div class="mt-10 text-xl tracking-wide opacity-90">
-  <span class="m font-700">M</span>odular ·
-  <span class="e font-700">E</span>ditable ·
-  <span class="d font-700">D</span>ebuggable ·
-  <span class="s font-700">S</span>calable
-</div>
-
-<div class="abs-b mb-10 text-sm opacity-70 flex items-center justify-center gap-2">
-  <carbon-logo-github />
-  <a href="https://github.com/joranmarcy" target="_blank">github.com/joranmarcy</a>
-</div>
-
+<div class="hero-event">Capitole du Libre · Novembre 2026</div>
 
 <!--
 Bonjour à toutes et à tous, et bienvenue dans cette présentation !
@@ -61,7 +67,7 @@ layoutClass: gap-12
 
 <v-clicks>
 
-- **Joran** — ingénieur logiciel depuis **12+ ans**
+- **Joran Marcy** - Ingénieur R&D logiciel depuis **12+ ans**
 - Débuts dans les **logiciels critiques** (contrôle aérien)
 - Puis les **technologies immersives** : VR, AR, HoloLens
 - **Numix** depuis 6 ans ½ : formations VR, apps mobiles, e-learning
@@ -76,11 +82,23 @@ layoutClass: gap-12
     <img src="/numix/agence.png" alt="L'agence Numix" class="w-full rounded-xl shadow-2xl border border-[#55595e]" />
     <figcaption class="mt-2 text-xs text-center opacity-60">L'agence Numix</figcaption>
   </figure>
-  <div v-click class="flex items-center gap-4">
-    <img src="/godot/icon_color.svg" alt="Godot Engine" class="h-16" />
-    <div class="text-xl opacity-80">
+  <div v-click="6" class="engine-switch">
+    <div class="engine-switch-logos" role="img" aria-label="Unity barré, une flèche vers Godot : mon souhait de remplacer Unity par Godot">
+      <div class="engine-switch-unity">
+        <img src="/unity/unity.svg" alt="" />
+        <svg class="engine-switch-strike" viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M10 90 L90 10" pathLength="1" />
+        </svg>
+      </div>
+      <svg class="engine-switch-arrow" viewBox="0 0 100 40" aria-hidden="true">
+        <path d="M5 20 H90 M74 5 L90 20 L74 35" pathLength="1" />
+      </svg>
+      <img src="/godot/icon_color.svg" alt="" class="engine-switch-godot" />
+    </div>
+    <div class="text-lg opacity-80 text-center">
       Depuis un an, je m'intéresse<br/>
-      sérieusement à <span class="godot font-bold">Godot</span> pour remplacer Unity
+      sérieusement à <span class="godot font-bold">Godot</span>.<br/>
+      J'aimerais remplacer Unity par Godot.
     </div>
   </div>
 </div>
