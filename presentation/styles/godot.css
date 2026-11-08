@@ -1,0 +1,276 @@
+/* Godot Engine visual identity (godotengine.org + Godot 4 editor). */
+:root {
+  --godot-blue: #478cbf;
+  --godot-blue-light: #70bafa;
+  --godot-blue-dark: #2d6a99;
+  --godot-hero: #001728;
+  --godot-bg: #202326;
+  --godot-base: #25282b;
+  --godot-card: #333639;
+  --godot-card-border: #55595e;
+  --godot-code-bg: #1d2229;
+  --godot-text: hsla(0, 0%, 100%, 0.9);
+  --godot-text-dim: hsla(200, 0%, 100%, 0.7);
+  --godot-link: hsl(200, 60%, 70%);
+
+  /* MEDS letters, taken from Godot editor node-type colors. */
+  --meds-m: #8da5f3;
+  --meds-e: #8eef97;
+  --meds-d: #ffb373;
+  --meds-s: #fc7f7f;
+
+  --slidev-theme-primary: var(--godot-blue);
+  --slidev-code-background: var(--godot-code-bg);
+  --slidev-code-foreground: #cdcfd2;
+  --slidev-code-font-family: 'JetBrains Mono Variable', monospace;
+  --slidev-code-radius: 8px;
+  --slidev-slide-container-background: var(--godot-bg);
+}
+
+.slidev-layout {
+  font-family: 'Inter Variable', sans-serif;
+  background: var(--godot-bg);
+  color: var(--godot-text);
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3,
+.slidev-layout h4 {
+  font-family: 'Montserrat Variable', sans-serif;
+  color: #fff;
+}
+
+.slidev-layout h1 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.slidev-layout:not(.cover):not(.section):not(.center) h1::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: 0.6rem;
+  border-radius: 2px;
+  background: var(--godot-blue);
+}
+
+.slidev-layout h3 {
+  font-weight: 600;
+}
+
+.slidev-layout strong {
+  color: #fff;
+  font-weight: 650;
+}
+
+.slidev-layout a {
+  color: var(--godot-link);
+  border-bottom: 1px solid hsla(200, 60%, 70%, 0.3);
+}
+
+.slidev-layout ul li::marker {
+  color: var(--godot-blue);
+}
+
+.slidev-layout :not(pre) > code {
+  font-family: var(--slidev-code-font-family);
+  background: var(--godot-card);
+  color: #bce0ff;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.slidev-layout table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--godot-card-border);
+}
+
+.slidev-layout th {
+  background: var(--godot-blue);
+  color: #fff;
+  font-family: 'Montserrat Variable', sans-serif;
+  font-weight: 600;
+}
+
+.slidev-layout td {
+  background: var(--godot-base);
+  border-top: 1px solid var(--godot-card);
+}
+
+/* Cover: hero banner from godotengine.org */
+.slidev-layout.cover {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(71, 140, 191, 0.35), transparent 55%),
+    radial-gradient(circle at 10% 90%, rgba(71, 140, 191, 0.2), transparent 50%),
+    var(--godot-hero);
+}
+
+/* Section dividers: Godot blue */
+.slidev-layout.section {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.12), transparent 50%),
+    linear-gradient(135deg, var(--godot-blue) 0%, var(--godot-blue-dark) 100%);
+  color: #fff;
+}
+
+.slidev-layout.section h1 {
+  font-weight: 800;
+}
+
+.slidev-layout.section h2 {
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+.godot { color: var(--godot-blue-light); }
+.m { color: var(--meds-m); }
+.e { color: var(--meds-e); }
+.d { color: var(--meds-d); }
+.s { color: var(--meds-s); }
+
+.card,
+.letter-card {
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: var(--godot-card);
+  border: 1px solid var(--godot-card-border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.card h3,
+.letter-card h3 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.card p,
+.letter-card p {
+  font-size: 0.95rem;
+  color: var(--godot-text-dim);
+  line-height: 1.45;
+}
+
+.letter-card {
+  text-align: center;
+  border-top-width: 4px;
+}
+
+.m-border { border-top-color: var(--meds-m); }
+.e-border { border-top-color: var(--meds-e); }
+.d-border { border-top-color: var(--meds-d); }
+.s-border { border-top-color: var(--meds-s); }
+
+.big-letter {
+  font-family: 'Montserrat Variable', sans-serif;
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.letter-row {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: var(--godot-card);
+}
+
+.letter-row span {
+  display: inline-block;
+  width: 2rem;
+  font-family: 'Montserrat Variable', sans-serif;
+}
+
+.tip {
+  border-left: 4px solid var(--godot-blue);
+  background: rgba(71, 140, 191, 0.15);
+  padding: 0.75rem 1rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.good,
+.bad {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+}
+
+.good {
+  background: rgba(142, 239, 151, 0.1);
+  border: 1px solid rgba(142, 239, 151, 0.45);
+}
+
+.bad {
+  background: rgba(252, 127, 127, 0.1);
+  border: 1px solid rgba(252, 127, 127, 0.45);
+}
+
+.type-chip {
+  text-align: center;
+  font-family: var(--slidev-code-font-family);
+  color: #8fffdb;
+  padding: 0.9rem 0.5rem;
+  border-radius: 12px;
+  background: var(--godot-code-bg);
+  border: 1px solid var(--godot-blue);
+}
+
+.prompt {
+  font-style: italic;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--godot-card);
+  border: 1px dashed var(--godot-blue);
+}
+
+.mermaid-fit svg {
+  max-height: 390px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.mermaid-small svg {
+  max-height: 230px;
+}
+
+.code-sm .slidev-code {
+  font-size: 0.68rem !important;
+}
+
+.slidev-code,
+.slidev-code * {
+  font-variant-ligatures: none;
+}
+
+.legend {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 0.2rem;
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
+
+.var-legend { background: #1f3d57; border: 1px solid #478cbf; }
+.evt-legend { background: #4d2a2e; border: 1px solid #fc7f7f; }
+
+.slide-counter {
+  position: absolute;
+  z-index: 10;
+  right: 1.25rem;
+  bottom: 0.9rem;
+  font-family: 'Montserrat Variable', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--godot-blue-light);
+  opacity: 0.7;
+}
+
+.godot-credit {
+  font-size: 0.65rem;
+  opacity: 0.45;
+}

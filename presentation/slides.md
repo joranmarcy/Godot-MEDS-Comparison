@@ -1,7 +1,7 @@
 ---
-theme: seriph
+theme: default
 colorSchema: dark
-background: '#0b1622'
+layout: cover
 title: MEDS — Une architecture modulaire pour Godot
 info: |
   Présentation de MEDS (Modular · Editable · Debuggable · Scalable),
@@ -13,19 +13,29 @@ transition: slide-left
 mdc: true
 highlighter: shiki
 lineNumbers: false
+fonts:
+  sans: Inter Variable
+  serif: Montserrat Variable
+  mono: JetBrains Mono Variable
+  provider: none
 drawings:
   persist: false
 ---
 
-# MEDS
+<h1 class="!text-8xl !font-800 tracking-tight">
+  <span class="m">M</span><span class="e">E</span><span class="d">D</span><span class="s">S</span>
+</h1>
 
-## Une architecture modulaire pour Godot
+<div class="flex items-center justify-center gap-4 mt-2 text-3xl font-600" style="font-family: 'Montserrat Variable'">
+  Une architecture modulaire pour
+  <img src="/godot/logo_large_color_dark.svg" alt="Godot Engine" class="h-14" />
+</div>
 
-<div class="mt-8 text-2xl tracking-widest opacity-90">
-  <span class="m">M</span>odular ·
-  <span class="e">E</span>ditable ·
-  <span class="d">D</span>ebuggable ·
-  <span class="s">S</span>calable
+<div class="mt-10 text-xl tracking-wide opacity-90">
+  <span class="m font-700">M</span>odular ·
+  <span class="e font-700">E</span>ditable ·
+  <span class="d font-700">D</span>ebuggable ·
+  <span class="s font-700">S</span>calable
 </div>
 
 <div class="abs-b mb-10 text-sm opacity-60">
@@ -62,7 +72,7 @@ layoutClass: gap-12
 ::right::
 
 <div class="h-full flex flex-col justify-center items-center gap-6" v-click>
-  <div class="text-7xl">🎮 ➜ 🤖</div>
+  <img src="/godot/icon_color.svg" alt="Godot Engine" class="h-32" />
   <div class="text-xl opacity-80 text-center">
     Unity au travail…<br/>
     <span class="godot font-bold">Godot</span> par passion
@@ -478,7 +488,7 @@ flowchart LR
   GS -- "player_hit" --> Shake["📷 ScreenShake"]
   GS -- "coin_collected<br/>game_over" --> SFX["🔊 SoundEffects"]
   GS -- "game_over" --> GO["💀 GameOverScreen"]
-  classDef core fill:#7c2d12,stroke:#f97316,color:#fff
+  classDef core fill:#4d3420,stroke:#ffb373,color:#fff
   class GS core
 ```
 
@@ -606,7 +616,7 @@ class: text-center
 
 <div class="text-3xl leading-relaxed">
   Le problème, ce n'est pas le <span class="opacity-60">singleton</span> en lui-même.<br/>
-  <span v-click>C'est le <strong class="text-orange-400">couplage</strong> qu'il crée entre les systèmes.</span>
+  <span v-click>C'est le <strong class="s">couplage</strong> qu'il crée entre les systèmes.</span>
 </div>
 
 <div v-click class="mt-12 text-lg opacity-80">
@@ -707,7 +717,7 @@ flowchart LR
   Player["🧍 Player"] -- "écrit" --> PP[("📍 PlayerPosition<br/>Vector2Variable")]
   PP -- "lit" --> Enemy["👾 Enemy"]
   Editor["🛠️ Éditeur / test"] -. "écrit aussi ?" .-> PP
-  classDef var fill:#1e3a5f,stroke:#478cbf,color:#fff
+  classDef var fill:#1f3d57,stroke:#478cbf,color:#fff
   class PP var
 ```
 
@@ -933,8 +943,8 @@ flowchart LR
   SC --> LFS["LevelFromScore"]
   LFS --> LV[("Level")]
   LV --> Enemy
-  classDef var fill:#1e3a5f,stroke:#478cbf,color:#fff
-  classDef evt fill:#4c1d95,stroke:#a78bfa,color:#fff
+  classDef var fill:#1f3d57,stroke:#478cbf,color:#fff
+  classDef evt fill:#4d2a2e,stroke:#fc7f7f,color:#fff
   class PP,HP,GO,SC,LV var
   class PH,CC evt
 ```
@@ -1313,7 +1323,7 @@ Pour conclure, l'objectif de MEDS n'est pas de dire que les singletons sont mauv
 -->
 
 ---
-layout: center
+layout: cover
 class: text-center
 ---
 
@@ -1328,6 +1338,11 @@ class: text-center
 
 <div class="mt-4 opacity-60">
   Coin Rush classique · Coin Rush MEDS · Librairie MEDS
+</div>
+
+<div class="abs-b mb-6 flex flex-col items-center gap-2">
+  <img src="/godot/logo_small_color_dark.svg" alt="Godot Engine" class="h-8 opacity-80" />
+  <div class="godot-credit">Logo Godot Engine © 2017 Andrea Calabró — CC BY 4.0</div>
 </div>
 
 <!--
