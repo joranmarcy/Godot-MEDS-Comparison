@@ -4,6 +4,11 @@ Idiomatic Godot implementation: one autoload singleton, [`GameState`](./scripts/
 
 See the [comparison guide](../README.md) for the side-by-side with the MEDS version.
 
+The player publishes its global position to `GameState.player_position` at startup
+and after each movement step. Enemies read that value from the singleton rather
+than looking up the player node. Reloading the scene publishes the new player's
+starting position before gameplay resumes.
+
 - Main scene: [scenes/main.tscn](./scenes/main.tscn)
 - Controls: WASD / arrows / gamepad / touch drag to move, Esc or the on-screen II button to pause (volume, debug overlay), F1 debug overlay, Restart button after game over
 - Test: `godot --path . -s res://tests/test_gameplay.gd` (add `--headless` to skip the touch checks)

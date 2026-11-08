@@ -467,6 +467,11 @@ layout: section
 
 </v-clicks>
 
+<figure v-click="2" class="mt-8">
+  <img src="/screenshots/godot-autoloads.png" alt="Project Settings, onglet Globals puis Autoload : GameState est déclaré avec res://scripts/game_state.gd et Global Variable activé." class="w-full rounded-lg border border-[#55595e]" />
+  <figcaption class="mt-2 text-xs opacity-70">Project Settings → Globals → Autoload</figcaption>
+</figure>
+
 </div>
 <div>
 
@@ -511,7 +516,8 @@ flowchart LR
   Player["Player"] -- "damage_player()" --> GS
   Coin["Coin"] -- "collect_coin()" --> GS
   Enemy["Enemy"] -- "level, is_running" --> GS
-  Enemy -. "get_first_node_in_group('player')" .-> Player
+  Player -- "writes player_position" --> GS
+  Enemy -- "reads player_position" --> GS
   GS["GameState<br/>(AutoLoad)"]
   GS -- "health_changed<br/>score_changed" --> HUD["HUD"]
   GS -- "player_hit" --> Shake["ScreenShake"]
@@ -587,25 +593,20 @@ Et en soi, cette approche est plutôt pratique.
 <div class="grid grid-cols-2 gap-8">
 <div class="code-sm">
 
-```gdscript {all|7-10|13,15-16|all}
+```gdscript {all|8-14|all}
 # classic-game/scripts/enemy.gd
 extends Area2D
 
 @export var base_speed: float = 110.0
 @export var speed_per_level: float = 15.0
 
-var _player: Node2D
-
-func _ready() -> void:
-	_player = get_tree().get_first_node_in_group("player")
-
 func _physics_process(delta: float) -> void:
-	if not GameState.is_running or _player == null:
+	if not GameState.is_running:
 		return
 	var speed := base_speed \
 		+ (GameState.level - 1) * speed_per_level
 	global_position = global_position.move_toward(
-		_player.global_position, speed * delta)
+		GameState.player_position, speed * delta)
 ```
 
 </div>
@@ -613,9 +614,9 @@ func _physics_process(delta: float) -> void:
 
 <v-clicks>
 
-- Je veux tester **l'ennemi seul** → ça ne marche pas
-- Il cherche le **nœud du joueur** dans la scène
-- Donc il me faut un joueur… qui dépend lui-même du `GameState`
+- Je veux tester **l'ennemi seul** → il dépend encore de `GameState`
+- Position cible, niveau, état de partie : **tout passe par le singleton**
+- Pour le tester, je dois configurer cet **état global**
 - Un collègue casse `GameState` → **ma scène ne marche plus**
 - … alors que je n'ai **rien changé** à mon système
 
@@ -625,11 +626,11 @@ func _physics_process(delta: float) -> void:
 </div>
 
 <!--
-Imaginons que je travaille sur le comportement des ennemis. Je crée une scène avec uniquement mon ennemi, pour pouvoir tester son déplacement. Sauf que ça ne fonctionne pas.
+Imaginons que je travaille sur le comportement des ennemis. Je crée une scène avec uniquement mon ennemi, pour pouvoir tester son déplacement. Il n'a pas besoin du nœud du joueur, mais il dépend encore du GameState.
 
-[click] Pourquoi ? Parce que mon ennemi cherche directement le nœud du joueur dans l'arborescence de la scène pour récupérer sa position. Donc pour tester mon ennemi, je suis obligé d'avoir aussi un joueur dans ma scène.
+[click] Pourquoi ? Parce que mon ennemi lit sa position cible, le niveau et l'état de la partie dans le même singleton.
 
-[click] Et potentiellement, ce joueur a lui-même besoin d'autres systèmes. On commence alors à accumuler les dépendances.
+[click] Pour tester son déplacement, je dois donc configurer cet état global : une position cible et une partie en cours. Mon test dépend d'un singleton partagé avec tous les autres systèmes.
 
 Autre exemple : je veux simplement tester le comportement de mon joueur. Mais mon script dépend du GameState. Donc, même si je veux uniquement tester le déplacement du joueur, je reste dépendant de ce singleton.
 
@@ -743,9 +744,8 @@ Et pour ça, on va s'appuyer sur une fonctionnalité native de Godot : les Resou
 
 ```mermaid
 flowchart LR
-  Player["Player"] -- "écrit" --> PP[("PlayerPosition<br/>Vector2Variable")]
-  PP -- "lit" --> Enemy["Enemy"]
-  Editor["Éditeur / test"] -. "écrit aussi ?" .-> PP
+  Player["Player"] -- "writes" --> PP[("PlayerPosition<br/>Vector2Variable")]
+  PP -- "reads" --> Enemy["Enemy"]
   classDef var fill:#1f3d57,stroke:#478cbf,color:#fff
   class PP var
 ```
@@ -754,19 +754,19 @@ flowchart LR
 
 <v-clicks>
 
-- L'ennemi n'a plus besoin de connaître **le joueur** — seulement **une position**
+- La position est une **dépendance explicite**, indépendante du `GameState`
 - Remplacer le joueur, ou piloter la position depuis l'éditeur : l'ennemi fonctionne **pareil**
 
 </v-clicks>
 
 <!--
-Reprenons notre exemple de l'ennemi qui doit connaître la position du joueur. Dans notre architecture classique, l'ennemi allait chercher directement le joueur dans la scène. Avec MEDS, on va faire autrement.
+Reprenons notre exemple de l'ennemi qui doit connaître la position du joueur. Dans notre architecture classique, le joueur écrit cette position dans GameState et l'ennemi la lit depuis ce singleton. Avec MEDS, on va isoler cette donnée dans une Resource.
 
 On va créer une Resource partagée qu'on va appeler PlayerPosition. Cette Resource va simplement contenir un Vector2, c'est-à-dire une position en X et Y.
 
 Ensuite, on va donner cette même Resource à deux systèmes. D'un côté, le joueur va mettre à jour sa position dans PlayerPosition. De l'autre, l'ennemi va simplement lire cette valeur pour savoir où se déplacer. Et c'est tout.
 
-[click] L'ennemi n'a plus besoin de connaître l'existence du joueur. Il a uniquement besoin d'une position. Et ça change pas mal de choses.
+[click] L'ennemi n'a plus besoin du GameState. Sa position cible est une dépendance explicite, qu'on peut lui fournir indépendamment du reste du jeu.
 
 [click] Par exemple, si demain je décide de remplacer le joueur par un autre objet, ou même de contrôler directement la position depuis l'éditeur, mon ennemi continuera à fonctionner exactement de la même façon. Parce qu'il ne dépend plus d'un objet particulier, mais simplement d'une donnée qu'on lui fournit.
 -->
@@ -781,16 +781,11 @@ Ensuite, on va donner cette même Resource à deux systèmes. D'un côté, le jo
 @export var base_speed: float = 110.0
 @export var speed_per_level: float = 15.0
 
-var _player: Node2D
-
-func _ready() -> void:
-	_player = get_tree().get_first_node_in_group("player")
-
 func _physics_process(delta: float) -> void:
-	if not GameState.is_running or _player == null:
+	if not GameState.is_running:
 		return
 	var speed := base_speed + (GameState.level - 1) * speed_per_level
-	global_position = global_position.move_toward(_player.global_position, speed * delta)
+	global_position = global_position.move_toward(GameState.player_position, speed * delta)
 ```
 
 ```gdscript
@@ -810,17 +805,17 @@ func _physics_process(delta: float) -> void:
 ````
 
 <div v-click class="mt-6 text-center text-lg">
-  Plus de <code>GameState</code>, plus de recherche de nœud : <strong>uniquement des dépendances explicites</strong>.
+  Plus de <code>GameState</code> : <strong>uniquement des dépendances explicites</strong>.
 </div>
 
 <!--
 Voilà ce que ça donne concrètement dans le code.
 
-[click] Avant : l'ennemi cherche le joueur dans l'arbre de scène et lit le niveau et l'état de la partie dans le GameState.
+[click] Avant : l'ennemi lit la position du joueur, le niveau et l'état de la partie dans le GameState.
 
 Après : l'ennemi déclare simplement ses dépendances avec des @export. Une position cible, une vitesse, un niveau, un booléen de fin de partie. C'est tout.
 
-[click] Plus de GameState, plus de recherche de nœud : uniquement des dépendances explicites, injectées depuis l'inspecteur.
+[click] Plus de GameState : uniquement des dépendances explicites, injectées depuis l'inspecteur.
 -->
 
 ---
@@ -828,14 +823,14 @@ Après : l'ennemi déclare simplement ses dépendances avec des @export. Une pos
 # Des variables pour tous les types
 
 <div class="grid grid-cols-4 gap-4 mt-10">
-  <div v-click class="type-chip">BoolVariable</div>
-  <div v-click class="type-chip">IntVariable</div>
-  <div v-click class="type-chip">FloatVariable</div>
-  <div v-click class="type-chip">StringVariable</div>
-  <div v-click class="type-chip">ColorVariable</div>
-  <div v-click class="type-chip">Vector2Variable</div>
-  <div v-click class="type-chip">Vector3Variable</div>
-  <div v-click class="type-chip opacity-60">…</div>
+  <div v-click class="type-chip"><img src="/meds/variables/BoolVariable.svg" alt="" />BoolVariable</div>
+  <div v-click class="type-chip"><img src="/meds/variables/IntVariable.svg" alt="" />IntVariable</div>
+  <div v-click class="type-chip"><img src="/meds/variables/FloatVariable.svg" alt="" />FloatVariable</div>
+  <div v-click class="type-chip"><img src="/meds/variables/StringVariable.svg" alt="" />StringVariable</div>
+  <div v-click class="type-chip"><img src="/meds/variables/ColorVariable.svg" alt="" />ColorVariable</div>
+  <div v-click class="type-chip"><img src="/meds/variables/Vector2Variable.svg" alt="" />Vector2Variable</div>
+  <div v-click class="type-chip"><img src="/meds/variables/Vector3Variable.svg" alt="" />Vector3Variable</div>
+  <div v-click class="type-chip opacity-60"><img src="/meds/variables/BaseVariable.svg" alt="" />…</div>
 </div>
 
 <div v-click class="mt-14 text-center text-2xl">
@@ -924,30 +919,6 @@ On obtient donc deux systèmes qui peuvent communiquer sans dépendre directemen
 -->
 
 ---
-layout: center
-class: text-center
----
-
-# Et si on applique ça partout…
-
-<div v-click class="mt-10">
-  <div class="text-9xl">🥣</div>
-  <div class="text-5xl font-bold mt-4">Chocapic !</div>
-</div>
-
-<div v-click class="mt-10 text-2xl opacity-70">
-  … bon, non, pas vraiment.
-</div>
-
-<!--
-Maintenant, si on reprend l'ensemble de notre jeu et qu'on applique ce principe un peu partout, on obtient ça...
-
-[click] [Afficher une image de Chocapic.]
-
-[click] Bon, non, pas vraiment. On obtient plutôt ça !
--->
-
----
 
 # Architecture MEDS
 
@@ -955,13 +926,13 @@ Maintenant, si on reprend l'ensemble de notre jeu et qu'on applique ce principe 
 
 ```mermaid
 flowchart LR
-  Player["Player"] -- "écrit" --> PP[("PlayerPosition")]
+  Player["Player"] -- "writes" --> PP[("PlayerPosition")]
   PP --> Enemy["Enemy"]
   Player -- "déclenche" --> PH>"PlayerHit"]
   PH --> Shake["ScreenShake"]
   PH --> SFX["PlaySoundOnEvent"]
   PH --> DMG["DamageOnEvent"]
-  DMG -- "écrit" --> HP[("PlayerHealth")]
+  DMG -- "writes" --> HP[("PlayerHealth")]
   HP --> HUD["HUD (bindings)"]
   HP --> GOZ["GameOverOnZeroHealth"]
   GOZ --> GO[("GameOver")]

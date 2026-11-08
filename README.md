@@ -58,7 +58,8 @@ To build for Android, install the Android export templates and SDK, then add an 
 flowchart LR
     Coin -- "GameState.collect_coin()" --> GS[(GameState autoload<br/>health, score, combo, level,<br/>high_score, is_running<br/>+ all the rules)]
     Player -- "GameState.damage_player()" --> GS
-    Enemy -- "get_first_node_in_group('player')" --> Player
+    Player -- "writes player_position" --> GS
+    Enemy -- "reads player_position" --> GS
     GS -- signals --> HUD
     GS -- signals --> GameOverScreen
     GS -- signals --> ScreenFlash & ScreenShake & DebugOverlay
@@ -108,7 +109,7 @@ flowchart LR
 | High score rule + save | Setter of `GameState.score` + `_save_high_score()` | [high_score_tracker.gd](./meds-game/game/scripts/high_score_tracker.gd) + `save_to_device = true` on the resource |
 | Damage rule | `GameState.damage_player()` | [damage_on_event.gd](./meds-game/game/scripts/damage_on_event.gd) node |
 | Game-over rule | `GameState.damage_player()` → `_end_game()` | [game_over_on_zero_health.gd](./meds-game/game/scripts/game_over_on_zero_health.gd) node |
-| Enemy → player position | `get_tree().get_first_node_in_group("player")` | Reads `player-position.tres` |
+| Enemy → player position | Reads `GameState.player_position` (written by Player) | Reads `player-position.tres` |
 | HUD | Custom [hud.gd](./classic-game/scripts/hud.gd) (5 signal handlers) | **No custom script**: MEDS `variable-driven-label` / `variable-driven-progress-bar` |
 | Game-over screen | Custom script listening to `GameState.game_over` | `bool_to_visibility` on `game-over` + MEDS labels + restart button |
 | Session reset on restart | `GameState.start_game()` called from `main.gd` | Nothing to write: session variables use MEDS' default `reset_on = "On Scene Load"`, so `reload_current_scene()` puts them back to their `initial_value` before the new scene's `_ready()`. Settings and the high score use `"On Application Start"` |
@@ -123,7 +124,7 @@ flowchart LR
 
 1. **The scene tree documents the rules.** Open [main.tscn](./meds-game/game/scenes/main.tscn): the `GameRules` node lists every rule of the game (`ScoreKeeper`, `LevelFromScore`, `HighScoreTracker`, `DamageOnPlayerHit`, `GameOverOnZeroHealth`). Select one and the inspector shows exactly which variables/events it reads and writes. In the classic project, the same knowledge is spread inside setters and methods of a single script — e.g. the level and high-score rules are hidden in the `score` setter.
 2. **Dependencies are explicit.** A MEDS script can only touch what is assigned to its exports. A classic script can reach `GameState.anything` from anywhere, so you need to read every script to know who depends on what.
-3. **Scenes are self-contained.** `player.tscn`, `enemy.tscn`, `hud.tscn` reference resources, not other nodes or an autoload, so each can be opened and run on its own (F6). Enemies no longer need to find the player node.
+3. **Scenes are self-contained.** `player.tscn`, `enemy.tscn`, `hud.tscn` reference resources, not other nodes or an autoload, so each can be opened and run on its own (F6). Enemies read an injected position resource instead of depending on the global `GameState`.
 4. **State has a name and an icon.** Health is `player-health.tres` (an `IntVariable` clamped to 0–5), visible in the FileSystem dock with a MEDS icon, instead of a field inside a 140-line singleton.
 
 ## How MEDS improves *debugging* — side-by-side scenarios

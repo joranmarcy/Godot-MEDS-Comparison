@@ -17,6 +17,7 @@ func _ready() -> void:
 	if start_at_viewport_center:
 		global_position = get_viewport_rect().get_center()
 	_hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+	GameState.player_position = global_position
 
 
 func _physics_process(delta: float) -> void:
@@ -28,6 +29,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	var arena := get_viewport_rect().grow(-radius)
 	global_position = global_position.clamp(arena.position, arena.end)
+	GameState.player_position = global_position
 
 
 func _on_hurtbox_area_entered(area: Area2D) -> void:

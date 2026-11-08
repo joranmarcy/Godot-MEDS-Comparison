@@ -21,6 +21,7 @@ const POINTS_PER_LEVEL := 200
 const SAVE_PATH := "user://highscore.cfg"
 
 var is_running := false
+var player_position := Vector2.ZERO
 
 var health: int = MAX_HEALTH:
 	set(new_value):

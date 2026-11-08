@@ -127,6 +127,17 @@ func _run() -> void:
 	await process_frame
 	var gs: Node = root.get_node("GameState")
 	var settings: Node = root.get_node("Settings")
+	var standalone_enemy: Node2D = load("res://scenes/enemy.tscn").instantiate()
+	root.add_child(standalone_enemy)
+	standalone_enemy.set_physics_process(false)
+	gs.start_game()
+	gs.player_position = Vector2(300, 0)
+	standalone_enemy._physics_process(0.1)
+	check(standalone_enemy.global_position.is_equal_approx(Vector2(11, 0)), "enemy follows GameState position without a player node")
+	gs.is_running = false
+	standalone_enemy._physics_process(0.1)
+	check(standalone_enemy.global_position.is_equal_approx(Vector2(11, 0)), "enemy stops when GameState is not running")
+	standalone_enemy.free()
 	gs.game_over.connect(func(): game_over_count += 1)
 	var main: Node = load("res://scenes/main.tscn").instantiate()
 	root.add_child(main)
@@ -138,6 +149,18 @@ func _run() -> void:
 	check(main.get_node("SoundEffects/Music").playing, "music plays at start")
 
 	var player: Node2D = main.get_node("Player")
+	check(gs.player_position.is_equal_approx(player.global_position), "player publishes initial position")
+	var initial_position := player.global_position
+	Input.action_press("move_right")
+	for i in 3: await physics_frame
+	Input.action_release("move_right")
+	await process_frame
+	check(player.global_position.x > initial_position.x, "keyboard input moves player")
+	check(gs.player_position.is_equal_approx(player.global_position), "player publishes position after movement")
+	player.global_position = Vector2(-100, -100)
+	await physics_frame
+	await process_frame
+	check(gs.player_position.is_equal_approx(player.global_position) and player.global_position.x >= player.radius and player.global_position.y >= player.radius, "published position follows arena clamping")
 	var coin: Node2D = load("res://scenes/coin.tscn").instantiate()
 	coin.position = player.global_position
 	main.get_node("Coins").add_child(coin)
@@ -180,6 +203,7 @@ func _run() -> void:
 	current_scene = main2
 	await process_frame
 	check(gs.health == 5 and gs.score == 0 and gs.is_running and gs.high_score >= 450, "restart")
+	check(gs.player_position.is_equal_approx(main2.get_node("Player").global_position), "restart publishes new player position")
 	check(main2.get_node("SoundEffects/Music").playing, "music restarts")
 	check(not main2.get_node("SoundEffects/LevelUp").playing, "no level up sound on restart reset")
 	for i in 30: await process_frame

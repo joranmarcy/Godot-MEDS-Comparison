@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="128"
+   height="128"
+   version="1.1"
+   id="svg6"
+   sodipodi:docname="IntVariable.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="4.5585937"
+     inkscape:cx="31.917738"
+     inkscape:cy="46.176522"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg6" />
+  <rect
+     width="124"
+     height="124"
+     x="2"
+     y="2"
+     fill="#363d52"
+     stroke="#212532"
+     stroke-width="4"
+     rx="14"
+     id="rect1"
+     inkscape:export-filename="IntVariable.png"
+     inkscape:export-xdpi="24"
+     inkscape:export-ydpi="24" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:93.3333px;font-family:Consolas;-inkscape-font-specification:Consolas;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke-width:3.72094"
+     x="30.399956"
+     y="96.666687"
+     id="text1"><tspan
+       sodipodi:role="line"
+       id="tspan1"
+       x="30.399956"
+       y="96.666687"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:93.3333px;font-family:Montserrat;-inkscape-font-specification:Montserrat;stroke-width:3.72094">#</tspan></text>
+</svg>
