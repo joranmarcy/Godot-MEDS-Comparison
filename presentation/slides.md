@@ -61,11 +61,11 @@ layoutClass: gap-12
 
 <v-clicks>
 
-- 👨‍💻 **Joran** — ingénieur logiciel depuis **12+ ans**
-- ✈️ Débuts dans les **logiciels critiques** (contrôle aérien)
-- 🥽 Puis les **technologies immersives** : VR, AR, HoloLens
-- 🏢 **Numix** depuis 6 ans ½ : formations VR, apps mobiles, e-learning
-- 🎮 Moteur principal au quotidien : **Unity**
+- **Joran** — ingénieur logiciel depuis **12+ ans**
+- Débuts dans les **logiciels critiques** (contrôle aérien)
+- Puis les **technologies immersives** : VR, AR, HoloLens
+- **Numix** depuis 6 ans ½ : formations VR, apps mobiles, e-learning
+- Moteur principal au quotidien : **Unity**
 
 </v-clicks>
 
@@ -101,17 +101,14 @@ Je m'appelle Joran et ça fait un peu plus de 12 ans que je suis ingénieur en d
 
 <div class="grid grid-cols-3 gap-6 mt-10">
   <div v-click class="card">
-    <div class="text-4xl mb-3">🔍</div>
     <h3>Sécurité & transparence</h3>
     <p>Accéder au code source du moteur et comprendre exactement ce qu'il fait.</p>
   </div>
   <div v-click class="card">
-    <div class="text-4xl mb-3">🧠</div>
     <h3>Curiosité technique</h3>
     <p>Comprendre ses outils, sans être limité à ce qu'on veut bien nous montrer.</p>
   </div>
   <div v-click class="card">
-    <div class="text-4xl mb-3">🗽</div>
     <h3>Indépendance</h3>
     <p>Ne pas dépendre des décisions commerciales d'un éditeur.<br/><em class="opacity-60">cf. la tarification Unity…</em></p>
   </div>
@@ -146,7 +143,7 @@ Une philosophie popularisée par <strong>Ryan Hipple</strong> pour Unity<br/>
 </div>
 
 <div v-click class="mt-10 text-lg">
-  Découverte chez Numix… et coup de cœur 💙
+  Découverte chez Numix… et coup de cœur
 </div>
 
 <div v-click class="mt-4 text-lg">
@@ -210,10 +207,10 @@ layoutClass: gap-10
 
 <v-clicks>
 
-- 🧱 Des systèmes **aussi indépendants que possible**
-- ♻️ Réutiliser un système dans un autre niveau… ou un autre projet
-- ▶️ Lancer **une scène seule**, directement depuis l'éditeur
-- 🎯 Un script = **une responsabilité**
+- Des systèmes **aussi indépendants que possible**
+- Réutiliser un système dans un autre niveau… ou un autre projet
+- Lancer **une scène seule**, directement depuis l'éditeur
+- Un script = **une responsabilité**
 
 </v-clicks>
 
@@ -221,7 +218,7 @@ layoutClass: gap-10
 
 <div class="h-full flex flex-col justify-center">
   <div v-click class="tip">
-    <strong>💡 Pour les devs Unity</strong><br/>
+    <strong>Pour les devs Unity</strong><br/>
     Une scène Godot ≈ un <em>prefab</em> qu'on pourrait exécuter directement.
   </div>
   <div v-click class="mt-6 text-center text-lg">
@@ -254,11 +251,11 @@ Le premier, c'est Modular, pour modulaire.
 
 <v-clicks>
 
-- 📊 Placer les **données au centre** du développement
-- 🚫 Pas de valeurs codées en dur
-- 🛠️ Modifiables **dans l'éditeur**, sans toucher au code
-- ⚡ … et **en temps réel**, pendant que le jeu tourne
-- 🎨 Idéal pour expérimenter et faire du **game design**
+- Placer les **données au centre** du développement
+- Pas de valeurs codées en dur
+- Modifiables **dans l'éditeur**, sans toucher au code
+- … et **en temps réel**, pendant que le jeu tourne
+- Idéal pour expérimenter et faire du **game design**
 
 </v-clicks>
 
@@ -302,16 +299,16 @@ Le deuxième principe, c'est Editable, pour éditable.
 
 <v-clicks>
 
-- 🔎 Comprendre **rapidement** ce qui se passe
-- 🧪 Tester chaque système **indépendamment**
-- 🐛 Bug sur les ennemis ? On lance **uniquement** les ennemis
+- Comprendre **rapidement** ce qui se passe
+- Tester chaque système **indépendamment**
+- Bug sur les ennemis ? On lance **uniquement** les ennemis
 
 </v-clicks>
 
 </div>
 <div v-click class="flex flex-col gap-3">
-  <div class="bad">❌ Lancer le jeu → 3 menus → charger un niveau → attendre les bonnes conditions…</div>
-  <div class="good">✅ Lancer la scène de l'ennemi → reproduire → corriger</div>
+  <div class="bad">Lancer le jeu → 3 menus → charger un niveau → attendre les bonnes conditions…</div>
+  <div class="good">Lancer la scène de l'ennemi → reproduire → corriger</div>
 </div>
 </div>
 
@@ -341,17 +338,14 @@ Le troisième principe, c'est Debuggable, pour facile à déboguer.
 
 <div class="grid grid-cols-3 gap-6">
   <div v-click class="card">
-    <div class="text-3xl mb-2">✅</div>
     <h3>Ça marche</h3>
     <p>Approche déjà utilisée avec succès chez Numix sous Unity.</p>
   </div>
   <div v-click class="card">
-    <div class="text-3xl mb-2">⚠️</div>
     <h3>Mais…</h3>
     <p>Gros projets = beaucoup de variables et d'événements.<br/>On gagne en modularité, on perd en <strong>lisibilité globale</strong>.</p>
   </div>
   <div v-click class="card">
-    <div class="text-3xl mb-2">🧰</div>
     <h3>MEDS</h3>
     <p>Les mêmes principes dans Godot + des <strong>outils</strong> pour maîtriser la complexité.</p>
   </div>
@@ -378,23 +372,23 @@ layout: center
 class: text-center
 ---
 
-# 🪙 Coin Rush
+# Coin Rush
 
 <div class="text-xl opacity-80 mt-4">Assez de théorie !</div>
 
 <div class="mt-10 grid grid-cols-2 gap-10 text-left">
   <div v-click class="card">
-    <h3>📁 classic-game/</h3>
+    <h3>classic-game/</h3>
     <p>Architecture classique : singleton <code>GameState</code> en AutoLoad</p>
   </div>
   <div v-click class="card">
-    <h3>📁 meds-game/</h3>
+    <h3>meds-game/</h3>
     <p>Le même jeu, mêmes fonctionnalités… avec MEDS</p>
   </div>
 </div>
 
 <div v-click class="mt-10 opacity-70">
-  🎮 <em>Démo : on contrôle un personnage, on ramasse des pièces, on évite les ennemis.</em>
+  <em>Démo : on contrôle un personnage, on ramasse des pièces, on évite les ennemis.</em>
 </div>
 
 <!--
@@ -432,9 +426,9 @@ layout: section
 
 <v-clicks>
 
-- 📌 Un script qui **centralise** la logique du jeu
-- ♾️ Chargé via l'**AutoLoad** de Godot
-- 🌍 Disponible partout, pendant toute l'application
+- Un script qui **centralise** la logique du jeu
+- Chargé via l'**AutoLoad** de Godot
+- Disponible partout, pendant toute l'application
 
 </v-clicks>
 
@@ -479,15 +473,15 @@ Pour cette version, j'ai utilisé une approche assez courante dans Godot : le pa
 
 ```mermaid
 flowchart LR
-  Player["🧍 Player"] -- "damage_player()" --> GS
-  Coin["🪙 Coin"] -- "collect_coin()" --> GS
-  Enemy["👾 Enemy"] -- "level, is_running" --> GS
+  Player["Player"] -- "damage_player()" --> GS
+  Coin["Coin"] -- "collect_coin()" --> GS
+  Enemy["Enemy"] -- "level, is_running" --> GS
   Enemy -. "get_first_node_in_group('player')" .-> Player
-  GS["🧠 GameState<br/>(AutoLoad)"]
-  GS -- "health_changed<br/>score_changed" --> HUD["📊 HUD"]
-  GS -- "player_hit" --> Shake["📷 ScreenShake"]
-  GS -- "coin_collected<br/>game_over" --> SFX["🔊 SoundEffects"]
-  GS -- "game_over" --> GO["💀 GameOverScreen"]
+  GS["GameState<br/>(AutoLoad)"]
+  GS -- "health_changed<br/>score_changed" --> HUD["HUD"]
+  GS -- "player_hit" --> Shake["ScreenShake"]
+  GS -- "coin_collected<br/>game_over" --> SFX["SoundEffects"]
+  GS -- "game_over" --> GO["GameOverScreen"]
   classDef core fill:#4d3420,stroke:#ffb373,color:#fff
   class GS core
 ```
@@ -511,7 +505,7 @@ Par exemple, l'interface peut mettre à jour les points de vie, et un autre syst
 <div class="grid grid-cols-2 gap-10 mt-8">
 <div>
 
-### ✅ Avantages
+### Avantages
 
 <v-clicks>
 
@@ -526,7 +520,7 @@ Par exemple, l'interface peut mettre à jour les points de vie, et un autre syst
 </div>
 <div v-click>
 
-### 🏁 Verdict
+### Verdict
 
 <div class="good mt-4">
   Petit jeu, <strong>game jam</strong> : ça fonctionne très bien.
@@ -584,11 +578,11 @@ func _physics_process(delta: float) -> void:
 
 <v-clicks>
 
-- 👾 Je veux tester **l'ennemi seul** → ça ne marche pas
-- 🔗 Il cherche le **nœud du joueur** dans la scène
-- 🧍 Donc il me faut un joueur… qui dépend lui-même du `GameState`
-- 💥 Un collègue casse `GameState` → **ma scène ne marche plus**
-- 🤷 … alors que je n'ai **rien changé** à mon système
+- Je veux tester **l'ennemi seul** → ça ne marche pas
+- Il cherche le **nœud du joueur** dans la scène
+- Donc il me faut un joueur… qui dépend lui-même du `GameState`
+- Un collègue casse `GameState` → **ma scène ne marche plus**
+- … alors que je n'ai **rien changé** à mon système
 
 </v-clicks>
 
@@ -655,15 +649,15 @@ layout: section
 
 <v-clicks>
 
-- 📦 Un objet qui **contient des données**
-- 💾 Enregistré dans un **fichier** (`.tres`)
-- 🤝 **Partagé** entre plusieurs éléments du jeu
-- 🧩 On peut créer **nos propres types**
+- Un objet qui **contient des données**
+- Enregistré dans un **fichier** (`.tres`)
+- **Partagé** entre plusieurs éléments du jeu
+- On peut créer **nos propres types**
 
 </v-clicks>
 
 <div v-click class="tip mt-8">
-  <strong>💡 Pour les devs Unity</strong><br/>
+  <strong>Pour les devs Unity</strong><br/>
   Une Resource ≈ un <code>ScriptableObject</code>
 </div>
 
@@ -714,9 +708,9 @@ Et pour ça, on va s'appuyer sur une fonctionnalité native de Godot : les Resou
 
 ```mermaid
 flowchart LR
-  Player["🧍 Player"] -- "écrit" --> PP[("📍 PlayerPosition<br/>Vector2Variable")]
-  PP -- "lit" --> Enemy["👾 Enemy"]
-  Editor["🛠️ Éditeur / test"] -. "écrit aussi ?" .-> PP
+  Player["Player"] -- "écrit" --> PP[("PlayerPosition<br/>Vector2Variable")]
+  PP -- "lit" --> Enemy["Enemy"]
+  Editor["Éditeur / test"] -. "écrit aussi ?" .-> PP
   classDef var fill:#1f3d57,stroke:#478cbf,color:#fff
   class PP var
 ```
@@ -830,7 +824,7 @@ layoutClass: gap-8
 
 <v-clicks>
 
-- 🪙 Pièce ramassée, 💥 joueur touché, 💀 fin de partie…
+- Pièce ramassée, joueur touché, fin de partie…
 - Un script **déclenche** l'événement
 - Un autre script l'**écoute**
 - Les deux **ne se connaissent pas**
@@ -873,7 +867,7 @@ func _on_event_raised() -> void:
 
 <div v-click class="mt-6 tip">
   Qui a déclenché l'événement ? Le joueur, un test, un bouton dans l'éditeur…<br/>
-  <strong>On s'en fout un peu !</strong> 😄
+  <strong>On s'en fout un peu !</strong>
 </div>
 
 <!--
@@ -926,17 +920,17 @@ Maintenant, si on reprend l'ensemble de notre jeu et qu'on applique ce principe 
 
 ```mermaid
 flowchart LR
-  Player["🧍 Player"] -- "écrit" --> PP[("PlayerPosition")]
-  PP --> Enemy["👾 Enemy"]
+  Player["Player"] -- "écrit" --> PP[("PlayerPosition")]
+  PP --> Enemy["Enemy"]
   Player -- "déclenche" --> PH>"PlayerHit"]
-  PH --> Shake["📷 ScreenShake"]
-  PH --> SFX["🔊 PlaySoundOnEvent"]
+  PH --> Shake["ScreenShake"]
+  PH --> SFX["PlaySoundOnEvent"]
   PH --> DMG["DamageOnEvent"]
   DMG -- "écrit" --> HP[("PlayerHealth")]
-  HP --> HUD["📊 HUD (bindings)"]
+  HP --> HUD["HUD (bindings)"]
   HP --> GOZ["GameOverOnZeroHealth"]
   GOZ --> GO[("GameOver")]
-  Coin["🪙 Coin"] -- "déclenche" --> CC>"CoinCollected"]
+  Coin["Coin"] -- "déclenche" --> CC>"CoinCollected"]
   CC --> SK["ScoreKeeper"]
   SK --> SC[("Score")]
   SC --> HUD
@@ -971,7 +965,7 @@ layout: center
 class: text-center
 ---
 
-# 🎮 Démonstration dans Godot
+# Démonstration dans Godot
 
 <div class="mt-8 text-xl opacity-80">Coin Rush — version MEDS</div>
 
@@ -996,11 +990,11 @@ On va commencer par regarder comment MEDS fonctionne directement dans Godot.
 
 <v-clicks>
 
-- ▶️ Lancer la scène de l'ennemi **toute seule**
-- 🚫 Pas de jeu complet, **pas de joueur**
-- ✏️ Modifier `PlayerPosition` depuis l'éditeur
-- ⚡ L'ennemi réagit **immédiatement**
-- 🧑‍💻 … sans toucher à son code
+- Lancer la scène de l'ennemi **toute seule**
+- Pas de jeu complet, **pas de joueur**
+- Modifier `PlayerPosition` depuis l'éditeur
+- L'ennemi réagit **immédiatement**
+- … sans toucher à son code
 
 </v-clicks>
 
@@ -1039,11 +1033,11 @@ Je vais ouvrir la scène de mon ennemi.
 
 <v-clicks>
 
-- 📊 Afficher score, points de vie, temps restant…
-- 😩 Habituellement : un **petit script de synchro** par élément
-- 🔗 Avec MEDS : **connecter directement** un composant UI à une variable
-- 🔄 La valeur change → l'UI se met à jour **automatiquement**
-- ↔️ Certains composants **modifient** aussi la variable
+- Afficher score, points de vie, temps restant…
+- Habituellement : un **petit script de synchro** par élément
+- Avec MEDS : **connecter directement** un composant UI à une variable
+- La valeur change → l'UI se met à jour **automatiquement**
+- Certains composants **modifient** aussi la variable
 
 </v-clicks>
 
@@ -1090,11 +1084,11 @@ Cela permet de construire des interfaces qui réagissent directement aux donnée
 
 <v-clicks>
 
-- 🧠 Une Resource **garde sa valeur** en mémoire pendant l'exécution
-- ❤️ Points de vie → **réinitialisés** à chaque partie
-- 🔊 Volume audio → **conservé**
-- ⚙️ `reset_on` : *On Scene Load* ou *On Application Start*
-- 💾 `save_to_device` : **persister** la valeur (paramètres utilisateur…)
+- Une Resource **garde sa valeur** en mémoire pendant l'exécution
+- Points de vie → **réinitialisés** à chaque partie
+- Volume audio → **conservé**
+- `reset_on` : *On Scene Load* ou *On Application Start*
+- `save_to_device` : **persister** la valeur (paramètres utilisateur…)
 
 </v-clicks>
 
@@ -1143,19 +1137,16 @@ Un autre sujet important quand on utilise des données partagées, c'est leur cy
 
 <div class="grid grid-cols-3 gap-6 mt-10">
   <div v-click class="card">
-    <div class="text-4xl mb-3">🔗</div>
     <h3>Suivi des références</h3>
     <p>Pour chaque variable ou événement : quels scripts et scènes l'utilisent.</p>
     <p class="opacity-60 text-sm mt-2">Fini les recherches manuelles dans tout le projet.</p>
   </div>
   <div v-click class="card">
-    <div class="text-4xl mb-3">📈</div>
     <h3>Débogueur de variables</h3>
     <p>Observer <strong>et modifier</strong> les valeurs en temps réel.</p>
     <p class="opacity-60 text-sm mt-2">Ex. : passer le joueur à 1 PV instantanément.</p>
   </div>
   <div v-click class="card">
-    <div class="text-4xl mb-3">⚡</div>
     <h3>Débogueur d'événements</h3>
     <p>Surveiller les événements… et les <strong>déclencher</strong> depuis l'éditeur.</p>
     <p class="opacity-60 text-sm mt-2">Ex. : <code>PlayerHit</code> sans se faire toucher.</p>
@@ -1193,21 +1184,21 @@ C'est pour répondre à ces questions que MEDS propose plusieurs outils de débo
 <div class="grid grid-cols-2 gap-10 mt-6">
 <div>
 
-### 🤔 Le revers du découplage
+### Le revers du découplage
 
 <v-clicks>
 
-- Moins de dépendances directes = 👍 modularité
+- Moins de dépendances directes : plus de modularité
 - Mais les relations deviennent **moins visibles**
 - 1 événement émis, 5 systèmes qui écoutent… **où est-ce écrit ?**
-- Des centaines de variables et d'événements → 😵
+- Des centaines de variables et d'événements : **difficile à suivre**
 
 </v-clicks>
 
 </div>
 <div>
 
-### 🕸️ Le graphe de dépendances
+### Le graphe de dépendances
 
 <v-clicks>
 
@@ -1243,18 +1234,18 @@ Et c'est justement pour répondre à ce problème que j'ai ajouté le principe S
 
 ---
 
-# MEDS à l'ère de l'IA 🤖
+# MEDS à l'ère de l'IA
 
 <div class="grid grid-cols-2 gap-10 mt-6">
 <div>
 
 <v-clicks>
 
-- 🧩 Le défi de l'IA : **le contexte**
-- 🕸️ Système couplé → l'IA doit comprendre **toute l'architecture**
-- 🎯 Système modulaire → **périmètre restreint** et maîtrisé
-- ✅ Système testable seul → **vérification facile**
-- 🔍 Références, graphe, débogueurs → **reprendre le contrôle**
+- Le défi de l'IA : **le contexte**
+- Système couplé → l'IA doit comprendre **toute l'architecture**
+- Système modulaire → **périmètre restreint** et maîtrisé
+- Système testable seul → **vérification facile**
+- Références, graphe, débogueurs → **reprendre le contrôle**
 
 </v-clicks>
 
@@ -1262,7 +1253,7 @@ Et c'est justement pour répondre à ce problème que j'ai ajouté le principe S
 <div v-click>
 
 <div class="prompt">
-  <div class="text-xs opacity-60 mb-2">💬 Prompt</div>
+  <div class="text-xs opacity-60 mb-2">Prompt</div>
   « Voilà le système d'ennemis. Il reçoit une <strong>position cible</strong>, une <strong>vitesse</strong> et quelques <strong>événements</strong>.<br/><br/>
   Modifie son comportement, mais <strong>conserve ces interfaces</strong>. »
 </div>
@@ -1301,10 +1292,10 @@ Aujourd'hui, on utilise de plus en plus d'outils capables de générer du code, 
 
 <v-clicks>
 
-- 🙅 Les singletons ne sont **pas mauvais** — il n'y a pas *une* seule bonne façon de faire
-- 🏁 Petit projet : l'architecture classique **fait très bien l'affaire**
-- 🏗️ Gros projet, plusieurs devs, systèmes qui évoluent : **M · E · D** prennent tout leur sens
-- 📈 Et **S** : les outils pour garder une bonne compréhension du projet quand il grossit
+- Les singletons ne sont **pas mauvais** — il n'y a pas *une* seule bonne façon de faire
+- Petit projet : l'architecture classique **fait très bien l'affaire**
+- Gros projet, plusieurs devs, systèmes qui évoluent : **M · E · D** prennent tout leur sens
+- Et **S** : les outils pour garder une bonne compréhension du projet quand il grossit
 
 </v-clicks>
 
@@ -1327,7 +1318,7 @@ layout: cover
 class: text-center
 ---
 
-# Merci ! 🙏
+# Merci !
 
 <div class="text-2xl mt-6 opacity-80">Des questions ?</div>
 
