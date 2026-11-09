@@ -16,22 +16,24 @@ starting position before gameplay resumes.
 ## Web demo in the presentation
 
 Slide 10 of the [Slidev deck](../presentation/slides.md) embeds a local Web export.
-With Godot 4.6.2 and its export templates installed, run from the repository root:
-Use the matching Godot executable directly if a version manager selects a newer
-4.6 release without its templates.
+After changing the game, re-export it from the `presentation` folder:
 
 ```powershell
-New-Item -ItemType Directory -Force presentation\public\games\coin-rush
-godot_console.exe --headless --path classic-game --editor --import
-godot_console.exe --headless --path classic-game --export-release Web ..\presentation\public\games\coin-rush\index.html
 cd presentation
+npm run game
 npm run dev
 ```
 
+`npm run game` ([export-game.mjs](../presentation/scripts/export-game.mjs)) imports
+the project and exports the `Web` preset to `presentation/public/games/coin-rush/`.
+It needs a Godot executable whose Web export templates are installed. It tries
+`$env:GODOT`, then `godot` on the PATH, then versions installed with gdvm, and
+uses the first one with matching templates. That way it still works when a
+version manager picks a newer patch release without templates.
+
 The Web preset uses Compatibility rendering (Web only) and no threads, so Slidev
-does not need cross-origin isolation headers. Generated game files are kept in
-the deck's public assets; re-export after changing the game. Serve the deck over
-HTTP (localhost) or HTTPS, not `file://`.
+does not need cross-origin isolation headers. Serve the deck over HTTP
+(localhost) or HTTPS, not `file://`.
 
 Click **Jouer à Coin Rush**, then inside the game to give it keyboard focus.
 **Arrêter** returns control to Slidev. Leaving the slide also unloads the game.
