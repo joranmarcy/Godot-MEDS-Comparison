@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import PlushRunTransition from './components/PlushRunTransition.vue'
 import { isShareVisible, shareStream } from './composables/godotShare'
 
 const video = ref<HTMLVideoElement>()
@@ -11,6 +12,7 @@ watch([video, shareStream], ([el, stream]) => {
 </script>
 
 <template>
+  <PlushRunTransition />
   <div v-if="shareStream" v-show="isShareVisible" class="godot-share-overlay">
     <video ref="video" autoplay muted playsinline />
   </div>

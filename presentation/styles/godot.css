@@ -149,6 +149,15 @@
   flex-shrink: 0;
 }
 
+/* On the blue section background, the blue pill is inverted to stay visible. */
+.slidev-layout.section .meds-logo-pill {
+  fill: #fff;
+}
+
+.slidev-layout.section .meds-logo-bar {
+  fill: var(--godot-blue-dark);
+}
+
 .hero-plush {
   position: absolute;
   right: 0;

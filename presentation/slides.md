@@ -114,6 +114,9 @@ Je m'appelle Joran et ça fait un peu plus de 12 ans que je suis ingénieur en d
 -->
 
 ---
+# Slidev picks the transition from the slide you leave: the plush runs into the "MEDS" section.
+transition: plush-run | slide-right
+---
 
 # Pourquoi Godot ?
 
@@ -161,6 +164,15 @@ Pourquoi ? Parce que je pense que l'open source représente une piste particuli�
 
 C'est donc assez naturellement que j'ai commencé à explorer Godot, avec l'envie d'y retrouver certaines pratiques de développement que j'appréciais particulièrement dans Unity. Et c'est comme ça qu'est née la librairie MEDS.
 -->
+
+---
+layout: section
+---
+
+<h1 class="meds-pill-heading">
+  <MedsLogo pill-only class="meds-title-pill" />
+  <span>MEDS</span>
+</h1>
 
 ---
 layout: center
@@ -404,6 +416,8 @@ Et enfin, le dernier principe, c'est Scalable, pour la capacité à passer à l'
 
 ---
 layout: default
+# Slidev picks the transition from the slide you leave: the plush runs into the next section.
+transition: plush-run | slide-right
 ---
 
 # Coin Rush
@@ -638,6 +652,8 @@ Autre exemple : je veux simplement tester le comportement de mon joueur. Mais mo
 ---
 layout: center
 class: text-center
+# Slidev picks the transition from the slide you leave: the plush runs into the next section.
+transition: plush-run | slide-right
 ---
 
 <div class="text-3xl leading-relaxed">
