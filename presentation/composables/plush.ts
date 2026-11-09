@@ -49,8 +49,8 @@ function loadSource() {
   return source
 }
 
-function plushMaterial(map: THREE.Texture, normalMap: THREE.Texture) {
-  const material = new THREE.MeshStandardMaterial({ map, normalMap, roughness: 0.7, metalness: 0 })
+export function plushMaterial(params: THREE.MeshStandardMaterialParameters) {
+  const material = new THREE.MeshStandardMaterial({ roughness: 0.7, metalness: 0, ...params })
   // Port of godot_plush.gdshader's fresnel rim light on upward-facing surfaces.
   material.onBeforeCompile = (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -69,8 +69,8 @@ export async function createPlush(): Promise<PlushInstance> {
   const model = cloneSkinned(gltf.scene)
   // Each copy blinks on its own, so it gets its own eye texture (sharing the image).
   const eyeTexture = albedo.clone()
-  const body = plushMaterial(albedo, normal)
-  const eyes = plushMaterial(eyeTexture, normal)
+  const body = plushMaterial({ map: albedo, normalMap: normal })
+  const eyes = plushMaterial({ map: eyeTexture, normalMap: normal })
 
   let surface = 0
   model.traverse((o) => {
@@ -95,6 +95,9 @@ export async function createPlush(): Promise<PlushInstance> {
     },
   }
 }
+
+// Body colour of the plush texture, so props match the character.
+export const PLUSH_BLUE = 0x1899FF
 
 export function addPlushLights(scene: THREE.Scene) {
   scene.add(new THREE.HemisphereLight(0xFFFFFF, 0x2D3A4A, 1.6))

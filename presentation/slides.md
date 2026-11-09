@@ -652,8 +652,8 @@ Autre exemple : je veux simplement tester le comportement de mon joueur. Mais mo
 ---
 layout: center
 class: text-center
-# Slidev picks the transition from the slide you leave: the plush runs into the next section.
-transition: plush-run | slide-right
+# Slidev picks the transition from the slide you leave: the plush stops to swallow a MEDS pill on its way into "L'approche MEDS".
+transition: plush-pill | slide-right
 ---
 
 <div class="text-3xl leading-relaxed">
