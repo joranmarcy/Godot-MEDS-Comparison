@@ -31,12 +31,6 @@ drawings:
   <div class="hero-text">
     <div class="hero-eyebrow">Une architecture modulaire pour</div>
     <img src="/godot/logo_large_color_dark.svg" alt="Godot Engine" class="h-20 mt-3" />
-    <ul class="hero-acronym">
-      <li><span class="m">M</span>odular</li>
-      <li><span class="e">E</span>ditable</li>
-      <li><span class="d">D</span>ebuggable</li>
-      <li><span class="s">S</span>calable</li>
-    </ul>
     <div class="hero-github-row">
       <img src="/github-qr.svg" alt="QR code vers github.com/joranmarcy" class="hero-qr" />
       <a class="hero-github" href="https://github.com/joranmarcy" target="_blank">
@@ -47,6 +41,8 @@ drawings:
 </div>
 
 <div class="hero-event">Capitole du Libre · Novembre 2026</div>
+
+<GodotPlush class="hero-plush" />
 
 <!--
 Bonjour à toutes et à tous, et bienvenue dans cette présentation !
@@ -1289,7 +1285,7 @@ class: text-center
 
 <div class="abs-b mb-6 flex flex-col items-center gap-2">
   <img src="/godot/logo_small_color_dark.svg" alt="Godot Engine" class="h-8 opacity-80" />
-  <div class="godot-credit">Logo Godot Engine © 2017 Andrea Calabró — CC BY 4.0</div>
+  <div class="godot-credit">Logo Godot Engine © 2017 Andrea Calabró — CC BY 4.0 · Godot Plush Character © Tibo — MIT</div>
 </div>
 
 <!--

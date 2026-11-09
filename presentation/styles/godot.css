@@ -149,6 +149,14 @@
   flex-shrink: 0;
 }
 
+.hero-plush {
+  position: absolute;
+  right: 0;
+  bottom: 0.25rem;
+  width: 12rem;
+  height: 15rem;
+}
+
 .hero-logo {
   position: relative;
 }
@@ -172,33 +180,6 @@
   font-weight: 600;
   color: #fff;
   line-height: 1.2;
-}
-
-.hero-acronym {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  justify-content: start;
-  gap: 0.35rem 2.5rem;
-  margin: 2rem 0 0 !important;
-  padding: 0 !important;
-  list-style: none;
-  font-size: 1.15rem;
-  color: var(--godot-text-dim);
-}
-
-.hero-acronym li {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.hero-acronym li::marker {
-  content: none;
-}
-
-.hero-acronym span {
-  font-family: 'Montserrat Variable', sans-serif;
-  font-weight: 800;
-  font-size: 1.4rem;
 }
 
 .hero-github-row {
