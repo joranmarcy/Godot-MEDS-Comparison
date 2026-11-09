@@ -32,6 +32,7 @@ function render(timestamp?: number) {
 }
 
 function loop(timestamp: number) {
+  resize()
   render(timestamp)
   frame = requestAnimationFrame(loop)
 }
@@ -68,6 +69,11 @@ function scheduleWave(delay = 5000 + Math.random() * 3000) {
     waveTimer = setTimeout(playWave, delay)
 }
 
+let lastSize = ''
+
+// Slidev scales the whole slide with a CSS transform to fit the screen, which
+// layout sizes (and ResizeObserver) don't see. Render at the on-screen size so
+// the canvas isn't upscaled and blurry; checked every frame, it's cheap.
 function resize() {
   const el = container.value
   if (!el || !renderer)
@@ -75,6 +81,12 @@ function resize() {
   const { clientWidth: w, clientHeight: h } = el
   if (!w || !h)
     return
+  const ratio = Math.min(devicePixelRatio * el.getBoundingClientRect().width / w, 3)
+  const size = `${w}x${h}@${ratio}`
+  if (size === lastSize)
+    return
+  lastSize = size
+  renderer.setPixelRatio(ratio)
   renderer.setSize(w, h, false)
   camera.aspect = w / h
   camera.updateProjectionMatrix()
@@ -85,7 +97,6 @@ function resize() {
 onMounted(async () => {
   const el = container.value!
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   el.appendChild(renderer.domElement)
   addPlushLights(scene)
@@ -124,6 +135,8 @@ onMounted(async () => {
 
   resizeObserver = new ResizeObserver(resize)
   resizeObserver.observe(el)
+  // The animation loop rechecks the size; this covers reduced motion, which has no loop.
+  window.addEventListener('resize', resize)
   resize()
 
   watch(active, (isActive) => {
@@ -144,6 +157,7 @@ onBeforeUnmount(() => {
   clearTimeout(waveTimer)
   stop()
   resizeObserver?.disconnect()
+  window.removeEventListener('resize', resize)
   mixer?.stopAllAction()
   plush?.dispose()
   renderer?.dispose()
