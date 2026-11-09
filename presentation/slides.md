@@ -214,26 +214,34 @@ MEDS repose sur quatre grands principes.
 
 # Quatre principes
 
-<div class="grid grid-cols-4 gap-5 mt-12">
-  <div v-click class="letter-card m-border">
-    <div class="big-letter m">M</div>
-    <h3>Modular</h3>
-    <p>Des systèmes indépendants, assemblables comme des LEGO</p>
+<div class="grid grid-cols-4 gap-5 mt-8">
+  <div v-click class="letter-card media-card m-border">
+    <img src="/gifs/lego.gif" alt="" class="media" />
+    <div>
+      <div class="big-letter m">M</div>
+      <h3>Modular</h3>
+    </div>
   </div>
-  <div v-click class="letter-card e-border">
-    <div class="big-letter e">E</div>
-    <h3>Editable</h3>
-    <p>Les données au centre, modifiables sans toucher au code</p>
+  <div v-click class="letter-card media-card e-border">
+    <video src="/videos/iron-man.mp4" class="media" autoplay muted loop playsinline />
+    <div>
+      <div class="big-letter e">E</div>
+      <h3>Editable</h3>
+    </div>
   </div>
-  <div v-click class="letter-card d-border">
-    <div class="big-letter d">D</div>
-    <h3>Debuggable</h3>
-    <p>Comprendre vite, tester chaque système isolément</p>
+  <div v-click class="letter-card media-card d-border">
+    <img src="/gifs/lens.gif" alt="" class="media" />
+    <div>
+      <div class="big-letter d">D</div>
+      <h3>Debuggable</h3>
+    </div>
   </div>
-  <div v-click class="letter-card s-border">
-    <div class="big-letter s">S</div>
-    <h3>Scalable</h3>
-    <p>Garder la maîtrise quand le projet grossit</p>
+  <div v-click class="letter-card media-card s-border">
+    <img src="/gifs/assembly-line.gif" alt="" class="media" />
+    <div>
+      <div class="big-letter s">S</div>
+      <h3>Scalable</h3>
+    </div>
   </div>
 </div>
 
