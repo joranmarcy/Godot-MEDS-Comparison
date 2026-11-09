@@ -55,8 +55,17 @@ function stop() {
 function playWave() {
   if (!wave || !idle || reducedMotion || wave.isRunning())
     return
+  clearTimeout(waveTimer)
   wave.reset().setEffectiveWeight(1).fadeIn(0.1).play()
   idle.fadeOut(0.1)
+}
+
+// Waves again every few seconds while the cover is shown; the slight
+// randomness keeps it from looking mechanical.
+function scheduleWave(delay = 5000 + Math.random() * 3000) {
+  clearTimeout(waveTimer)
+  if (active.value && !reducedMotion)
+    waveTimer = setTimeout(playWave, delay)
 }
 
 function resize() {
@@ -109,6 +118,7 @@ onMounted(async () => {
     if (e.action === wave) {
       idle!.reset().fadeIn(0.2).play()
       wave!.fadeOut(0.2)
+      scheduleWave()
     }
   })
 
@@ -120,7 +130,7 @@ onMounted(async () => {
     clearTimeout(waveTimer)
     if (isActive) {
       start()
-      waveTimer = setTimeout(playWave, 700)
+      scheduleWave(700)
     }
     else {
       stop()
