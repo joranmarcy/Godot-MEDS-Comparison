@@ -190,7 +190,7 @@ Une philosophie popularisée par <strong>Ryan Hipple</strong> pour Unity<br/>
 </div>
 
 <div v-click class="mt-10 text-lg">
-  Découverte chez Numix… et coup de ❤️
+  Découverte chez Numix… et coup de <Heart3D />
 </div>
 
 <div v-click class="mt-4 text-lg">
