@@ -260,18 +260,6 @@ layoutClass: gap-10
 
 </v-clicks>
 
-::right::
-
-<div class="h-full flex flex-col justify-center">
-  <div v-click class="tip">
-    <strong>Pour les devs Unity</strong><br/>
-    Une scène Godot ≈ un <em>prefab</em> qu'on pourrait exécuter directement.
-  </div>
-  <div v-click class="mt-6 text-center text-lg">
-    Assembler · Remplacer · Tester · Réutiliser
-  </div>
-</div>
-
 <!--
 Le premier, c'est Modular, pour modulaire.
 
