@@ -352,6 +352,67 @@ html.presenter-hide-next .slidev-presenter .grid-container:is(.layout2, .layout3
   }
 }
 
+/* Presenter view while the Godot feed is shown (custom-nav-controls.vue): no notes.
+   Layout 1 keeps the "Next" preview unless it is hidden; layouts 2 and 3 give the
+   whole grid to the current view. Selectors repeat classes to outrank the rules above. */
+html.godot-sharing .slidev-presenter .grid-section.note {
+  display: none;
+}
+
+html.godot-sharing .slidev-presenter .grid-container.layout1 {
+  grid-template-areas:
+    'main main'
+    'next next'
+    'bottom bottom';
+}
+
+html.godot-sharing.presenter-hide-next .slidev-presenter .grid-container.layout1,
+html.godot-sharing .slidev-presenter .grid-container:is(.layout2, .layout3) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) min-content;
+  grid-template-areas:
+    'main'
+    'bottom';
+}
+
+html.godot-sharing .slidev-presenter .grid-container:is(.layout2, .layout3) .grid-section.next {
+  display: none;
+}
+
+@media (max-aspect-ratio: 3/5) {
+  html.godot-sharing .slidev-presenter .grid-container.layout1.layout1 {
+    grid-template-rows: minmax(0, 2fr) minmax(0, 1fr) min-content;
+    grid-template-areas:
+      'main'
+      'next'
+      'bottom';
+  }
+
+  html.godot-sharing.presenter-hide-next .slidev-presenter .grid-container.layout1.layout1 {
+    grid-template-rows: minmax(0, 1fr) min-content;
+    grid-template-areas:
+      'main'
+      'bottom';
+  }
+}
+
+@media (min-aspect-ratio: 1/1) {
+  html.godot-sharing .slidev-presenter .grid-container.layout1 {
+    grid-template-areas:
+      'main main next'
+      'main main next'
+      'bottom bottom bottom';
+  }
+
+  html.godot-sharing.presenter-hide-next .slidev-presenter .grid-container.layout1.layout1 {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) min-content;
+    grid-template-areas:
+      'main'
+      'bottom';
+  }
+}
+
 /* Section dividers: Godot blue */
 .slidev-layout.section {
   background:

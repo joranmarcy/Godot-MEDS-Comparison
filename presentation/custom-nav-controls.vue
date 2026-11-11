@@ -16,6 +16,12 @@ watchEffect(() => {
   document.documentElement.classList.toggle('presenter-hide-next', hideNext.value)
 })
 
+// While the Godot feed is shown, the presenter view drops the notes to give it the room
+// (`.godot-sharing` rules in styles/godot.css).
+watchEffect(() => {
+  document.documentElement.classList.toggle('godot-sharing', isShareVisible.value)
+})
+
 async function onClick() {
   error.value = ''
   try {
