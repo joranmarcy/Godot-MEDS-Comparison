@@ -405,6 +405,7 @@ Les deux projets sont disponibles sur GitHub si vous voulez y jeter un œil apr�
 -->
 
 ---
+hide: true
 layout: section
 ---
 
@@ -412,6 +413,8 @@ layout: section
 
 ## Les singletons
 
+---
+hide: true
 ---
 
 # Le singleton `GameState`
@@ -466,6 +469,8 @@ Pour cette version, j'ai utilisé une approche assez courante dans Godot : le pa
 -->
 
 ---
+hide: true
+---
 
 # Architecture classique
 
@@ -499,6 +504,8 @@ Le GameState va alors mettre à jour l'état du jeu, puis émettre des signaux G
 Par exemple, l'interface peut mettre à jour les points de vie, et un autre système peut déclencher un effet de tremblement de caméra.
 -->
 
+---
+hide: true
 ---
 
 # Plutôt pratique, non ?
@@ -546,6 +553,8 @@ Et en soi, cette approche est plutôt pratique.
 [click] Mais les choses commencent à se compliquer quand le projet grossit, surtout quand plusieurs développeurs travaillent dessus.
 -->
 
+---
+hide: true
 ---
 
 # Le problème des dépendances
@@ -600,6 +609,7 @@ Autre exemple : je veux simplement tester le comportement de mon joueur. Mais mo
 -->
 
 ---
+hide: true
 layout: center
 class: text-center
 # Slidev picks the transition from the slide you leave: the plush stops to swallow a MEDS pill on its way into "L'approche MEDS".
