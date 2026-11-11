@@ -2,6 +2,7 @@
 import { ref, watchEffect } from 'vue'
 import { useNav } from '@slidev/client'
 import PhoneNotesResizer from './components/PhoneNotesResizer.vue'
+import PresenterCursorTouch from './components/PresenterCursorTouch.vue'
 import { isCapturing, isShareVisible, stopShare, toggleShare } from './composables/godotShare'
 
 const error = ref('')
@@ -36,6 +37,7 @@ async function onClick() {
 
 <template>
   <PhoneNotesResizer v-if="isPresenter" />
+  <PresenterCursorTouch v-if="isPresenter" />
   <button
     v-if="isPresenter"
     class="slidev-icon-btn"
