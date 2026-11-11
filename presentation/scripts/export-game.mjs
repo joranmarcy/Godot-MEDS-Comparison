@@ -47,6 +47,9 @@ function gdvmCandidates() {
     return []
   return readdirSync(installs).sort().reverse().flatMap((folder) => {
     const files = readdirSync(join(installs, folder))
+    const macApp = join(installs, folder, 'Godot.app', 'Contents', 'MacOS', 'Godot')
+    if (existsSync(macApp))
+      return [macApp]
     const exe = files.find(f => /^Godot_v.*_console\.exe$/.test(f))
       ?? files.find(f => /^Godot_v.*\.(exe|x86_64|arm64)$/.test(f))
     return exe ? [join(installs, folder, exe)] : []
