@@ -372,19 +372,7 @@ transition: plush-run | slide-right
 
 # Coin Rush
 
-<div class="mt-6 grid grid-cols-[2fr_1fr] gap-6 items-start">
-  <CoinRushDemo />
-  <div class="flex flex-col gap-4">
-  <div v-click class="card">
-    <h3>classic-game/</h3>
-    <p>Architecture classique : singleton <code>GameState</code> en AutoLoad</p>
-  </div>
-  <div v-click class="card">
-    <h3>meds-game/</h3>
-    <p>Le même jeu, mêmes fonctionnalités… avec MEDS</p>
-  </div>
-  </div>
-</div>
+<CoinRushDemo class="mt-4" />
 
 <!--
 Bon, assez de théorie !
@@ -395,9 +383,9 @@ Pour vous montrer concrètement comment tout ça fonctionne, j'ai créé un peti
 
 Le principe est assez simple : on contrôle un personnage, on récupère des pièces et on essaie d'éviter les ennemis. Rien de révolutionnaire, mais c'est largement suffisant pour illustrer les problèmes d'architecture dont on va parler.
 
-[click] Et surtout, j'ai développé ce jeu deux fois. Une première fois avec une architecture classique, sans MEDS.
+Et surtout, j'ai développé ce jeu deux fois. Une première fois avec une architecture classique, sans MEDS.
 
-[click] Et une deuxième fois avec MEDS.
+Et une deuxième fois avec MEDS.
 
 L'intérêt, c'est qu'on va pouvoir comparer exactement le même jeu, avec les mêmes fonctionnalités, mais deux manières différentes d'organiser le code et de faire communiquer les systèmes.
 

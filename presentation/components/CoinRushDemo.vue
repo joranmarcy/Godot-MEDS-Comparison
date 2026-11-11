@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useSlideContext } from '@slidev/client'
 
 const { $page, $nav } = useSlideContext()
@@ -11,19 +11,44 @@ watch(active, (value) => {
   if (!value)
     playing.value = false
 })
+
+// Slidev scales the whole slide with a CSS transform to fit the screen. An iframe at
+// its layout size would make Godot render a small canvas that then gets stretched
+// (blurry on large screens). So the iframe is laid out at its on-screen size and
+// scaled back down by the same factor: Godot renders at full screen resolution.
+const screen = ref<HTMLDivElement>()
+const scale = ref(1)
+
+function measure() {
+  const el = screen.value
+  if (!el || !el.offsetWidth)
+    return
+  const next = el.getBoundingClientRect().width / el.offsetWidth
+  if (next > 0 && Math.abs(next - scale.value) > 0.01)
+    scale.value = next
+}
+
+const frameStyle = computed(() => ({
+  width: `${scale.value * 100}%`,
+  height: `${scale.value * 100}%`,
+  transform: `scale(${1 / scale.value})`,
+}))
+
+watch(playing, (value) => {
+  if (value)
+    measure()
+})
+onMounted(() => window.addEventListener('resize', measure))
+onBeforeUnmount(() => window.removeEventListener('resize', measure))
 </script>
 
 <template>
   <div class="coin-rush-demo">
-    <div class="demo-toolbar">
-      <span>Coin Rush — version classique</span>
-      <button v-if="playing" type="button" @click="playing = false">Arrêter</button>
-      <a :href="gameUrl" target="_blank" rel="noopener">Ouvrir à part ↗</a>
-    </div>
-    <div class="demo-screen">
+    <div ref="screen" class="demo-screen">
       <iframe
         v-if="playing && active"
         :src="gameUrl"
+        :style="frameStyle"
         title="Coin Rush — jeu interactif"
         allow="autoplay; fullscreen; gamepad"
       />
@@ -32,9 +57,13 @@ watch(active, (value) => {
         <p>Ramassez les pièces, évitez les ennemis.</p>
       </div>
     </div>
-    <div class="demo-controls">
-      WASD / flèches / manette · Échap : pause<br/>
-      Cliquez dans le jeu pour le contrôler, puis sur « Arrêter » pour reprendre la présentation.
+    <div class="demo-footer">
+      <span>
+        WASD / flèches / manette · Échap : pause ·
+        cliquez dans le jeu pour le contrôler, puis sur « Arrêter » pour reprendre la présentation.
+      </span>
+      <button v-if="playing" type="button" @click="playing = false">Arrêter</button>
+      <a :href="gameUrl" target="_blank" rel="noopener">Ouvrir à part ↗</a>
     </div>
   </div>
 </template>
@@ -42,16 +71,6 @@ watch(active, (value) => {
 <style scoped>
 .coin-rush-demo {
   text-align: left;
-}
-.demo-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.7rem;
-}
-.demo-toolbar span {
-  margin-right: auto;
 }
 button {
   border: 1px solid var(--godot-blue-light);
@@ -66,18 +85,22 @@ button:focus-visible {
   outline-offset: 3px;
 }
 .demo-screen {
-  width: 100%;
+  position: relative;
+  height: 22rem;
   aspect-ratio: 16 / 9;
+  margin: 0 auto;
   overflow: hidden;
   border: 1px solid var(--godot-card-border);
   border-radius: 0.75rem;
   background: #12151f;
 }
 iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: block;
-  width: 100%;
-  height: 100%;
   border: 0;
+  transform-origin: 0 0;
 }
 .demo-start {
   display: flex;
@@ -90,9 +113,25 @@ iframe {
   font-size: 0.85rem;
   color: var(--godot-text-dim);
 }
-.demo-controls {
-  margin-top: 0.5rem;
+.demo-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  max-width: calc(22rem * 16 / 9);
+  margin: 0.6rem auto 0;
   font-size: 0.65rem;
   color: var(--godot-text-dim);
+}
+.demo-footer span {
+  margin-right: auto;
+}
+.demo-footer a,
+.demo-footer button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.demo-footer button {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
 }
 </style>
