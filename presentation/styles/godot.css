@@ -301,6 +301,57 @@
   }
 }
 
+/* Presenter view with the "Next" preview hidden (toggle in custom-nav-controls.vue).
+   Mirrors Slidev's presenter grid areas without `next`; the extra `html` in the
+   selectors outranks Slidev's scoped rules, and the media queries keep its order. */
+html.presenter-hide-next .slidev-presenter .grid-section.next {
+  display: none;
+}
+
+html.presenter-hide-next .slidev-presenter .grid-container.layout1 {
+  grid-template-areas:
+    'main main'
+    'note note'
+    'bottom bottom';
+}
+
+html.presenter-hide-next .slidev-presenter .grid-container:is(.layout2, .layout3) {
+  grid-template-areas:
+    'note main'
+    'note main'
+    'bottom bottom';
+}
+
+@media (max-aspect-ratio: 3/5) {
+  html.presenter-hide-next .slidev-presenter .grid-container.layout1 {
+    grid-template-rows: 2fr 1fr min-content;
+    grid-template-areas:
+      'main'
+      'note'
+      'bottom';
+  }
+}
+
+@media (min-aspect-ratio: 1/1) {
+  html.presenter-hide-next .slidev-presenter .grid-container.layout1 {
+    grid-template-areas:
+      'main main note'
+      'main main note'
+      'bottom bottom bottom';
+  }
+}
+
+/* Phone presenter (stacked layout 1) with notes resized by PhoneNotesResizer.vue. */
+@media (max-aspect-ratio: 3/5) {
+  html.presenter-phone-notes .slidev-presenter .grid-container.layout1 {
+    grid-template-rows: minmax(0, 2fr) var(--meds-phone-notes-height) minmax(0, 1fr) min-content;
+  }
+
+  html.presenter-phone-notes.presenter-hide-next .slidev-presenter .grid-container.layout1 {
+    grid-template-rows: minmax(0, 1fr) var(--meds-phone-notes-height) min-content;
+  }
+}
+
 /* Section dividers: Godot blue */
 .slidev-layout.section {
   background:

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "slidev --open",
+    "dev": "slidev --remote",
     "build": "slidev build",
     "export": "slidev export",
     "game": "node scripts/export-game.mjs"

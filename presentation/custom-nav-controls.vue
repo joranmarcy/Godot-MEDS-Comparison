@@ -1,8 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
+import { useNav } from '@slidev/client'
+import PhoneNotesResizer from './components/PhoneNotesResizer.vue'
 import { isCapturing, isShareVisible, stopShare, toggleShare } from './composables/godotShare'
 
 const error = ref('')
+const { isPresenter } = useNav()
+
+// Presenter view: hide the "Next" slide preview. The layout CSS lives in
+// styles/godot.css (`.presenter-hide-next`); the choice is remembered.
+const HIDE_NEXT_KEY = 'meds-presenter-hide-next'
+const hideNext = ref(localStorage.getItem(HIDE_NEXT_KEY) === 'true')
+watchEffect(() => {
+  localStorage.setItem(HIDE_NEXT_KEY, String(hideNext.value))
+  document.documentElement.classList.toggle('presenter-hide-next', hideNext.value)
+})
 
 async function onClick() {
   error.value = ''
@@ -17,6 +29,16 @@ async function onClick() {
 </script>
 
 <template>
+  <PhoneNotesResizer v-if="isPresenter" />
+  <button
+    v-if="isPresenter"
+    class="slidev-icon-btn"
+    :title="hideNext ? 'Afficher la slide suivante' : 'Masquer la slide suivante'"
+    @click="hideNext = !hideNext"
+  >
+    <carbon-view v-if="hideNext" />
+    <carbon-view-off v-else />
+  </button>
   <button
     class="slidev-icon-btn godot-share-btn"
     :class="{ active: isShareVisible }"
