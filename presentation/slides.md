@@ -917,7 +917,7 @@ func _on_event_raised() -> void:
 
 <div v-click class="mt-6 tip">
   Qui a déclenché l'événement ? Le joueur, un test, un bouton dans l'éditeur…<br/>
-  <strong>On s'en fout un peu !</strong>
+  <strong>Il n'a pas besoin de le savoir.</strong>
 </div>
 
 <!--
@@ -933,7 +933,7 @@ Il ne sait pas qui écoute cet événement. Il ne sait pas non plus ce qui va se
 
 [click] De l'autre côté, on va fournir ce même événement aux différents systèmes qui doivent réagir. Par exemple, le système de tremblement de caméra. Lui, il va simplement écouter l'événement PlayerHit, et quand celui-ci est déclenché, il va faire trembler la caméra.
 
-[click] Il ne sait pas qui a déclenché l'événement. Ça pourrait être le joueur, un script de test ou même un bouton dans l'éditeur. Mais là encore, on s'en fout un peu ! Son travail, c'est de faire trembler la caméra quand il reçoit cet événement. Et rien d'autre.
+[click] Il ne sait pas qui a déclenché l'événement. Ça pourrait être le joueur, un script de test ou même un bouton dans l'éditeur. Mais là encore, il n'a pas besoin de le savoir. Son travail, c'est de faire trembler la caméra quand il reçoit cet événement. Et rien d'autre.
 
 On obtient donc deux systèmes qui peuvent communiquer sans dépendre directement l'un de l'autre.
 -->
@@ -965,140 +965,63 @@ Et maintenant, on va voir ce que ça donne concrètement dans l'éditeur.
 
 ---
 
-# Démo 1 — Le déplacement d'un ennemi
+# Démo — M · E · D dans l'éditeur
 
-<div class="grid grid-cols-2 gap-10 mt-8 items-center">
-<div>
-
-- Lancer la scène de l'ennemi **toute seule**
-- Pas de jeu complet, **pas de joueur**
-- Modifier `PlayerPosition` depuis l'éditeur
-- L'ennemi réagit **immédiatement**
-- … sans toucher à son code
-
+<div class="grid grid-cols-3 gap-6 mt-6">
+  <div v-click class="card">
+    <h3>L'ennemi seul</h3>
+    <ul class="text-sm">
+      <li>Lancer sa scène <strong>seule</strong>, sans joueur</li>
+      <li>Modifier <code>PlayerPosition</code> depuis l'éditeur</li>
+      <li>Il réagit <strong>immédiatement</strong>, sans toucher au code</li>
+    </ul>
+  </div>
+  <div v-click class="card">
+    <h3>Bindings UI</h3>
+    <ul class="text-sm">
+      <li>Un composant UI <strong>branché</strong> sur une variable</li>
+      <li>La valeur change → l'UI suit, <strong>zéro script</strong></li>
+      <li><code>Label</code>, <code>Slider</code>, <code>ProgressBar</code>, <code>CheckBox</code>, <code>ColorPicker</code></li>
+    </ul>
+  </div>
+  <div v-click class="card">
+    <h3>Cycle de vie</h3>
+    <ul class="text-sm">
+      <li><code>reset_on</code> : <em>On Scene Load</em> ou <em>On Application Start</em></li>
+      <li>Points de vie → <strong>réinitialisés</strong>, volume → <strong>conservé</strong></li>
+      <li><code>save_to_device</code> : <strong>persister</strong> la valeur</li>
+    </ul>
+  </div>
 </div>
-<div class="flex flex-col gap-4 text-xl">
+
+<div v-click class="flex justify-center gap-6 mt-10 text-xl">
   <div class="letter-row"><span class="m font-bold">M</span> Système indépendant</div>
   <div class="letter-row"><span class="e font-bold">E</span> Données éditables</div>
   <div class="letter-row"><span class="d font-bold">D</span> Test isolé</div>
-</div>
 </div>
 
 <!--
 [Ouvrir le projet Coin Rush avec MEDS.]
 
-Je vais ouvrir la scène de mon ennemi.
-
-Et là, vous pouvez voir que je peux la lancer toute seule.
-
-Je n'ai pas besoin de charger le jeu entier. Je n'ai même pas besoin d'avoir un joueur dans ma scène. Mon ennemi utilise simplement une variable MEDS qui contient la position qu'il doit suivre.
-
-Et cette variable, je peux la modifier directement depuis l'éditeur.
+[click] Je vais ouvrir la scène de mon ennemi. Et vous pouvez voir que je peux la lancer toute seule. Je n'ai pas besoin de charger le jeu entier, ni même d'avoir un joueur dans ma scène. Mon ennemi utilise simplement une variable MEDS qui contient la position qu'il doit suivre.
 
 [Modifier la variable PlayerPosition et montrer le déplacement de l'ennemi.]
 
-Vous voyez que mon ennemi réagit immédiatement aux changements.
+Mon ennemi réagit immédiatement. Et je n'ai pas modifié son code : je lui fournis juste une donnée différente.
 
-Et le plus intéressant, c'est que je n'ai pas eu besoin de modifier son code. Je lui fournis juste une donnée différente.
+[click] Côté interface, on a souvent besoin d'afficher des données : le score, les points de vie, le temps restant. Habituellement, on écrit des petits scripts de synchronisation. Avec MEDS, on connecte directement un composant d'interface à une variable.
 
-C'est exactement ce qu'on recherchait avec les principes Modular, Editable et Debuggable. Mon système est indépendant, ses données sont éditables, et je peux tester son comportement de manière isolée.
--->
+[Montrer le binding d'un label avec une variable MEDS ; modifier la variable pour voir le texte changer.]
 
----
+Quand la valeur change, l'affichage suit, sans aucun script. Et certains composants, comme les sliders ou les cases à cocher, peuvent aussi modifier la variable.
 
-# Démo 2 — Le HUD et les bindings
+[click] Dernier point : le cycle de vie. Une Resource garde sa valeur en mémoire pendant l'exécution. Les points de vie doivent être réinitialisés à chaque partie, mais le volume audio doit être conservé. Avec reset_on, on choisit quand une variable revient à sa valeur initiale. Et avec save_to_device, on peut la sauvegarder sur l'appareil, par exemple pour les paramètres utilisateur.
 
-<div class="grid grid-cols-2 gap-10 mt-6">
-<div>
+[Montrer reset_on et save_to_device dans l'inspecteur d'une variable.]
 
-- Afficher score, points de vie, temps restant…
-- Habituellement : un **petit script de synchro** par élément
-- Avec MEDS : **connecter directement** un composant UI à une variable
-- La valeur change → l'UI se met à jour **automatiquement**
-- Certains composants **modifient** aussi la variable
+[click] C'est exactement ce qu'on recherchait avec Modular, Editable et Debuggable : des systèmes indépendants, des données éditables, et des comportements qu'on peut tester de manière isolée.
 
-</div>
-<div>
-
-| Composant | Binding MEDS |
-| --- | --- |
-| `Label` | VariableDrivenLabel |
-| `Slider` | VariableDrivenSlider |
-| `ProgressBar` | VariableDrivenProgressBar |
-| `CheckBox` | BoolDrivenCheckbox |
-| `ColorPicker` | ColorDrivenColorPicker |
-
-</div>
-</div>
-
-<!--
-Maintenant, on va regarder un autre exemple avec l'interface utilisateur.
-
-Dans un jeu, on a souvent besoin d'afficher des données : le score, les points de vie, le temps restant, etc.
-
-Traditionnellement, on va écrire des scripts qui récupèrent ces valeurs et mettent à jour les composants de l'interface.
-
-Avec MEDS, on peut simplifier ça grâce à un système de bindings. L'idée, c'est de connecter directement un composant d'interface à une variable MEDS. Par exemple, je peux associer un label à une variable qui contient le score.
-
-Et quand la valeur change, le texte affiché se met automatiquement à jour. Je n'ai pas besoin d'écrire un script spécifique pour faire cette liaison.
-
-[Montrer le binding d'un label avec une variable MEDS.]
-
-Et évidemment, on peut aussi modifier certaines valeurs depuis l'interface, selon le composant utilisé.
-
-Et ça ne fonctionne pas uniquement avec les labels. MEDS propose aussi des bindings pour les sliders, les barres de progression, les cases à cocher ou encore les sélecteurs de couleur.
-
-Cela permet de construire des interfaces qui réagissent directement aux données, sans multiplier les petits scripts de synchronisation.
--->
-
----
-
-# Démo 3 — Le cycle de vie des variables
-
-<div class="grid grid-cols-2 gap-10 mt-6">
-<div>
-
-- Une Resource **garde sa valeur** en mémoire pendant l'exécution
-- Points de vie → **réinitialisés** à chaque partie
-- Volume audio → **conservé**
-- `reset_on` : *On Scene Load* ou *On Application Start*
-- `save_to_device` : **persister** la valeur (paramètres utilisateur…)
-
-</div>
-<div>
-
-```gdscript
-# base-variable.gd (extrait)
-@export var save_to_device: bool = false
-
-@export_enum("On Scene Load", "On Application Start")
-var reset_on: String = RESET_ON_SCENE_LOAD
-```
-
-<div class="tip mt-6">
-  Le comportement des données est <strong>déclaré une fois</strong>,<br/>
-  pas réécrit dans chaque système.
-</div>
-
-</div>
-</div>
-
-<!--
-Un autre sujet important quand on utilise des données partagées, c'est leur cycle de vie.
-
-Parce qu'une Resource peut conserver une valeur en mémoire pendant que l'application fonctionne. Et parfois, ce n'est pas ce qu'on veut.
-
-Par exemple, les points de vie du joueur doivent peut-être être réinitialisés quand on relance une partie.
-
-Mais les paramètres audio, eux, doivent probablement conserver leur valeur.
-
-MEDS propose donc un système de réinitialisation configurable avec reset_on. On peut définir à quel moment une variable doit retrouver sa valeur initiale. Pour les réinitialisations au démarrage de l'application, MEDS utilise également un mécanisme de cache à l'exécution afin de gérer correctement les valeurs de référence.
-
-[Montrer les options de réinitialisation et, si possible, un exemple de changement de scène ou de redémarrage.]
-
-Et on peut également sauvegarder les valeurs de certaines variables, lorsqu'on souhaite les conserver. C'est pratique, par exemple, pour les paramètres utilisateur ou certaines données persistantes.
-
-L'objectif, c'est que le développeur puisse définir clairement le comportement des données sans avoir à réécrire toute cette logique dans chaque système.
+[Revenir aux slides.]
 -->
 
 ---
@@ -1182,74 +1105,68 @@ C'est pour répondre à ces questions que MEDS propose plusieurs outils de débo
 
 [click] Le premier, c'est le suivi des références. Pour chaque variable ou événement MEDS, on peut retrouver les éléments du projet qui l'utilisent. Par exemple, si je sélectionne ma variable PlayerPosition, je peux identifier les scripts ou les scènes qui y font référence. C'est particulièrement utile quand un projet commence à grossir.
 
-[Montrer le suivi des références d'une variable ou d'un événement.]
-
 [click] Ensuite, on a un débogueur de variables en temps réel. Il permet d'observer la valeur des variables MEDS pendant que l'application tourne. Mais surtout, il permet aussi de les modifier directement. Imaginons que je veuille tester ce qui se passe quand le joueur n'a plus qu'un seul point de vie. Plutôt que de lancer le jeu et de me faire toucher plusieurs fois, je peux simplement modifier la valeur dans le débogueur.
-
-[Modifier une valeur pendant l'exécution.]
 
 [click] On retrouve le même principe pour les événements. MEDS permet de surveiller les événements déclenchés pendant l'exécution. Mais aussi de les déclencher manuellement depuis l'éditeur. Par exemple, je peux déclencher PlayerHit sans avoir besoin de faire toucher le joueur par un ennemi. Et tous les systèmes qui écoutent cet événement vont réagir normalement.
 
-[Déclencher manuellement un événement depuis l'éditeur.]
-
 [click] On peut donc tester facilement une animation, un effet visuel, un son ou une réaction de l'interface, sans avoir besoin de reproduire toutes les conditions du jeu. Et ça, pour le développement et le débogage, c'est un vrai gain de temps.
+
+Et il reste un dernier outil, peut-être le plus important pour passer à l'échelle : le graphe de dépendances. Allons voir tout ça dans l'éditeur.
 -->
 
 ---
 
-# Passer à l'échelle : le graphe de dépendances
+# Démo — Les outils MEDS
 
-<div class="grid grid-cols-2 gap-10 mt-6">
-<div>
-
-### Le revers du découplage
-
-<v-clicks>
-
-- Moins de dépendances directes : plus de modularité
-- Mais les relations deviennent **moins visibles**
-- 1 événement émis, 5 systèmes qui écoutent… **où est-ce écrit ?**
-- Des centaines de variables et d'événements : **difficile à suivre**
-
-</v-clicks>
-
+<div class="grid grid-cols-4 gap-5 mt-8">
+  <div v-click class="card">
+    <h3>Références</h3>
+    <p class="text-sm">Qui utilise <code>PlayerPosition</code> ?</p>
+  </div>
+  <div v-click class="card">
+    <h3>Variables</h3>
+    <p class="text-sm">Passer la vie du joueur à <strong>1</strong>, en plein jeu.</p>
+  </div>
+  <div v-click class="card">
+    <h3>Événements</h3>
+    <p class="text-sm">Déclencher <code>PlayerHit</code> sans se faire toucher.</p>
+  </div>
+  <div v-click class="card">
+    <h3>Graphe</h3>
+    <p class="text-sm">Qui écrit, qui lit, qui déclenche, qui réagit : la <strong>vue d'ensemble</strong> de Coin Rush.</p>
+  </div>
 </div>
-<div>
 
-### Le graphe de dépendances
-
-<v-clicks>
-
-- **Visualiser** qui lit / écrit quelles variables
-- Qui **déclenche** et qui **réagit** à quels événements
-- Comprendre comment une modification **se propage**
-- Explorer une base de code **inconnue**, ou oubliée depuis des mois
-
-</v-clicks>
-
-</div>
+<div v-click class="mt-12 text-center text-xl">
+  Des systèmes <strong>découplés</strong>… et une architecture qui reste <strong>lisible</strong>.
 </div>
 
 <!--
-Maintenant, il reste un problème important. Avec MEDS, on a supprimé beaucoup de dépendances directes entre nos systèmes. C'est très bien pour la modularité.
+[Retourner dans l'éditeur, projet Coin Rush avec MEDS.]
 
-[click] [click] Mais en contrepartie, les relations entre les systèmes deviennent parfois moins évidentes à comprendre.
+[click] D'abord, les références. Je sélectionne PlayerPosition, et je vois directement le joueur qui l'écrit et l'ennemi qui la lit. Pas besoin de chercher dans tout le projet.
 
-[click] Parce que si un système émet un événement et que cinq autres systèmes l'écoutent, cette relation n'apparaît pas directement dans le code.
+[Sélectionner la variable PlayerPosition et montrer le suivi des références.]
 
-[click] Sur un petit projet, ce n'est pas très grave. Mais sur un gros projet, avec des centaines de variables et d'événements, ça peut vite devenir compliqué.
+[click] Ensuite, je lance le jeu. Dans le débogueur de variables, je passe la vie du joueur à 1 : le HUD se met à jour, et je peux tester le game over tout de suite.
 
-Et c'est justement pour répondre à ce problème que j'ai ajouté le principe Scalable à MEDS. L'un des outils les plus importants pour ça, c'est le graphe de dépendances.
+[Lancer le jeu, ouvrir le débogueur de variables et passer la vie du joueur à 1.]
 
-[Ouvrir le graphe de dépendances de MEDS.]
+[click] Même chose pour les événements : je déclenche PlayerHit depuis l'éditeur. La caméra tremble, l'écran flashe, le son se joue, la vie baisse… alors que personne n'a touché le joueur.
 
-[click] L'idée, c'est de pouvoir visualiser les relations entre les différents éléments du projet. On peut voir quels systèmes utilisent quelles variables, [click] quels systèmes déclenchent des événements et lesquels y réagissent. Cela permet de retrouver une vue d'ensemble de l'architecture, même si les systèmes sont découplés.
+[Déclencher PlayerHit depuis le débogueur d'événements.]
 
-[click] On peut ainsi comprendre plus rapidement comment une modification peut se propager dans le projet.
+[click] Et enfin, le graphe de dépendances. Le revers du découplage, c'est que les relations entre systèmes n'apparaissent plus directement dans le code : un événement émis, cinq systèmes qui l'écoutent… où est-ce écrit ? Sur un gros projet, avec des centaines de variables et d'événements, ça devient vite difficile à suivre. Le graphe redonne cette vue d'ensemble : qui écrit, qui lit, qui déclenche et qui réagit. Pratique pour comprendre comment une modification se propage, ou pour reprendre un projet qu'on n'a pas touché depuis des mois.
 
-[click] Et surtout, ça devient beaucoup plus simple d'explorer une base de code qu'on ne connaît pas. C'est particulièrement intéressant quand on travaille à plusieurs sur une même application, ou quand on doit reprendre un projet après plusieurs mois sans y avoir touché.
+[Ouvrir le graphe de dépendances.]
+
+[click] Les systèmes sont découplés, mais l'architecture reste lisible. C'est ça, le S de MEDS.
+
+[Revenir aux slides.]
 -->
 
+---
+hide: true
 ---
 
 # MEDS à l'ère de l'IA
