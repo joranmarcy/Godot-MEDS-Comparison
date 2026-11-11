@@ -366,7 +366,7 @@ Le troisième principe, c'est Debuggable, pour facile à déboguer.
 
 ---
 layout: default
-# Slidev picks the transition from the slide you leave: the plush runs into the next section.
+# Slidev picks the transition from the slide you leave: the plush runs into the classic-version slide.
 transition: plush-run | slide-right
 ---
 
@@ -629,6 +629,66 @@ Alors, comment est-ce qu'on peut faire autrement ?
 -->
 
 ---
+# Condensed version of the hidden "architecture classique" section above.
+# Slidev picks the transition from the slide you leave: the plush stops to swallow a MEDS pill on its way into "L'approche MEDS".
+transition: plush-pill | slide-right
+---
+
+# La version classique : un singleton `GameState`
+
+<div class="grid grid-cols-[3fr_2fr] gap-8 mt-4 items-center">
+<div class="mermaid-fit">
+
+```mermaid
+flowchart LR
+  Player["Player"] -- "damage_player()<br/>player_position" --> GS
+  Coin["Coin"] -- "collect_coin()" --> GS
+  Enemy["Enemy"] -- "player_position<br/>level, is_running" --> GS
+  GS["GameState<br/>(AutoLoad)"]
+  GS -- "signaux" --> UI["HUD · Son · Effets"]
+  classDef core fill:#4d3420,stroke:#ffb373,color:#fff
+  class GS core
+```
+
+</div>
+<div>
+
+<div class="good">
+  Simple, accessible partout : parfait pour une <strong>game jam</strong>.
+</div>
+
+<v-clicks>
+
+<div class="bad mt-6">
+  Tester l'ennemi seul ? Il faut configurer <strong>tout l'état global</strong>.
+</div>
+
+<div class="bad mt-4">
+  Un collègue casse <code>GameState</code> → <strong>ma scène ne marche plus</strong>.
+</div>
+
+<div class="mt-8 text-xl text-center">
+  Le problème n'est pas le singleton,<br/>c'est le <strong class="s">couplage</strong>.
+</div>
+
+</v-clicks>
+
+</div>
+</div>
+
+<!--
+Pour la version classique, j'ai utilisé l'approche la plus courante dans Godot : un singleton, GameState, chargé en AutoLoad. Tous les systèmes passent par lui : le joueur y écrit sa position et y signale ses dégâts, l'ennemi y lit la position du joueur, et le GameState émet des signaux pour le HUD, le son et les effets.
+
+C'est simple, accessible partout, et pour une game jam ça marche très bien.
+
+[click] Mais si je veux tester mon ennemi tout seul, il dépend encore du GameState : je dois configurer tout l'état global juste pour le voir bouger.
+
+[click] Et si un collègue introduit un bug dans le GameState, ma scène ne marche plus, alors que je n'ai rien changé à mon système.
+
+[click] Le problème, ce n'est pas le singleton en lui-même. C'est le couplage qu'il crée entre les systèmes. Alors, comment est-ce qu'on peut faire autrement ?
+-->
+
+---
 layout: section
 ---
 
@@ -859,11 +919,11 @@ Mais évidemment, dans un jeu, on n'a pas uniquement besoin de partager des vale
 
 [click] Le fonctionnement est assez simple. Un script peut déclencher un événement. [click] Un autre script peut écouter cet événement. [click] Et les deux n'ont pas besoin de se connaître.
 
-[click] Reprenons notre exemple du joueur qui se fait toucher. Avant, notre joueur appelait directement player_damaged() dans le GameState. Avec MEDS, on va créer une Resource de type événement, qu'on va appeler PlayerDamaged. On va fournir cet événement au script du joueur. Et quand le joueur se fait toucher, il va simplement déclencher l'événement.
+[click] Reprenons notre exemple du joueur qui se fait toucher. Avant, notre joueur appelait directement damage_player() dans le GameState. Avec MEDS, on va créer une Resource de type événement, qu'on va appeler PlayerHit. On va fournir cet événement au script du joueur. Et quand le joueur se fait toucher, il va simplement déclencher l'événement.
 
 Il ne sait pas qui écoute cet événement. Il ne sait pas non plus ce qui va se passer ensuite. Mais c'est très bien ! Ce n'est pas sa responsabilité. Lui, son travail, c'est de détecter qu'il a subi des dégâts et de le signaler. C'est tout.
 
-[click] De l'autre côté, on va fournir ce même événement aux différents systèmes qui doivent réagir. Par exemple, le système de tremblement de caméra. Lui, il va simplement écouter l'événement PlayerDamaged, et quand celui-ci est déclenché, il va faire trembler la caméra.
+[click] De l'autre côté, on va fournir ce même événement aux différents systèmes qui doivent réagir. Par exemple, le système de tremblement de caméra. Lui, il va simplement écouter l'événement PlayerHit, et quand celui-ci est déclenché, il va faire trembler la caméra.
 
 [click] Il ne sait pas qui a déclenché l'événement. Ça pourrait être le joueur, un script de test ou même un bouton dans l'éditeur. Mais là encore, on s'en fout un peu ! Son travail, c'est de faire trembler la caméra quand il reçoit cet événement. Et rien d'autre.
 
@@ -1120,7 +1180,7 @@ C'est pour répondre à ces questions que MEDS propose plusieurs outils de débo
 
 [Modifier une valeur pendant l'exécution.]
 
-[click] On retrouve le même principe pour les événements. MEDS permet de surveiller les événements déclenchés pendant l'exécution. Mais aussi de les déclencher manuellement depuis l'éditeur. Par exemple, je peux déclencher PlayerDamaged sans avoir besoin de faire toucher le joueur par un ennemi. Et tous les systèmes qui écoutent cet événement vont réagir normalement.
+[click] On retrouve le même principe pour les événements. MEDS permet de surveiller les événements déclenchés pendant l'exécution. Mais aussi de les déclencher manuellement depuis l'éditeur. Par exemple, je peux déclencher PlayerHit sans avoir besoin de faire toucher le joueur par un ennemi. Et tous les systèmes qui écoutent cet événement vont réagir normalement.
 
 [Déclencher manuellement un événement depuis l'éditeur.]
 
