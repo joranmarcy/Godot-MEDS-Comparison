@@ -785,6 +785,33 @@ Ensuite, on va donner cette même Resource à deux systèmes. D'un côté, le jo
 
 ---
 
+# Des variables pour tous les types
+
+<div class="grid grid-cols-4 gap-4 mt-10 type-chips">
+  <div class="type-chip"><img src="/meds/variables/BoolVariable.svg" alt="" />BoolVariable</div>
+  <div class="type-chip"><img src="/meds/variables/IntVariable.svg" alt="" />IntVariable</div>
+  <div class="type-chip"><img src="/meds/variables/FloatVariable.svg" alt="" />FloatVariable</div>
+  <div class="type-chip"><img src="/meds/variables/StringVariable.svg" alt="" />StringVariable</div>
+  <div class="type-chip"><img src="/meds/variables/ColorVariable.svg" alt="" />ColorVariable</div>
+  <div class="type-chip"><img src="/meds/variables/Vector2Variable.svg" alt="" />Vector2Variable</div>
+  <div class="type-chip"><img src="/meds/variables/Vector3Variable.svg" alt="" />Vector3Variable</div>
+  <div class="type-chip opacity-60"><img src="/meds/variables/BaseVariable.svg" alt="" />…</div>
+</div>
+
+<div v-click class="mt-14 text-center text-2xl">
+  ➜ Dans MEDS, on appelle ça des <strong class="godot">variables MEDS</strong>.
+</div>
+
+<!--
+C'est ce principe qu'on va appliquer à toutes sortes de données.
+
+Des nombres flottants, des entiers, des chaînes de caractères, des booléens, des couleurs, des vecteurs... Bref, les types de données dont on a besoin pour construire notre application.
+
+Et dans MEDS, on va appeler ça des variables MEDS.
+-->
+
+---
+
 # L'ennemi, avant / après
 
 ````md magic-move {lines: true}
@@ -816,45 +843,26 @@ func _physics_process(delta: float) -> void:
 ```
 ````
 
-<div v-click class="mt-6 text-center text-lg">
-  Plus de <code>GameState</code> : <strong>uniquement des dépendances explicites</strong>.
+<div class="grid grid-cols-[3fr_2fr] gap-6 items-center mt-4">
+  <figure v-click="1">
+    <img src="/screenshots/godot-inspector-enemy.png" alt="Inspecteur Godot du nœud Enemy : Target Position, Base Speed, Level et Game Over sont reliés aux Resources player-position.tres, enemy-speed.tres, level.tres et game-over.tres." class="w-full rounded-lg border border-[#55595e]" />
+    <figcaption class="mt-1 text-xs opacity-70">Les dépendances, injectées depuis l'inspecteur</figcaption>
+  </figure>
+  <div v-click="2" class="text-center text-lg">
+    Plus de <code>GameState</code> :<br/><strong>uniquement des dépendances explicites</strong>.
+  </div>
 </div>
 
 <!--
-Voilà ce que ça donne concrètement dans le code.
+Revenons à notre ennemi. Voilà ce que ça donne concrètement dans le code.
 
 [click] Avant : l'ennemi lit la position du joueur, le niveau et l'état de la partie dans le GameState.
 
 Après : l'ennemi déclare simplement ses dépendances avec des @export. Une position cible, une vitesse, un niveau, un booléen de fin de partie. C'est tout.
 
+Et dans l'inspecteur, chacun de ces champs est relié à une Resource : player-position, enemy-speed, level, game-over. C'est là qu'on branche l'ennemi sur le reste du jeu.
+
 [click] Plus de GameState : uniquement des dépendances explicites, injectées depuis l'inspecteur.
--->
-
----
-
-# Des variables pour tous les types
-
-<div class="grid grid-cols-4 gap-4 mt-10 type-chips">
-  <div class="type-chip"><img src="/meds/variables/BoolVariable.svg" alt="" />BoolVariable</div>
-  <div class="type-chip"><img src="/meds/variables/IntVariable.svg" alt="" />IntVariable</div>
-  <div class="type-chip"><img src="/meds/variables/FloatVariable.svg" alt="" />FloatVariable</div>
-  <div class="type-chip"><img src="/meds/variables/StringVariable.svg" alt="" />StringVariable</div>
-  <div class="type-chip"><img src="/meds/variables/ColorVariable.svg" alt="" />ColorVariable</div>
-  <div class="type-chip"><img src="/meds/variables/Vector2Variable.svg" alt="" />Vector2Variable</div>
-  <div class="type-chip"><img src="/meds/variables/Vector3Variable.svg" alt="" />Vector3Variable</div>
-  <div class="type-chip opacity-60"><img src="/meds/variables/BaseVariable.svg" alt="" />…</div>
-</div>
-
-<div v-click class="mt-14 text-center text-2xl">
-  ➜ Dans MEDS, on appelle ça des <strong class="godot">variables MEDS</strong>.
-</div>
-
-<!--
-C'est ce principe qu'on va appliquer à toutes sortes de données.
-
-Des nombres flottants, des entiers, des chaînes de caractères, des booléens, des couleurs, des vecteurs... Bref, les types de données dont on a besoin pour construire notre application.
-
-Et dans MEDS, on va appeler ça des variables MEDS.
 -->
 
 ---
