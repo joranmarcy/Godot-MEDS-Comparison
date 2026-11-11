@@ -207,48 +207,39 @@ MEDS, c'est un acronyme qui reprend une philosophie de développement popularis�
 
 [click] En venant du monde des logiciels critiques, j'avais notamment pris goût à certains principes d'architecture, comme l'injection de dépendances et le découplage des systèmes. Et avec cette approche, je retrouvais justement une partie de ces principes, mais d'une manière très adaptée au développement de jeux vidéo.
 
-MEDS repose sur quatre grands principes.
+MEDS reprend trois piliers d'ingénierie de cette philosophie.
 -->
 
 ---
 
-# Quatre principes
+# Trois piliers d'ingénierie
 
-<div class="grid grid-cols-4 gap-5 mt-8">
+<div class="grid grid-cols-3 gap-6 mt-8">
   <div v-click class="letter-card media-card m-border">
     <img src="/gifs/lego.gif" alt="" class="media" />
     <div>
       <div class="big-letter m">M</div>
-      <h3>Modular</h3>
+      <h3>Modular</h3>
     </div>
   </div>
   <div v-click class="letter-card media-card e-border">
     <video src="/videos/iron-man.mp4" class="media" autoplay muted loop playsinline />
     <div>
       <div class="big-letter e">E</div>
-      <h3>Editable</h3>
+      <h3>Editable</h3>
     </div>
   </div>
   <div v-click class="letter-card media-card d-border">
     <img src="/gifs/lens.gif" alt="" class="media" />
     <div>
       <div class="big-letter d">D</div>
-      <h3>Debuggable</h3>
-    </div>
-  </div>
-  <div v-click class="letter-card media-card s-border">
-    <img src="/gifs/assembly-line.gif" alt="" class="media" />
-    <div>
-      <div class="big-letter s">S</div>
-      <h3>Scalable</h3>
+      <h3>Debuggable</h3>
     </div>
   </div>
 </div>
 
 <!--
-MEDS repose sur quatre grands principes.
-
-[click] Modular. [click] Editable. [click] Debuggable. [click] Et Scalable.
+[click] Modular. [click] Editable. [click] Et Debuggable.
 
 On va les voir un par un.
 -->
@@ -349,23 +340,13 @@ Le deuxième principe, c'est Editable, pour éditable.
 
 # <span class="d">D</span> — Debuggable
 
-<div class="grid grid-cols-2 gap-10 mt-8 items-center">
-<div>
-
-<v-clicks>
+<v-clicks class="mt-8">
 
 - Comprendre **rapidement** ce qui se passe
 - Tester chaque système **indépendamment**
 - Bug sur les ennemis ? On lance **uniquement** les ennemis
 
 </v-clicks>
-
-</div>
-<div v-click class="flex flex-col gap-3">
-  <div class="bad">Lancer le jeu → 3 menus → charger un niveau → attendre les bonnes conditions…</div>
-  <div class="good">Lancer la scène de l'ennemi → reproduire → corriger</div>
-</div>
-</div>
 
 <div v-click class="mt-12 text-center text-xl">
   Plus les systèmes sont <strong>isolés</strong>, plus il est facile de comprendre ce qui ne fonctionne pas.
@@ -378,48 +359,9 @@ Le troisième principe, c'est Debuggable, pour facile à déboguer.
 
 [click] et surtout de pouvoir tester nos systèmes indépendamment les uns des autres.
 
-[click] Si j'ai un problème avec mes ennemis, je veux pouvoir lancer uniquement mon système d'ennemis, reproduire le problème et le corriger.
-
-[click] Je ne veux pas devoir lancer tout le jeu, passer trois menus, charger un niveau et attendre que les bonnes conditions soient réunies pour pouvoir observer mon bug.
+[click] Si j'ai un problème avec mes ennemis, je veux pouvoir lancer uniquement mon système d'ennemis, reproduire le problème et le corriger. Je ne veux pas devoir lancer tout le jeu, passer trois menus, charger un niveau et attendre que les bonnes conditions soient réunies pour pouvoir observer mon bug.
 
 [click] Plus les systèmes sont isolés, plus il devient facile de comprendre ce qui ne fonctionne pas.
--->
-
----
-
-# <span class="s">S</span> — Scalable
-
-<div class="text-lg opacity-70 mb-8">Mon apport personnel à cette philosophie</div>
-
-<div class="grid grid-cols-3 gap-6">
-  <div v-click class="card">
-    <h3>Ça marche</h3>
-    <p>Approche déjà utilisée avec succès chez Numix sous Unity.</p>
-  </div>
-  <div v-click class="card">
-    <h3>Mais…</h3>
-    <p>Gros projets = beaucoup de variables et d'événements.<br/>On gagne en modularité, on perd en <strong>lisibilité globale</strong>.</p>
-  </div>
-  <div v-click class="card">
-    <h3>MEDS</h3>
-    <p>Les mêmes principes dans Godot + des <strong>outils</strong> pour maîtriser la complexité.</p>
-  </div>
-</div>
-
-<div v-click class="mt-10 text-center text-lg">
-  ➜ Plus qu'une simple bibliothèque de variables et d'événements.
-</div>
-
-<!--
-Et enfin, le dernier principe, c'est Scalable, pour la capacité à passer à l'échelle. C'est mon apport personnel à cette philosophie.
-
-[click] Comme je vous le disais, chez Numix, on utilisait déjà cette approche avec Unity. Et elle fonctionnait très bien.
-
-[click] Mais au fil du temps, on a aussi rencontré certaines limites, notamment quand les projets devenaient plus gros et que le nombre de systèmes, de variables et d'événements augmentait. On gagnait beaucoup en modularité, mais on pouvait aussi perdre en lisibilité globale.
-
-[click] J'ai donc voulu reprendre les mêmes principes dans Godot, tout en apportant des outils supplémentaires pour mieux gérer la complexité des projets de grande taille.
-
-[click] Et c'est notamment là que MEDS va se différencier d'une simple bibliothèque de variables et d'événements.
 -->
 
 ---
@@ -962,18 +904,14 @@ Et maintenant, on va voir ce que ça donne concrètement dans l'éditeur.
 <div class="grid grid-cols-2 gap-10 mt-8 items-center">
 <div>
 
-<v-clicks>
-
 - Lancer la scène de l'ennemi **toute seule**
 - Pas de jeu complet, **pas de joueur**
 - Modifier `PlayerPosition` depuis l'éditeur
 - L'ennemi réagit **immédiatement**
 - … sans toucher à son code
 
-</v-clicks>
-
 </div>
-<div v-click class="flex flex-col gap-4 text-xl">
+<div class="flex flex-col gap-4 text-xl">
   <div class="letter-row"><span class="m font-bold">M</span> Système indépendant</div>
   <div class="letter-row"><span class="e font-bold">E</span> Données éditables</div>
   <div class="letter-row"><span class="d font-bold">D</span> Test isolé</div>
@@ -985,19 +923,19 @@ Et maintenant, on va voir ce que ça donne concrètement dans l'éditeur.
 
 Je vais ouvrir la scène de mon ennemi.
 
-[click] Et là, vous pouvez voir que je peux la lancer toute seule.
+Et là, vous pouvez voir que je peux la lancer toute seule.
 
-[click] Je n'ai pas besoin de charger le jeu entier. Je n'ai même pas besoin d'avoir un joueur dans ma scène. Mon ennemi utilise simplement une variable MEDS qui contient la position qu'il doit suivre.
+Je n'ai pas besoin de charger le jeu entier. Je n'ai même pas besoin d'avoir un joueur dans ma scène. Mon ennemi utilise simplement une variable MEDS qui contient la position qu'il doit suivre.
 
-[click] Et cette variable, je peux la modifier directement depuis l'éditeur.
+Et cette variable, je peux la modifier directement depuis l'éditeur.
 
 [Modifier la variable PlayerPosition et montrer le déplacement de l'ennemi.]
 
-[click] Vous voyez que mon ennemi réagit immédiatement aux changements.
+Vous voyez que mon ennemi réagit immédiatement aux changements.
 
-[click] Et le plus intéressant, c'est que je n'ai pas eu besoin de modifier son code. Je lui fournis juste une donnée différente.
+Et le plus intéressant, c'est que je n'ai pas eu besoin de modifier son code. Je lui fournis juste une donnée différente.
 
-[click] C'est exactement ce qu'on recherchait avec les principes Modular, Editable et Debuggable. Mon système est indépendant, ses données sont éditables, et je peux tester son comportement de manière isolée.
+C'est exactement ce qu'on recherchait avec les principes Modular, Editable et Debuggable. Mon système est indépendant, ses données sont éditables, et je peux tester son comportement de manière isolée.
 -->
 
 ---
@@ -1007,18 +945,14 @@ Je vais ouvrir la scène de mon ennemi.
 <div class="grid grid-cols-2 gap-10 mt-6">
 <div>
 
-<v-clicks>
-
 - Afficher score, points de vie, temps restant…
 - Habituellement : un **petit script de synchro** par élément
 - Avec MEDS : **connecter directement** un composant UI à une variable
 - La valeur change → l'UI se met à jour **automatiquement**
 - Certains composants **modifient** aussi la variable
 
-</v-clicks>
-
 </div>
-<div v-click>
+<div>
 
 | Composant | Binding MEDS |
 | --- | --- |
@@ -1034,19 +968,19 @@ Je vais ouvrir la scène de mon ennemi.
 <!--
 Maintenant, on va regarder un autre exemple avec l'interface utilisateur.
 
-[click] Dans un jeu, on a souvent besoin d'afficher des données : le score, les points de vie, le temps restant, etc.
+Dans un jeu, on a souvent besoin d'afficher des données : le score, les points de vie, le temps restant, etc.
 
-[click] Traditionnellement, on va écrire des scripts qui récupèrent ces valeurs et mettent à jour les composants de l'interface.
+Traditionnellement, on va écrire des scripts qui récupèrent ces valeurs et mettent à jour les composants de l'interface.
 
-[click] Avec MEDS, on peut simplifier ça grâce à un système de bindings. L'idée, c'est de connecter directement un composant d'interface à une variable MEDS. Par exemple, je peux associer un label à une variable qui contient le score.
+Avec MEDS, on peut simplifier ça grâce à un système de bindings. L'idée, c'est de connecter directement un composant d'interface à une variable MEDS. Par exemple, je peux associer un label à une variable qui contient le score.
 
-[click] Et quand la valeur change, le texte affiché se met automatiquement à jour. Je n'ai pas besoin d'écrire un script spécifique pour faire cette liaison.
+Et quand la valeur change, le texte affiché se met automatiquement à jour. Je n'ai pas besoin d'écrire un script spécifique pour faire cette liaison.
 
 [Montrer le binding d'un label avec une variable MEDS.]
 
-[click] Et évidemment, on peut aussi modifier certaines valeurs depuis l'interface, selon le composant utilisé.
+Et évidemment, on peut aussi modifier certaines valeurs depuis l'interface, selon le composant utilisé.
 
-[click] Et ça ne fonctionne pas uniquement avec les labels. MEDS propose aussi des bindings pour les sliders, les barres de progression, les cases à cocher ou encore les sélecteurs de couleur.
+Et ça ne fonctionne pas uniquement avec les labels. MEDS propose aussi des bindings pour les sliders, les barres de progression, les cases à cocher ou encore les sélecteurs de couleur.
 
 Cela permet de construire des interfaces qui réagissent directement aux données, sans multiplier les petits scripts de synchronisation.
 -->
@@ -1058,18 +992,14 @@ Cela permet de construire des interfaces qui réagissent directement aux donnée
 <div class="grid grid-cols-2 gap-10 mt-6">
 <div>
 
-<v-clicks>
-
 - Une Resource **garde sa valeur** en mémoire pendant l'exécution
 - Points de vie → **réinitialisés** à chaque partie
 - Volume audio → **conservé**
 - `reset_on` : *On Scene Load* ou *On Application Start*
 - `save_to_device` : **persister** la valeur (paramètres utilisateur…)
 
-</v-clicks>
-
 </div>
-<div v-click>
+<div>
 
 ```gdscript
 # base-variable.gd (extrait)
@@ -1090,19 +1020,65 @@ var reset_on: String = RESET_ON_SCENE_LOAD
 <!--
 Un autre sujet important quand on utilise des données partagées, c'est leur cycle de vie.
 
-[click] Parce qu'une Resource peut conserver une valeur en mémoire pendant que l'application fonctionne. Et parfois, ce n'est pas ce qu'on veut.
+Parce qu'une Resource peut conserver une valeur en mémoire pendant que l'application fonctionne. Et parfois, ce n'est pas ce qu'on veut.
 
-[click] Par exemple, les points de vie du joueur doivent peut-être être réinitialisés quand on relance une partie.
+Par exemple, les points de vie du joueur doivent peut-être être réinitialisés quand on relance une partie.
 
-[click] Mais les paramètres audio, eux, doivent probablement conserver leur valeur.
+Mais les paramètres audio, eux, doivent probablement conserver leur valeur.
 
-[click] MEDS propose donc un système de réinitialisation configurable avec reset_on. On peut définir à quel moment une variable doit retrouver sa valeur initiale. Pour les réinitialisations au démarrage de l'application, MEDS utilise également un mécanisme de cache à l'exécution afin de gérer correctement les valeurs de référence.
+MEDS propose donc un système de réinitialisation configurable avec reset_on. On peut définir à quel moment une variable doit retrouver sa valeur initiale. Pour les réinitialisations au démarrage de l'application, MEDS utilise également un mécanisme de cache à l'exécution afin de gérer correctement les valeurs de référence.
 
 [Montrer les options de réinitialisation et, si possible, un exemple de changement de scène ou de redémarrage.]
 
-[click] Et on peut également sauvegarder les valeurs de certaines variables, lorsqu'on souhaite les conserver. C'est pratique, par exemple, pour les paramètres utilisateur ou certaines données persistantes.
+Et on peut également sauvegarder les valeurs de certaines variables, lorsqu'on souhaite les conserver. C'est pratique, par exemple, pour les paramètres utilisateur ou certaines données persistantes.
 
-[click] L'objectif, c'est que le développeur puisse définir clairement le comportement des données sans avoir à réécrire toute cette logique dans chaque système.
+L'objectif, c'est que le développeur puisse définir clairement le comportement des données sans avoir à réécrire toute cette logique dans chaque système.
+-->
+
+---
+
+# <span class="s">S</span> — Scalable
+
+<div class="text-lg opacity-70 mb-6">Mon apport personnel à cette philosophie</div>
+
+<div class="grid grid-cols-3 gap-6">
+  <div v-click class="card media-card">
+    <img src="/images/cat-win.png" alt="" class="media" />
+    <div>
+      <h3>Ça marche</h3>
+      <p>Approche déjà utilisée avec succès chez Numix sous Unity.</p>
+    </div>
+  </div>
+  <div v-click class="card media-card">
+    <video src="/videos/cependant.mp4" class="media" autoplay muted loop playsinline />
+    <div>
+      <h3>Mais…</h3>
+      <p>Sur les gros projets, on gagne en modularité, on perd en <strong>lisibilité globale</strong>.</p>
+    </div>
+  </div>
+  <div v-click class="card media-card">
+    <video src="/videos/silly-tools.mp4" class="media" autoplay muted loop playsinline />
+    <div>
+      <h3>MEDS</h3>
+      <p>Les mêmes principes dans Godot + des <strong>outils</strong> pour maîtriser la complexité.</p>
+    </div>
+  </div>
+</div>
+
+<div v-click class="mt-6 text-center text-lg">
+  ➜ Plus qu'une simple bibliothèque de variables et d'événements.
+</div>
+
+<!--
+Il reste un dernier principe : Scalable, pour la capacité à passer à l'échelle. C'est mon apport personnel à cette philosophie.
+
+[click] Comme je vous le disais, chez Numix, on utilisait déjà cette approche avec Unity. Et elle fonctionnait très bien.
+
+[click] Mais au fil du temps, on a aussi rencontré certaines limites, notamment quand les projets devenaient plus gros et que le nombre de systèmes, de variables et d'événements augmentait. On gagnait beaucoup en modularité, mais on pouvait aussi perdre en lisibilité globale.
+
+[click] J'ai donc voulu reprendre les mêmes principes dans Godot, tout en apportant des outils supplémentaires pour mieux gérer la complexité des projets de grande taille.
+
+[click] Et c'est notamment là que MEDS va se différencier d'une simple bibliothèque de variables et d'événements.
 -->
 
 ---
