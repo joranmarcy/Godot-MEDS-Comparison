@@ -349,14 +349,23 @@ Le troisième principe, c'est Debuggable, pour facile à déboguer.
 
 <div class="grid grid-cols-3 gap-6 mt-6">
   <div v-click class="card">
+    <div class="h-24 flex items-center justify-center mb-3">
+      <img src="/unity/soap.png" alt="" class="h-full rounded-xl" />
+    </div>
     <h3>SOAP</h3>
     <p>Scriptable Object Architecture Pattern, par Obvious Game. Variables, événements et listes partagés, avec des outils d'édition et de debug.</p>
   </div>
   <div v-click class="card">
+    <div class="h-24 flex items-center justify-center mb-3">
+      <img src="/unity/scriptable-object-architecture.png" alt="" class="h-full rounded-xl" />
+    </div>
     <h3>Scriptable Object Architecture</h3>
     <p>La bibliothèque open source qui reprend directement les idées de Ryan Hipple : variables, événements et collections en ScriptableObjects.</p>
   </div>
   <div v-click class="card">
+    <div class="h-24 flex items-center justify-center mb-3">
+      <img src="/numix/numix.png" alt="" class="h-20" />
+    </div>
     <h3>La librairie de Numix</h3>
     <p>Notre propre implémentation maison, utilisée au quotidien sur nos projets de formation VR et d'applications mobiles.</p>
   </div>
