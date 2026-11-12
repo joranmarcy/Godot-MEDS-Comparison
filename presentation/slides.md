@@ -63,7 +63,7 @@ layoutClass: gap-12
 
 <v-clicks>
 
-- **Joran Marcy** - Ingénieur R&D logiciel depuis **12+ ans**
+- **Joran Marcy** - Ingénieur logiciel depuis **12+ ans**
 - Débuts dans les **logiciels critiques** (contrôle aérien)
 - Puis les **technologies immersives** : VR, AR, HoloLens
 - **Numix** depuis 6 ans ½ : formations VR, apps mobiles, e-learning
@@ -170,8 +170,7 @@ layout: section
 ---
 
 <h1 class="meds-pill-heading">
-  <MedsLogo pill-only class="meds-title-pill" />
-  <span>MEDS</span>
+  <span>La philosophie MED</span>
 </h1>
 
 ---
@@ -180,8 +179,7 @@ class: text-center
 ---
 
 <h1 class="meds-pill-heading">
-  <MedsLogo pill-only class="meds-title-pill" />
-  <span>MEDS, qu'est-ce que c'est ?</span>
+  <span>MED, qu'est-ce que c'est ?</span>
 </h1>
 
 <div class="text-xl mt-6 opacity-80">
@@ -245,6 +243,7 @@ On va les voir un par un.
 -->
 
 ---
+hide: true
 layout: two-cols
 layoutClass: gap-10
 ---
@@ -277,6 +276,8 @@ Le premier, c'est Modular, pour modulaire.
 -->
 
 ---
+hide: true
+---
 
 # <span class="e">E</span> — Editable
 
@@ -292,20 +293,6 @@ Le premier, c'est Modular, pour modulaire.
 - Idéal pour expérimenter et faire du **game design**
 
 </v-clicks>
-
-</div>
-<div v-click>
-
-```gdscript
-# Avant : valeur codée en dur
-var speed: float = 320.0
-
-# Après : donnée partagée et éditable
-@export var move_speed: FloatVariable
-
-func _physics_process(_delta):
-    velocity = input * move_speed.value
-```
 
 </div>
 </div>
@@ -324,6 +311,8 @@ Le deuxième principe, c'est Editable, pour éditable.
 [click] Et ça, c'est particulièrement pratique pour ajuster le comportement d'un jeu, expérimenter ou faire du game design.
 -->
 
+---
+hide: true
 ---
 
 # <span class="d">D</span> — Debuggable
@@ -350,6 +339,44 @@ Le troisième principe, c'est Debuggable, pour facile à déboguer.
 [click] Si j'ai un problème avec mes ennemis, je veux pouvoir lancer uniquement mon système d'ennemis, reproduire le problème et le corriger. Je ne veux pas devoir lancer tout le jeu, passer trois menus, charger un niveau et attendre que les bonnes conditions soient réunies pour pouvoir observer mon bug.
 
 [click] Plus les systèmes sont isolés, plus il devient facile de comprendre ce qui ne fonctionne pas.
+-->
+
+---
+
+# Dans Unity ?
+
+<p class="opacity-70">Cette philosophie a donné naissance à plusieurs outils</p>
+
+<div class="grid grid-cols-3 gap-6 mt-6">
+  <div v-click class="card">
+    <h3>SOAP</h3>
+    <p>Scriptable Object Architecture Pattern, par Obvious Game. Variables, événements et listes partagés, avec des outils d'édition et de debug.</p>
+  </div>
+  <div v-click class="card">
+    <h3>Scriptable Object Architecture</h3>
+    <p>La bibliothèque open source qui reprend directement les idées de Ryan Hipple : variables, événements et collections en ScriptableObjects.</p>
+  </div>
+  <div v-click class="card">
+    <h3>La librairie de Numix</h3>
+    <p>Notre propre implémentation maison, utilisée au quotidien sur nos projets de formation VR et d'applications mobiles.</p>
+  </div>
+</div>
+
+<div v-click class="mt-10 text-center text-xl">
+  Côté <span class="godot font-bold">Godot</span> : <strong>rien d'équivalent</strong>.<br/>
+  <span class="text-lg opacity-80">Alors j'ai décidé de la créer : c'est <strong>MEDS</strong>.</span>
+</div>
+
+<!--
+Cette philosophie n'est pas restée théorique : côté Unity, plusieurs outils l'implémentent.
+
+[click] SOAP, pour Scriptable Object Architecture Pattern, développé par Obvious Game. Il propose des variables, des événements et des listes partagés, avec des outils d'édition et de débogage.
+
+[click] Scriptable Object Architecture, une bibliothèque open source qui reprend directement les idées de Ryan Hipple.
+
+[click] Et chez Numix, nous avons notre propre librairie, qu'on utilise au quotidien sur nos projets.
+
+[click] Quand je me suis mis à Godot, j'ai cherché la même chose... et je n'ai rien trouvé. Il n'existait pas d'implémentation de cette philosophie pour Godot. Alors j'ai décidé de la créer : c'est MEDS.
 -->
 
 ---
