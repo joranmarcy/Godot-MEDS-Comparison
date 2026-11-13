@@ -837,14 +837,14 @@ Ensuite, on va donner cette même Resource à deux systèmes. D'un côté, le jo
 # Des variables pour tous les types
 
 <div class="grid grid-cols-4 gap-4 mt-10 type-chips">
-  <div class="type-chip"><img src="/meds/variables/BoolVariable.svg" alt="" />BoolVariable</div>
-  <div class="type-chip"><img src="/meds/variables/IntVariable.svg" alt="" />IntVariable</div>
-  <div class="type-chip"><img src="/meds/variables/FloatVariable.svg" alt="" />FloatVariable</div>
-  <div class="type-chip"><img src="/meds/variables/StringVariable.svg" alt="" />StringVariable</div>
-  <div class="type-chip"><img src="/meds/variables/ColorVariable.svg" alt="" />ColorVariable</div>
-  <div class="type-chip"><img src="/meds/variables/Vector2Variable.svg" alt="" />Vector2Variable</div>
-  <div class="type-chip"><img src="/meds/variables/Vector3Variable.svg" alt="" />Vector3Variable</div>
-  <div class="type-chip opacity-60"><img src="/meds/variables/BaseVariable.svg" alt="" />…</div>
+  <div class="type-chip"><img src="/meds/variables/BoolVariable.png" alt="" />BoolVariable</div>
+  <div class="type-chip"><img src="/meds/variables/IntVariable.png" alt="" />IntVariable</div>
+  <div class="type-chip"><img src="/meds/variables/FloatVariable.png" alt="" />FloatVariable</div>
+  <div class="type-chip"><img src="/meds/variables/StringVariable.png" alt="" />StringVariable</div>
+  <div class="type-chip"><img src="/meds/variables/ColorVariable.png" alt="" />ColorVariable</div>
+  <div class="type-chip"><img src="/meds/variables/Vector2Variable.png" alt="" />Vector2Variable</div>
+  <div class="type-chip"><img src="/meds/variables/Vector3Variable.png" alt="" />Vector3Variable</div>
+  <div class="type-chip opacity-60"><img src="/meds/variables/BaseVariable.png" alt="" />…</div>
 </div>
 
 <div v-click class="mt-14 text-center text-2xl">
