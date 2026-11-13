@@ -347,31 +347,31 @@ Le troisième principe, c'est Debuggable, pour facile à déboguer.
 
 <p class="opacity-70">Cette philosophie a donné naissance à plusieurs outils</p>
 
-<div class="grid grid-cols-3 gap-6 mt-6">
+<div class="grid grid-cols-3 gap-6 mt-4">
   <div v-click class="card">
-    <div class="h-24 flex items-center justify-center mb-3">
+    <div class="h-16 flex items-center justify-center mb-2">
       <img src="/unity/soap.png" alt="" class="h-full rounded-xl" />
     </div>
-    <h3>SOAP</h3>
-    <p>Scriptable Object Architecture Pattern, par Obvious Game. Variables, événements et listes partagés, avec des outils d'édition et de debug.</p>
+    <h3 class="!text-xl">SOAP</h3>
+    <p class="!text-sm !leading-snug">Scriptable Object Architecture Pattern, par Obvious Game. Variables, événements et listes partagés, avec des outils d'édition et de debug.</p>
   </div>
   <div v-click class="card">
-    <div class="h-24 flex items-center justify-center mb-3">
+    <div class="h-16 flex items-center justify-center mb-2">
       <img src="/unity/scriptable-object-architecture.png" alt="" class="h-full rounded-xl" />
     </div>
-    <h3>Scriptable Object Architecture</h3>
-    <p>La bibliothèque open source qui reprend directement les idées de Ryan Hipple : variables, événements et collections en ScriptableObjects.</p>
+    <h3 class="!text-xl">Scriptable Object Architecture</h3>
+    <p class="!text-sm !leading-snug">La bibliothèque open source qui reprend directement les idées de Ryan Hipple : variables, événements et collections en ScriptableObjects.</p>
   </div>
   <div v-click class="card">
-    <div class="h-24 flex items-center justify-center mb-3">
-      <img src="/numix/numix.png" alt="" class="h-20" />
+    <div class="h-16 flex items-center justify-center mb-2">
+      <img src="/numix/numix.png" alt="" class="h-14" />
     </div>
-    <h3>La librairie de Numix</h3>
-    <p>Notre propre implémentation maison, utilisée au quotidien sur nos projets de formation VR et d'applications mobiles.</p>
+    <h3 class="!text-xl">La librairie de Numix</h3>
+    <p class="!text-sm !leading-snug">Notre propre implémentation maison, utilisée au quotidien sur nos projets de formation VR et d'applications mobiles.</p>
   </div>
 </div>
 
-<div v-click class="mt-10 text-center text-xl">
+<div v-click class="mt-6 text-center text-xl">
   Côté <span class="godot font-bold">Godot</span> : <strong>rien d'équivalent</strong>.<br/>
   <span class="text-lg opacity-80">Alors j'ai décidé de la créer : c'est <strong>MEDS</strong>.</span>
 </div>
@@ -386,6 +386,26 @@ Cette philosophie n'est pas restée théorique : côté Unity, plusieurs outils 
 [click] Et chez Numix, nous avons notre propre librairie, qu'on utilise au quotidien sur nos projets.
 
 [click] Quand je me suis mis à Godot, j'ai cherché la même chose... et je n'ai rien trouvé. Il n'existait pas d'implémentation de cette philosophie pour Godot. Alors j'ai décidé de la créer : c'est MEDS.
+-->
+
+---
+layout: center
+class: text-center
+---
+
+# Le projet est sur GitHub
+
+<div class="flex items-center justify-center gap-12 mt-10">
+  <img src="/sample-qr.svg" alt="QR code vers github.com/joranmarcy/Godot-MEDS-Sample" class="w-56 h-56 p-2 bg-white rounded-xl shadow-2xl" />
+  <a href="https://github.com/joranmarcy/Godot-MEDS-Sample" target="_blank" class="text-2xl text-left">
+    <carbon-logo-github class="inline-block mr-2" />github.com/joranmarcy/<br/>Godot-MEDS-Sample
+  </a>
+</div>
+
+<GodotPlush mood="jump" class="github-plush" />
+
+<!--
+Avant de passer au concret, voici le lien du projet. Tout ce que je vais vous montrer aujourd'hui est disponible sur GitHub : vous pouvez scanner le QR code maintenant, ou retrouver le lien à la fin de la présentation.
 -->
 
 ---
