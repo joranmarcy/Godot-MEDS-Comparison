@@ -364,7 +364,7 @@ Le troisième principe, c'est Debuggable, pour facile à déboguer.
   </div>
   <div v-click class="card">
     <div class="h-16 flex items-center justify-center mb-2">
-      <img src="/numix/numix.png" alt="" class="h-14" />
+      <img src="/numix/numix.png" alt="" class="h-16" />
     </div>
     <h3 class="!text-xl">La librairie de Numix</h3>
     <p class="!text-sm !leading-snug">Notre propre implémentation maison, utilisée au quotidien sur nos projets de formation VR et d'applications mobiles.</p>
@@ -391,11 +391,14 @@ Cette philosophie n'est pas restée théorique : côté Unity, plusieurs outils 
 ---
 layout: center
 class: text-center
+clicks: 1
 ---
 
 # Le projet est sur GitHub
 
-<div class="flex items-center justify-center gap-12 mt-10">
+<MedsWordmark :highlight="$clicks >= 1" class="mt-6" />
+
+<div class="flex items-center justify-center gap-12 mt-14">
   <img src="/sample-qr.svg" alt="QR code vers github.com/joranmarcy/Godot-MEDS-Sample" class="w-56 h-56 p-2 bg-white rounded-xl shadow-2xl" />
   <a href="https://github.com/joranmarcy/Godot-MEDS-Sample" target="_blank" class="text-2xl text-left">
     <carbon-logo-github class="inline-block mr-2" />github.com/joranmarcy/<br/>Godot-MEDS-Sample
@@ -406,6 +409,8 @@ class: text-center
 
 <!--
 Avant de passer au concret, voici le lien du projet. Tout ce que je vais vous montrer aujourd'hui est disponible sur GitHub : vous pouvez scanner le QR code maintenant, ou retrouver le lien à la fin de la présentation.
+
+[click] Et vous remarquerez le S de MEDS : on y reviendra plus tard, c'est mon apport personnel à cette philosophie.
 -->
 
 ---
@@ -1009,7 +1014,7 @@ Et maintenant, on va voir ce que ça donne concrètement dans l'éditeur.
 
 ---
 
-# Démo — M · E · D dans l'éditeur
+# Démo — MEDS dans l'éditeur
 
 <div class="grid grid-cols-3 gap-6 mt-6">
   <div v-click class="card">
