@@ -211,21 +211,21 @@ MEDS reprend trois piliers d'ingénierie de cette philosophie.
     <img src="/gifs/lego.gif" alt="" class="media" />
     <div>
       <div class="big-letter m">M</div>
-      <h3>Modular</h3>
+      <h3>Modularité</h3>
     </div>
   </div>
   <div v-click class="letter-card media-card e-border">
     <video src="/videos/iron-man.mp4" class="media" autoplay muted loop playsinline />
     <div>
       <div class="big-letter e">E</div>
-      <h3>Editable</h3>
+      <h3>Éditabilité</h3>
     </div>
   </div>
   <div v-click class="letter-card media-card d-border">
     <img src="/gifs/lens.gif" alt="" class="media" />
     <div>
       <div class="big-letter d">D</div>
-      <h3>Debuggable</h3>
+      <h3>Débogabilité</h3>
     </div>
   </div>
 </div>
@@ -233,7 +233,11 @@ MEDS reprend trois piliers d'ingénierie de cette philosophie.
 <!--
 [click] Modular. [click] Editable. [click] Et Debuggable.
 
-On va les voir un par un.
+M – Modularité : Concevoir des systèmes indépendants et réutilisables, avec un minimum de dépendances entre eux.
+
+E – Éditabilité : Permettre de modifier facilement les données et les comportements du jeu, idéalement sans changer le code et même pendant l’exécution.
+
+D – Débogabilité : Faciliter l’identification, la compréhension et la correction des bugs grâce à des composants simples, isolés et faciles à tester.
 -->
 
 ---

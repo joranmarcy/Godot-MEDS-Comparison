@@ -200,6 +200,9 @@ onMounted(async () => {
   // The animation loop rechecks the size; this covers reduced motion, which has no loop.
   window.addEventListener('resize', resize)
   resize()
+  // Slidev mounts upcoming slides ahead of time: draw a first frame now so the
+  // plush is already there while the slide transitions in.
+  render()
 
   watch(active, (isActive) => {
     clearTimeout(waveTimer)

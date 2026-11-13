@@ -261,6 +261,8 @@ onMounted(async () => {
   resizeObserver.observe(el)
   window.addEventListener('resize', resize)
   resize()
+  // Draw a first frame right away so the scene is visible while the slide transitions in.
+  render()
 
   watch(active, isActive => isActive ? start() : stop(), { immediate: true })
   if (reducedMotion)
