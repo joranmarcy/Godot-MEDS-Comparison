@@ -1215,59 +1215,25 @@ Et il reste un dernier outil, peut-être le plus important pour passer à l'éch
 -->
 
 ---
-hide: true
----
 
-# MEDS à l'ère de l'IA
+# MEDS dans le contexte de la programmation par IA
 
-<div class="grid grid-cols-2 gap-10 mt-6">
-<div>
-
-<v-clicks>
-
-- Le défi de l'IA : **le contexte**
-- Système couplé → l'IA doit comprendre **toute l'architecture**
-- Système modulaire → **périmètre restreint** et maîtrisé
-- Système testable seul → **vérification facile**
-- Références, graphe, débogueurs → **reprendre le contrôle**
-
-</v-clicks>
-
-</div>
-<div v-click>
-
-<div class="prompt">
-  <div class="text-xs opacity-60 mb-2">Prompt</div>
-  « Voilà le système d'ennemis. Il reçoit une <strong>position cible</strong>, une <strong>vitesse</strong> et quelques <strong>événements</strong>.<br/><br/>
-  Modifie son comportement, mais <strong>conserve ces interfaces</strong>. »
-</div>
-
-<div v-click class="mt-6 opacity-70 text-sm">
-  MEDS ne garantit pas que l'IA produira du bon code…<br/>
-  mais des composants indépendants, des interfaces explicites et des tests isolés s'y prêtent particulièrement bien.
-</div>
-
-</div>
-</div>
+<PlushMeetsRobot class="w-full h-[24rem] mt-4" />
 
 <!--
-Et pour terminer, j'aimerais aborder un sujet qui me semble de plus en plus important : le développement assisté par intelligence artificielle.
+Avant de conclure, un mot sur un sujet de plus en plus présent : la programmation assistée par IA.
 
-Aujourd'hui, on utilise de plus en plus d'outils capables de générer du code, de modifier des scripts ou même d'implémenter des fonctionnalités entières à partir d'une simple description. Et je pense que ce type d'outil rend les principes de modularité encore plus intéressants.
+Le grand défi de l'IA, c'est le contexte. Pour modifier correctement un système, elle doit comprendre ce qu'il fait, de quoi il dépend, et ce que ses changements vont casser ailleurs.
 
-[click] Pourquoi ? Parce que l'un des problèmes avec le code généré par une IA, c'est la gestion du contexte. Pour modifier correctement un système, l'IA doit comprendre comment il fonctionne, mais aussi de quoi il dépend et quelles conséquences ses modifications peuvent avoir sur le reste de l'application.
+Dans une architecture couplée, demander une modification de l'ennemi, c'est demander à l'IA de comprendre le GameState, le joueur, le HUD… Beaucoup de contexte, et des effets de bord difficiles à maîtriser.
 
-[click] Plus les systèmes sont fortement couplés, plus cette tâche devient complexe. Imaginons qu'on demande à une IA de modifier le comportement d'un ennemi. Si cet ennemi dépend directement du joueur, du GameState, du HUD et de plusieurs autres systèmes, l'IA doit potentiellement comprendre une grande partie de l'architecture pour faire une modification relativement simple. Et plus elle doit manipuler de contexte, plus il devient difficile de maîtriser les effets de bord.
+Avec MEDS, l'ennemi déclare explicitement ses dépendances. Le périmètre est réduit, le contrat est clair, et le système se teste tout seul.
 
-[click] Avec une architecture modulaire, on peut beaucoup mieux délimiter le travail.
+On peut donc lui donner un prompt très ciblé : « Voilà le système d'ennemis. Il reçoit une position cible, une vitesse et quelques événements. Modifie son comportement, mais conserve ces interfaces. »
 
-[click] L'IA peut alors se concentrer sur un périmètre beaucoup plus restreint. Elle n'a pas forcément besoin de comprendre toute l'application. Et de notre côté, on peut plus facilement vérifier ce qu'elle a produit, puisque le système peut être testé indépendamment.
+Et surtout, on garde le contrôle : je lance la scène de l'ennemi seule, je joue avec les variables dans le débogueur, je regarde le graphe pour vérifier que rien d'autre n'a bougé.
 
-[click] Les outils de MEDS peuvent aussi nous aider à reprendre le contrôle sur ce code. Avec le suivi des références et le graphe de dépendances, on peut mieux comprendre les relations entre les systèmes. Avec les débogueurs, on peut observer les valeurs et déclencher des événements pour vérifier les comportements. Et avec l'architecture basée sur les Resources, on dispose de contrats relativement simples entre les différents éléments.
-
-[click] On peut lui dire : « Voilà le système d'ennemis. Il reçoit une position cible, une vitesse de déplacement et quelques événements. Modifie son comportement, mais conserve ces interfaces. »
-
-[click] Bien sûr, MEDS ne garantit pas qu'une IA produira du bon code. Mais je pense qu'une architecture qui favorise des composants indépendants, des interfaces explicites et des tests isolés est particulièrement adaptée à ce type de développement. Et à mesure que les outils d'IA prennent plus de place dans nos pratiques, je pense que ces qualités vont devenir encore plus importantes.
+MEDS ne garantit pas que l'IA produira du bon code. Mais des composants indépendants, des interfaces explicites et des tests isolés, c'est exactement ce qui rend son travail plus fiable, et plus facile à vérifier.
 -->
 
 ---
