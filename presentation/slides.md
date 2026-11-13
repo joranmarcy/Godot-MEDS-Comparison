@@ -1125,21 +1125,26 @@ Il reste un dernier principe : Scalable, pour la capacité à passer à l'échel
 
 <div class="text-lg opacity-70">Qui utilise quoi ? Que se passe-t-il quand ça ne marche pas ?</div>
 
-<div class="grid grid-cols-3 gap-6 mt-10">
+<div class="grid grid-cols-4 gap-4 mt-8">
   <div v-click class="card">
-    <h3>Suivi des références</h3>
-    <p>Pour chaque variable ou événement : quels scripts et scènes l'utilisent.</p>
-    <p class="opacity-60 text-sm mt-2">Fini les recherches manuelles dans tout le projet.</p>
+    <h3 class="!text-lg">Suivi des références</h3>
+    <p class="!text-sm">Pour chaque variable ou événement : quels scripts et scènes l'utilisent.</p>
+    <p class="opacity-60 !text-xs mt-2">Fini les recherches manuelles dans tout le projet.</p>
   </div>
   <div v-click class="card">
-    <h3>Débogueur de variables</h3>
-    <p>Observer <strong>et modifier</strong> les valeurs en temps réel.</p>
-    <p class="opacity-60 text-sm mt-2">Ex. : passer le joueur à 1 PV instantanément.</p>
+    <h3 class="!text-lg">Débogueur de variables</h3>
+    <p class="!text-sm">Observer <strong>et modifier</strong> les valeurs en temps réel.</p>
+    <p class="opacity-60 !text-xs mt-2">Ex. : passer le joueur à 1 PV instantanément.</p>
   </div>
   <div v-click class="card">
-    <h3>Débogueur d'événements</h3>
-    <p>Surveiller les événements… et les <strong>déclencher</strong> depuis l'éditeur.</p>
-    <p class="opacity-60 text-sm mt-2">Ex. : <code>PlayerHit</code> sans se faire toucher.</p>
+    <h3 class="!text-lg">Débogueur d'événements</h3>
+    <p class="!text-sm">Surveiller les événements… et les <strong>déclencher</strong> depuis l'éditeur.</p>
+    <p class="opacity-60 !text-xs mt-2">Ex. : <code>PlayerHit</code> sans se faire toucher.</p>
+  </div>
+  <div v-click class="card">
+    <h3 class="!text-lg">Graphe de dépendances</h3>
+    <p class="!text-sm">Qui écrit, qui lit, qui déclenche, qui réagit : la <strong>vue d'ensemble</strong> du projet.</p>
+    <p class="opacity-60 !text-xs mt-2">Le découplage, sans perdre la lisibilité.</p>
   </div>
 </div>
 
@@ -1158,60 +1163,9 @@ C'est pour répondre à ces questions que MEDS propose plusieurs outils de débo
 
 [click] On retrouve le même principe pour les événements. MEDS permet de surveiller les événements déclenchés pendant l'exécution. Mais aussi de les déclencher manuellement depuis l'éditeur. Par exemple, je peux déclencher PlayerHit sans avoir besoin de faire toucher le joueur par un ennemi. Et tous les systèmes qui écoutent cet événement vont réagir normalement.
 
+[click] Et enfin, le graphe de dépendances, peut-être l'outil le plus important pour passer à l'échelle. Le revers du découplage, c'est que les relations entre systèmes n'apparaissent plus directement dans le code : un événement émis, cinq systèmes qui l'écoutent… où est-ce écrit ? Le graphe redonne cette vue d'ensemble : qui écrit, qui lit, qui déclenche et qui réagit. Pratique pour comprendre comment une modification se propage, ou pour reprendre un projet qu'on n'a pas touché depuis des mois.
+
 [click] On peut donc tester facilement une animation, un effet visuel, un son ou une réaction de l'interface, sans avoir besoin de reproduire toutes les conditions du jeu. Et ça, pour le développement et le débogage, c'est un vrai gain de temps.
-
-Et il reste un dernier outil, peut-être le plus important pour passer à l'échelle : le graphe de dépendances. Allons voir tout ça dans l'éditeur.
--->
-
----
-
-# Démo — Les outils MEDS
-
-<div class="grid grid-cols-4 gap-5 mt-8">
-  <div v-click class="card">
-    <h3>Références</h3>
-    <p class="text-sm">Qui utilise <code>PlayerPosition</code> ?</p>
-  </div>
-  <div v-click class="card">
-    <h3>Variables</h3>
-    <p class="text-sm">Passer la vie du joueur à <strong>1</strong>, en plein jeu.</p>
-  </div>
-  <div v-click class="card">
-    <h3>Événements</h3>
-    <p class="text-sm">Déclencher <code>PlayerHit</code> sans se faire toucher.</p>
-  </div>
-  <div v-click class="card">
-    <h3>Graphe</h3>
-    <p class="text-sm">Qui écrit, qui lit, qui déclenche, qui réagit : la <strong>vue d'ensemble</strong> de Coin Rush.</p>
-  </div>
-</div>
-
-<div v-click class="mt-12 text-center text-xl">
-  Des systèmes <strong>découplés</strong>… et une architecture qui reste <strong>lisible</strong>.
-</div>
-
-<!--
-[Retourner dans l'éditeur, projet Coin Rush avec MEDS.]
-
-[click] D'abord, les références. Je sélectionne PlayerPosition, et je vois directement le joueur qui l'écrit et l'ennemi qui la lit. Pas besoin de chercher dans tout le projet.
-
-[Sélectionner la variable PlayerPosition et montrer le suivi des références.]
-
-[click] Ensuite, je lance le jeu. Dans le débogueur de variables, je passe la vie du joueur à 1 : le HUD se met à jour, et je peux tester le game over tout de suite.
-
-[Lancer le jeu, ouvrir le débogueur de variables et passer la vie du joueur à 1.]
-
-[click] Même chose pour les événements : je déclenche PlayerHit depuis l'éditeur. La caméra tremble, l'écran flashe, le son se joue, la vie baisse… alors que personne n'a touché le joueur.
-
-[Déclencher PlayerHit depuis le débogueur d'événements.]
-
-[click] Et enfin, le graphe de dépendances. Le revers du découplage, c'est que les relations entre systèmes n'apparaissent plus directement dans le code : un événement émis, cinq systèmes qui l'écoutent… où est-ce écrit ? Sur un gros projet, avec des centaines de variables et d'événements, ça devient vite difficile à suivre. Le graphe redonne cette vue d'ensemble : qui écrit, qui lit, qui déclenche et qui réagit. Pratique pour comprendre comment une modification se propage, ou pour reprendre un projet qu'on n'a pas touché depuis des mois.
-
-[Ouvrir le graphe de dépendances.]
-
-[click] Les systèmes sont découplés, mais l'architecture reste lisible. C'est ça, le S de MEDS.
-
-[Revenir aux slides.]
 -->
 
 ---
