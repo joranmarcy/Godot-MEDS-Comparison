@@ -31,12 +31,6 @@ drawings:
   <div class="hero-text">
     <div class="hero-eyebrow">Une architecture modulaire pour</div>
     <img src="/godot/logo_large_color_dark.svg" alt="Godot Engine" class="h-20 mt-3" />
-    <div class="hero-github-row">
-      <img src="/github-qr.svg" alt="QR code vers github.com/joranmarcy" class="hero-qr" />
-      <a class="hero-github" href="https://github.com/joranmarcy" target="_blank">
-        <carbon-logo-github /> github.com/joranmarcy
-      </a>
-    </div>
   </div>
 </div>
 
@@ -394,9 +388,7 @@ class: text-center
 clicks: 1
 ---
 
-# Le projet est sur GitHub
-
-<MedsWordmark :highlight="$clicks >= 1" class="mt-6" />
+<MedsWordmark :highlight="$clicks >= 1" />
 
 <div class="flex items-center justify-center gap-12 mt-14">
   <img src="/sample-qr.svg" alt="QR code vers github.com/joranmarcy/Godot-MEDS-Sample" class="w-56 h-56 p-2 bg-white rounded-xl shadow-2xl" />
